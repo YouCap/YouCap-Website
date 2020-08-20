@@ -1,22 +1,10 @@
 <?php
-    use Http\Adapter\Guzzle6\Client as GuzzleClient;
-    use Lcobucci\JWT\Builder;
-    use Lcobucci\JWT\Signer\Key;
-    use Lcobucci\JWT\Signer\Rsa\Sha256;
+    require(__DIR__ . '/backend/creds.php');
+    $client = githubClient();
 
-    $builder = new Github\HttpClient\Builder(new GuzzleClient());
-    $github = new Github\Client($builder, 'machine-man-preview');
+    $content = $_POST["content"];
+    $user = $_POST["user"];
 
-    $jwt = (new Builder)
-        ->setIssuer($integrationId)
-        ->setIssuedAt(time())
-        ->setExpiration(time() + 60)
-        // `file://` prefix for file path or file contents itself
-        ->sign(new Sha256(),  new Key('file:///path/to/integration.private-key.pem'))
-        ->getToken();
-
-    $github->authenticate($jwt, null, Github\Client::AUTH_JWT);
-
-    $token = $github->api('apps')->createInstallationToken($installationId);
-    $github->authenticate($token['token'], null, Github\Client::AUTH_ACCESS_TOKEN);
+    $committer = array('name' => 'YouCap Website', 'email' => 'youcapservice@gmail.com');
+    $fileInfo = $client->api('repo')->contents()->create('YouCap', 'captions-english-0', '/', $content, "Committed by $user", "master", $committer);
 ?>
