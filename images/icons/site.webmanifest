@@ -1,0 +1,19 @@
+{
+    "name": "YouCap",
+    "short_name": "YouCap",
+    "icons": [
+        {
+            "src": "/images/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#7bc1c6",
+    "background_color": "#7bc1c6",
+    "display": "standalone"
+}

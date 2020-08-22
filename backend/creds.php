@@ -1,12 +1,14 @@
 <?php
-    function githubClient() {
-        use Http\Adapter\Guzzle6\Client as GuzzleClient;
-        use Lcobucci\JWT\Builder;
-        use Lcobucci\JWT\Signer\Key;
-        use Lcobucci\JWT\Signer\Rsa\Sha256;
+    use Http\Adapter\Guzzle6\Client as GuzzleClient;
+    use Lcobucci\JWT\Builder;
+    use Lcobucci\JWT\Signer\Key;
+    use Lcobucci\JWT\Signer\Rsa\Sha256;
+    use Github\HttpClient\Builder as GHBuilder;
+    use Github\Client as GHClient;
 
-        $builder = new Github\HttpClient\Builder(new GuzzleClient());
-        $github = new Github\Client($builder, 'machine-man-preview');
+    function githubClient() {
+        $builder = new GHBuilder(new GuzzleClient());
+        $github = new GHClient($builder, 'machine-man-preview');
         
         $integrationId = '77561';
         $installationId = '11338372';
@@ -16,13 +18,13 @@
             ->setIssuedAt(time())
             ->setExpiration(time() + 60)
             // `file://` prefix for file path or file contents itself
-            ->sign(new Sha256(),  new Key('file://' . __DIR__ . 'secrets/youcap-website.pem'))
+            ->sign(new Sha256(),  new Key('file://' . $_SERVER["DOCUMENT_ROOT"] . '/secrets/youcap-website.pem'))
             ->getToken();
 
-        $github->authenticate($jwt, null, Github\Client::AUTH_JWT);
+        $github->authenticate($jwt, null, GHClient::AUTH_JWT);
 
         $token = $github->api('apps')->createInstallationToken($installationId);
-        $github->authenticate($token['token'], null, Github\Client::AUTH_ACCESS_TOKEN);
+        $github->authenticate($token['token'], null, GHClient::AUTH_ACCESS_TOKEN);
         
         return $github;
     }
