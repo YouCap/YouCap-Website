@@ -12,21 +12,19 @@
         <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
         <link rel="stylesheet" type="text/css" href="/css/studio-ui.css">
         <link rel="stylesheet" type="text/css" href="/css/create.css">
+        <link rel="stylesheet" type="text/css" href="/css/studio.css">
     </head>
     <body>    
         <?php include($_SERVER["DOCUMENT_ROOT"] . "/php/nav.php"); ?>
         
         <div id="main-content">
             <form action="/pages/studio.php" method="get">
-                <div id="options">
-                    <label for="vid-link">Link to Video</label>
-                    <input id="vid-link" type="text" placeholder="Youtube link">
-                    <input name="vid-id" type="hidden">
-                    
-                    <button type="button" name="vid-link-button"><p>Create for Video</p></button>
-                    
-                    <div class="sep"></div>
-                    
+                <h1 class="inline"><?php echo $_GET["vid-lang-name"] ?></h1>
+                <a class="switch-language inline"><p>Switch Language</p></a>
+                <p class="title"></p>
+                <div class="sep"></div>
+                
+                <div id="options">                    
                     <label for="vid-lang">Caption/Subtitle Language</label>
                     <button type="button" class="select" name="vid-lang">
                         <p class="arrow">Select Language</p>
@@ -37,7 +35,6 @@
                         </div>
                     </button>
                     <input type="hidden" name="vid-lang">
-                    <input type="hidden" name="vid-lang-name">
                     <div class="sep"></div>
                     
                     
@@ -48,7 +45,14 @@
                         <div>
                             <img src="/images/icon.png" aria-label="The YouTube video to be edited will be placed here when loaded.">
                         </div>
-                        <iframe src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <div id="player"></div>
+                    </div>
+                    <div class="waveform">
+                        <canvas width=1700 height=100></canvas>
+                        <div class="playhead"></div>
+                        <div class="scroll">
+                            <div class="scrollbar"></div>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -58,5 +62,9 @@
     </body>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="/js/create.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+    <script>
+        var vidID = '<?php print $_GET["vid-id"] ?>';
+    </script>
+    <script src="/js/studio.js"></script>
 </html>

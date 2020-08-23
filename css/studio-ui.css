@@ -1,0 +1,198 @@
+#main-content {
+    background-color: #f1f1f1;
+    padding: 2% 5%;
+}
+
+form {
+    position: relative;
+    display: inline-block;
+    top: 10px;
+    width: calc(90% - 40px);
+    padding: 20px;
+    
+    background-color: white;
+    
+    box-shadow: 0 1px 2px rgba(0,0,0,.1);
+}
+
+form .inline {
+    display: inline-block;
+}
+
+form > h1 {
+    margin-bottom: 10px;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    line-height: 20px;
+}
+
+form > a {
+    margin-left: 5px;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    color: #3cade8;
+}
+
+form > a:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+form > p {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    color: #656565;
+}
+
+form label {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    line-height: 20px;
+}
+
+form input[type=text] {
+    width: 100%;
+    height: 36px;
+    margin-bottom: 10px;
+    
+    border: #d3d3d3 solid 1px;
+    border-radius: 2px;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 12px;
+    color: #333;
+    line-height: 16px;
+    
+    padding: 5px 10px 6px;
+}
+
+form input[type=button], form button {
+    position: relative;
+    width: 100%;
+    height: 36px;
+    background-color: #a9a9a9;
+    border: #a9a9a9 solid 1px;
+    border-radius: 2px;
+    
+    padding: 0 10px;
+    outline: 0;
+    text-decoration: none;
+    white-space: nowrap;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 12px;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+}
+
+form input[type=button]:hover, form button:hover {
+    background-color: #7e7e7e;
+    cursor: pointer;
+}
+
+form button p {
+    position: relative;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 12px;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+}
+
+form button.select {
+    z-index: 1;
+}
+
+form button.select p.arrow:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 0; 
+    height: 0; 
+    margin-left: 4px;
+    
+    transform: translateY(-50%);
+    
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+
+    border-top: 4px solid white;
+}
+
+form button.select > div {
+    position: absolute;
+    display: none;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    transform: translate(-1px, 1px);
+    
+    background-color: white;
+    border: 1px solid #d3d3d3;
+    border-radius: 0px;
+    
+    box-shadow: 0 0 15px rgba(0,0,0,.18);
+}
+
+form button.select > div:hover {
+    cursor: default;
+}
+
+form button.select > div div {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    
+    height: 25px;
+    padding: 0 15px;
+    
+    z-index: 3;
+}
+
+form button.select > div div:first-of-type {
+    margin-top: 5px;
+}
+
+form button.select > div div:last-of-type {
+    margin-bottom: 5px;
+}
+
+form button.select > div div p {
+    color: #333;
+}
+
+form button.select > div div:hover {
+    background-color: #333;
+    cursor: pointer;
+}
+
+form button.select > div div:hover p {
+    color: white;
+}
+
+form .sep {
+    width: 100%;
+    border-bottom: 1px solid #b5b5b5;
+    margin: 20px 0;
+}
+
+form button[type=submit] {
+    background-color: #d9a740;
+    border-color: #d9a740;
+}
+
+form button[type=submit]:hover {
+    background-color: #ba9240;
+}
