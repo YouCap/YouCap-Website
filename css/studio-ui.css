@@ -29,7 +29,16 @@ form > h1 {
     line-height: 20px;
 }
 
-form > a {
+.flex {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.flex > *:not(:last-child) {
+    margin-right: 5px;
+}
+
+form > a, .standard-ui > a {
     margin-left: 5px;
     
     font-family: "Noto Sans", sans-serif;
@@ -37,12 +46,12 @@ form > a {
     color: #3cade8;
 }
 
-form > a:hover {
+form > a:hover, .standard-ui > a:hover {
     cursor: pointer;
     text-decoration: underline;
 }
 
-form > p {
+form > p, .standard-ui > p {
     font-family: "Noto Sans", sans-serif;
     font-size: 16px;
     color: #656565;
@@ -110,8 +119,48 @@ form button p {
     vertical-align: middle;
 }
 
+form button.basic-select {
+    display: inline-block;
+    height: 30px;
+    width: auto;
+    background-color: #efefef;
+    border: solid 1px #d8d8d8;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+    -webkit-box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+    -moz-box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+}
+
+form button.basic-select.select.opened {
+    background-color: #dbdbdb;
+}
+
+form button.basic-select.select.opened > div {
+    display: inline-block;
+    width: auto;
+}
+
+form button.basic-select > p {
+    color: black;
+}
+
+form button.basic-select > p.arrow {
+    margin-right: 10px;
+}
+
+form button.select.basic-select p.arrow:after {
+    border-top-color: black;
+}
+
 form button.select {
     z-index: 1;
+}
+
+form button.select.opened {
+    background-color: #7e7e7e;
+}
+
+form button.select.opened > div {
+    display: block;
 }
 
 form button.select p.arrow:after {

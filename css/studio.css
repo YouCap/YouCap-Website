@@ -1,3 +1,208 @@
+textarea.add-caption {
+    display: inline-block;
+    width: calc(100% - 48px);
+    height: 64px;
+    background-color: white;
+    border: solid 1px #d8d8d8;
+    border-right-width: 0px;
+    
+    padding: 10px;
+    
+    resize: none;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 14px;
+    
+    vertical-align: top;
+    float: left;
+    
+    margin-bottom: 20px;
+}
+
+button.add-caption {
+    position: relative;
+    display: inline-block;
+    
+    width: 48px;
+    height: 64px;
+    
+    font-family: "Arial", sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    
+    border: solid 1px #D9A740;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    
+    background-color: #D9A740;
+    
+    vertical-align: top;
+    
+    margin-bottom: 20px;
+}
+
+button.add-caption:hover {
+    background-color: #ad893f;
+    border-color: #ad893f;
+}
+
+
+
+
+
+
+.caption-list {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: calc(100% - 64px - 20px - 40px - 1px - 30px);
+    
+    overflow-y: auto;
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.caption {
+    width: calc(100% - 30px);
+    height: 74px;
+    padding: 10px 15px 0px 15px;
+    background-color: white;
+    border-top: 1px solid #d8d8d8;
+}
+
+.caption.selected {
+    background-color: #ffedc8;
+    border-left: solid 3px #3cade8;
+    width: calc(100% - 30px - 3px);
+}
+
+.caption-list div.caption.border-hover {
+    border-bottom: solid 2px #D9A740;
+}
+
+.caption-list div:last-child {
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.caption .times {
+    display: inline-block;
+    width: calc(20% - 10px);
+    height: calc(100% - 10px);
+    margin-right: 10px;
+    
+    padding: 3px 0;
+    
+    vertical-align: top;
+}
+
+.caption .times input {
+    border: none;
+    margin-bottom: 3px;
+    width: 100%;
+    height: 15px;
+    
+    padding: 2px 0 0 2px;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 14px;
+    
+/*    outline: 1px solid #ccc;*/
+    outline: none;
+    background-color: transparent;
+}
+
+.caption .times input:focus {
+    background-color: white;
+    outline: solid 1px #ccc;
+}
+
+.caption textarea {
+    display: inline-block;
+    height: calc(100% - 10px);
+    width: calc(65% - 10px);
+    margin-right: 10px;
+    resize: none;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 14px;
+    
+    vertical-align: top;
+    overflow-y: hidden;
+    
+    outline: none;
+    background-color: transparent;
+    border: none;
+}
+
+.caption textarea:focus {
+    background-color: white;
+    outline: solid 1px #ccc;
+    overflow-y: auto;
+}
+
+.caption .buttons {
+    display: inline-flex;
+    width: 10%;
+    height: 100%;
+    
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    
+    vertical-align: top;
+}
+
+.caption .buttons button {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    background-color: transparent;
+    border: solid 0px transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.caption .buttons button.delete {
+    display: inline-block;
+    margin-bottom: auto;
+}
+
+.caption .buttons button.insert {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-color: #D9A740;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.caption-line {
+    position: absolute;
+    display: inline-block;
+    bottom: 45px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 3px 1px;
+    
+    background-color: black;
+    
+    font-family: "Arial", sans-serif;
+    font-size: 20px;
+    color: white;
+} 
+
+
 .waveform {
     position: relative;
     width: calc(100% - 30px - 2px);
@@ -72,6 +277,130 @@
     background-color: #676767;
 }
 
+#video > .options {
+    width: calc(100% - 30px);
+    height: 30px;
+    margin-left: 30px;
+    margin-top: 20px;
+    background-color: white;
+    
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+#video .options .checkbox {
+    position: relative;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#video > .options .checkbox input[type=checkbox] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+#video > .options .checkbox input[type=checkbox]:hover ~ .checkmark {
+    background-color: rgba(229, 229, 229, 0.75);
+}
+
+#video > .options .checkbox .checkmark { 
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    background-color: white;
+    border: solid black 1px;
+}
+
+#video > .options .checkbox .checkmark img { 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+#video > .options .checkbox input[type=checkbox]:checked ~ .checkmark img {
+    opacity: 1
+}
+
+#video > .options > p {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 14px;
+    color: black;
+    line-height: 20px;
+    
+    margin-left: 10px;
+}
+
+#video > .options > img {
+    margin-left: auto;
+}
+
+#video > .options input[type=range] {
+    width: 80px;
+    height: 2px;
+    margin-left: 5px;
+    background-color: #e5e5e5;
+    
+    -webkit-appearance: none;
+    appearance: none;
+    
+    outline: none;
+}
+
+#video > .options input[type=range]::-webkit-slider-thumb {
+    position: relative;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    margin-top: -8px;
+    border-radius: 50%;
+    border: solid #b4b4b4 2px;
+    background: #e0e0e0;
+}
+
+#video > .options input[type=range]::-moz-range-thumb {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-top: -8px;
+    border-radius: 50%;
+    border: solid #b4b4b4 2px;
+    background: #e0e0e0;
+}
+
+#video > .options input[type=range]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 2px;
+    background-color: #d8d8d8;
+}
+
+#video > .options input[type=range]::-moz-range-track {
+    height: 2px;
+    background-color: #d8d8d8;
+}
+
 
 
 @media only screen and (min-width: 786px) {
@@ -81,5 +410,12 @@
 
     #video {
         width: 50%;
+    }
+}
+
+@media only screen and (max-width: 785px) {
+    .waveform {
+        width: calc(100% - 2px);
+        margin-left: 0;
     }
 }

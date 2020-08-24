@@ -11,21 +11,3 @@ $("#main-content form button[name=vid-link-button]").click(function() {
         alert("ERROR");
     }
 });
-
-
-
-$("form button.select").click(function() {
-    $(this).css("background-color", "#7e7e7e");
-    $(this).find("> div").css("display", "block");
-}).blur(function() {
-    $(this).css("background-color", "");
-    $(this).find("> div").css("display", "none");
-});
-
-$("form button.select > div div").click(function(event) {
-    event.stopPropagation();
-    
-    $(this).closest(".select").blur().find("> p").text($(this).text());
-    $("form input[name=" + $(this).parent().parent().attr("name") + "]").val($(this).attr("value"));
-    $("form input[name=" + $(this).parent().parent().attr("name") + "-name]").val($(this).text());
-});

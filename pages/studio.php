@@ -24,23 +24,39 @@
                 <p class="title"></p>
                 <div class="sep"></div>
                 
-                <div id="options">                    
-                    <label for="vid-lang">Caption/Subtitle Language</label>
-                    <button type="button" class="select" name="vid-lang">
-                        <p class="arrow">Select Language</p>
+                <div id="options">
+                    <button id="actions" type="button" class="basic-select select" name="actions">
+                        <p class="arrow">Actions</p>
                         <div>
-                            <div value="en"><p>English</p></div>
-                            <div value="es"><p>Spanish</p></div>
-                            <div value="fr"><p>French</p></div>
+                            <div value="auto-gen"><p>Auto-generate</p></div>
+                            <div value="upload"><p>Upload a file</p></div>
+                            <div value="download"><p>Download</p></div>
                         </div>
                     </button>
-                    <input type="hidden" name="vid-lang">
+                    
                     <div class="sep"></div>
                     
+                    <textarea class="add-caption" placeholder="Type subtitle then press Enter"></textarea>
+                    <button class="add-caption" type="button">+</button>
                     
-                    <button type="submit">Start Captioning</button>
+                    <div class="caption-list">
+                        <div class="caption selected">
+                            <div class="times">
+                                <input type="text" class="start-time" placeholder="00:00.0">
+                                <input type="text" class="end-time" placeholder="00:00.5">
+                            </div><textarea placeholder="Enter subtitle" class="caption-text"></textarea><div class="buttons">
+                                <button class="delete" type="button"><img src="/images/page-icons/close.png" width=20></button>
+                                <button class="insert" type="button"><img src="/images/page-icons/add.png" width=11></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div id="video">
+                    <div class="standard-ui flex">
+                        <a class="shortcuts" style="margin-left: auto;">Keyboard Shortcuts</a>
+                        <p class="inline">|</p>
+                        <a class="help">Help</a>
+                    </div>
                     <div class="yt-video">
                         <div>
                             <img src="/images/icon.png" aria-label="The YouTube video to be edited will be placed here when loaded.">
@@ -53,6 +69,15 @@
                         <div class="scroll">
                             <div class="scrollbar"></div>
                         </div>
+                    </div>
+                    <div class="options">
+                        <div class="checkbox">
+                            <input type="checkbox" checked="checked">
+                            <span class="checkmark"><img src="/images/page-icons/checkbox.png"></span>
+                        </div>
+                        <p>Pause video while typing</p>
+                        <img src="/images/page-icons/magnifying-glass.png" height=20>
+                        <input type="range" min=0 max=7 value=7 step=1>
                     </div>
                 </div>
             </form>
@@ -67,4 +92,6 @@
         var vidID = '<?php print $_GET["vid-id"] ?>';
     </script>
     <script src="/js/studio.js"></script>
+    <script src="/js/captions.js"></script>
+    <script src="/js/studio-ui.js"></script>
 </html>

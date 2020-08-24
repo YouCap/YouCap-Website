@@ -20,11 +20,22 @@ window.onYouTubeIframeAPIReady = function() {
 }
 
 //Callbacks
+//The current time in number of ticks.
 var currTime = 0;
+
+//The current zoom level of the timeline.
 var currZoom = 0;
+
+//The number of seconds each tick marks is worth per zoom level.
 const zooms = [0.2, 1, 1, 1, 5, 5, 25, 25];
+
+//The number of tick marks to show in the timeline at once per zoom level.
 const ticks = [60, 23, 46, 92, 37, 74, 60, 120];
-const marks = [5, 5, 5, 5, 3, 3, 4, 4];
+
+//The number of ticks between each time marking in the timeline per zoom level.
+const marks = [5, 5, 5, 5, 3, 6, 4, 8];
+
+//The amount of space betweem each tick on the timeline.
 var tickSep = $(".waveform").width()/ticks[currZoom];
 const SCROLL_BAR_WIDTH = 24;
 
@@ -36,10 +47,7 @@ function onPlayerReady() {
     
     $(".waveform .playhead").draggable({
         axis: 'x',
-        containment: 'parent',
-        drag: function(event, ui) {
-            playheadUpdated(false);
-        }
+        containment: 'parent'
     });
     $(".waveform canvas").draggable({
         axis: 'x',       
@@ -96,12 +104,18 @@ function onPlayerReady() {
 
 var playheadUpdatingInterval;
 function onPlayerStateChanged() {
-    if (event.data == YT.PlayerState.PLAYING && playheadUpdatingInterval == null) {
+    //Get the current player state.
+    var currState = player.getPlayerState();
+    
+    //If playing, update the playhead position accordingly.
+    if (currState == YT.PlayerState.PLAYING) {
         playheadUpdatingInterval = setInterval(function() {
             updatePlayhead(player.getCurrentTime());
         }, 16);
-    } else if(event.data == YT.PlayerState.PAUSED) {
-        cancelInterval(playheadUpdatingInterval);
+    }
+    //If paused or stopped, stop movement of the timeline.
+    else if(currState == YT.PlayerState.PAUSED || currState == YT.PlayerState.ENDED) {
+        clearInterval(playheadUpdatingInterval);
         updatePlayhead(player.getCurrentTime());
     }
 }
@@ -110,38 +124,55 @@ function onPlayerStateChanged() {
 function setZoomLevel(zoomLevel) {
     currZoom = zoomLevel;
     var numOfTicks = player.getDuration()/zooms[currZoom];
+    tickSep = $(".waveform").width()/ticks[currZoom];
     
     $(".waveform canvas").attr("width", numOfTicks * tickSep);
+    $(".waveform canvas").css("width", numOfTicks * tickSep);   
     
-    tickSep = $(".waveform").width()/ticks[currZoom];
+    updatePlayhead(player.getCurrentTime());
 }
 
-function playheadUpdated(finishedSeeking) {
+function playheadUpdated(finishedSeeking) {    
     var time = (currTime + ($(".waveform .playhead").position().left/tickSep)) * zooms[currZoom];
-    player.seekTo(time, finishedSeeking);
+    
+    player.seekTo(time, true);
+    player.pauseVideo();
 }
 
-function updatePlayhead(time) {
-    console.log(time);
-    
+function updatePlayhead(time) {      
     //If the time left is less than the amount of time shown in a single timeline section, the playhead's position needs to be updated.
     if((player.getDuration() - time)/zooms[currZoom] < ticks[currZoom]) {
         //Set the timeline as far over as possible.
         $(".waveform canvas").css("left", -$(".waveform canvas").width() + $(".waveform").width());
         
+        var leftTime = ($(".waveform canvas").width() - $(".waveform").width())/tickSep;
+        
+        if(leftTime < 0)
+            leftTime = 0;
+        
+        currTime = Math.round(leftTime);
+        
         //The number of ticks that have already passed.
         var ticksPassed = ticks[currZoom] - ((player.getDuration() - time)/zooms[currZoom]);
         
+        if($(".waveform canvas").width() - $(".waveform").width() < 0)
+            ticksPassed = time/zooms[currZoom];
+    
+        if($(".waveform canvas").position().left > 0) {
+            $(".waveform canvas").css("left", 0);
+        }
+        
         //Set the playhead to the correct position.
         $(".waveform .playhead").css("left", ticksPassed * tickSep);
-    } else {
-        $(".waveform .playhead").css("left", 0);
-        
-        $(".waveform canvas").css("left", (time/zooms[currZoom]) * tickSep);
+    } else {        
+        $(".waveform canvas").css("left", ((time/zooms[currZoom]) * -tickSep) + $(".waveform .playhead").position().left);
+        currTime = Math.round(time/zooms[currZoom]);
     }
+    
+    drawTicks($(".waveform canvas")[0], currZoom);
 }
 
-function drawTicks(canvasEl, zoomLevel) {
+function drawTicks(canvasEl, zoomLevel) {    
     //Clear the canvas
     canvas = canvasEl.getContext("2d");
     canvas.clearRect(0, 0, canvasEl.width, canvasEl.height);
@@ -151,7 +182,10 @@ function drawTicks(canvasEl, zoomLevel) {
     canvas.font = "10px Arial";
     
     //Go between the current time and the number of ticks that should be drawn, with 2 extra ticks of padding
-    for(var i = currTime - 2; i < currTime + ticks[zoomLevel] + 2; i++) {
+    for(var i = currTime - marks[zoomLevel]; i < currTime + ticks[zoomLevel] + marks[zoomLevel]; i++) {  
+        if(i < 0)
+            continue;
+        
         //Draw the tick mark
         canvas.fillRect(tickSep * i, 0, 1, i % marks[zoomLevel] == 0 ? 10 : 5);
         
@@ -192,6 +226,16 @@ function secondsToTime(seconds) {
     return result;
 }
 
+function timeToSeconds(time) {
+    var split = time.split(':');
+    var total = 0;
+    for(var i = split.length - 1; i >= 0; i--) {
+        total += parseFloat(split[i]) * Math.pow(60, split.length - 1 - i);
+    }
+    
+    return total;
+}
+
 
 
 
@@ -213,6 +257,15 @@ $(".waveform canvas, .waveform").mousedown(function(event) {
 
 $(".waveform canvas, .waveform .playhead, .waveform .scroll .scrollbar").mouseup(function() {
     playheadUpdated(true);
+});
+
+$("#video > .options input[type=range]").on("input", function() {
+    setZoomLevel(zooms.length - 1 - $(this).val());
+})
+
+$("#options").height($("#video").height());
+$(window).resize(function() {
+    $("#options").height($("#video").height());
 });
 
 
