@@ -19,7 +19,7 @@ form .inline {
     display: inline-block;
 }
 
-form > h1 {
+form > h1, h1.standard-ui {
     margin-bottom: 10px;
     
     font-family: "Noto Sans", sans-serif;
@@ -51,7 +51,7 @@ form > a:hover, .standard-ui > a:hover {
     text-decoration: underline;
 }
 
-form > p, .standard-ui > p {
+form > p, .standard-ui > p, p.standard-ui {
     font-family: "Noto Sans", sans-serif;
     font-size: 16px;
     color: #656565;
@@ -244,4 +244,30 @@ form button[type=submit] {
 
 form button[type=submit]:hover {
     background-color: #ba9240;
+    border-color: #ba9240;
+}
+
+
+form p.error-message {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 14px;
+    color: red;
+    width: 100%;
+    
+    margin-bottom: 15px;
+    padding: 0 10px;
+}
+
+form button[type=submit].error {
+    animation-name: shake-hor;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-duration: 0.5s;
+}
+
+@keyframes shake-hor {
+    0% {transform: translateX(0);}
+    33% {transform: translateX(-10px);}
+    66% {transform: translateX(10px);}
+    100% {transform: translateX(0px);}
 }

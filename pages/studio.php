@@ -20,12 +20,12 @@
         <div id="main-content">
             <form action="/pages/studio.php" method="get">
                 <h1 class="inline"><?php echo $_GET["vid-lang-name"] ?></h1>
-                <a class="switch-language inline"><p>Switch Language</p></a>
+                <a class="switch-language inline" href="/pages/create.php?vid-id=<?php echo $_GET["vid-id"] ?>"><p>Switch Language</p></a>
                 <p class="title"></p>
                 <div class="sep"></div>
                 
                 <div id="options">
-                    <button id="actions" type="button" class="basic-select select" name="actions">
+                    <button id="actions" type="button" class="basic-select select inline" name="actions">
                         <p class="arrow">Actions</p>
                         <div>
                             <div value="auto-gen"><p>Auto-generate</p></div>
@@ -33,6 +33,7 @@
                             <div value="download"><p>Download</p></div>
                         </div>
                     </button>
+                    <h1 style="margin: 0 0 0 5px; vertical-align: middle;" class="standard-ui inline">Subtitle Editor</h1>
                     
                     <div class="sep"></div>
                     
@@ -40,22 +41,13 @@
                     <button class="add-caption" type="button">+</button>
                     
                     <div class="caption-list">
-                        <div class="caption selected">
-                            <div class="times">
-                                <input type="text" class="start-time" placeholder="00:00.0">
-                                <input type="text" class="end-time" placeholder="00:00.5">
-                            </div><textarea placeholder="Enter subtitle" class="caption-text"></textarea><div class="buttons">
-                                <button class="delete" type="button"><img src="/images/page-icons/close.png" width=20></button>
-                                <button class="insert" type="button"><img src="/images/page-icons/add.png" width=11></button>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div id="video">
                     <div class="standard-ui flex">
                         <a class="shortcuts" style="margin-left: auto;">Keyboard Shortcuts</a>
                         <p class="inline">|</p>
-                        <a class="help">Help</a>
+                        <a class="help" href="/pages/help.php" target="_blank">Help</a>
                     </div>
                     <div class="yt-video">
                         <div>
@@ -65,6 +57,7 @@
                     </div>
                     <div class="waveform">
                         <canvas width=1700 height=100></canvas>
+                        
                         <div class="playhead"></div>
                         <div class="scroll">
                             <div class="scrollbar"></div>
@@ -81,6 +74,30 @@
                     </div>
                 </div>
             </form>
+        </div>
+        
+        <div id="shortcuts">
+            <p>Shortcuts</p>
+            <a class="close">Close</a>
+            <div class="sep"></div>
+            <ul>
+                <li><p><span class="key">&lt;Shift&gt;</span> + <span class="key">&lt;Left&gt;</span></p></li>
+                <li><p><span class="key">&lt;Shift&gt;</span> + <span class="key">&lt;Right&gt;</span></p></li>
+                <li><p><span class="key">&lt;Shift&gt;</span> + <span class="key">&lt;Space&gt;</span></p></li>
+                <li><p><span class="key">&lt;Shift&gt;</span> + <span class="key">&lt;Enter&gt;</span></p></li>
+                <li><p><span class="key">&lt;Shift&gt;</span> + <span class="key">&lt;Down&gt;</span></p></li>
+                <li><p><span class="key">&lt;Shift&gt;</span> + <span class="key">&lt;Up&gt;</span></p></li>
+                <li><p><span class="key">&lt;Enter&gt;</span></p></li>
+            </ul>
+            <ul>
+                <li><p>:Seek backwards 1 second</p></li>
+                <li><p>:Seek forwards 1 second</p></li>
+                <li><p>:Play/Pause Video</p></li>
+                <li><p>:Create a new line</p></li>
+                <li><p>:Move to the next subtitle</p></li>
+                <li><p>:Move to the previous subtitle</p></li>
+                <li><p>:Insert the subtitle</p></li>
+            </ul>
         </div>
         
         <?php include($_SERVER["DOCUMENT_ROOT"] . "/php/footer.php"); ?>

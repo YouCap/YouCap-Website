@@ -40,9 +40,16 @@ button.add-caption {
     vertical-align: top;
     
     margin-bottom: 20px;
+    
+    transition: ease 0.2s;
 }
 
-button.add-caption:hover {
+button.add-caption.error {
+    background-color: #ff1414;
+    border-color: #ff1414;
+}
+
+button.add-caption:not(.error):hover {
     background-color: #ad893f;
     border-color: #ad893f;
 }
@@ -68,6 +75,8 @@ button.add-caption:hover {
     padding: 10px 15px 0px 15px;
     background-color: white;
     border-top: 1px solid #d8d8d8;
+    
+    transition: border-bottom ease 0.2s;
 }
 
 .caption.selected {
@@ -80,7 +89,11 @@ button.add-caption:hover {
     border-bottom: solid 2px #D9A740;
 }
 
-.caption-list div:last-child {
+.caption-list div.caption.error {
+    border-bottom: solid 2px #ff1414;
+}
+
+.caption-list div.caption:not(".error"):last-child {
     border-bottom: 1px solid #d8d8d8;
 }
 
@@ -174,6 +187,12 @@ button.add-caption:hover {
     background-color: #D9A740;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    
+    transition: background-color 0.2s ease;
+}
+
+.caption .buttons button.insert.error {
+    background-color: #ff1414;
 }
 
 
@@ -226,6 +245,70 @@ button.add-caption:hover {
 .waveform canvas {
     height: 100px;
 }
+
+
+
+
+
+.waveform .caption-box {
+    position: absolute;
+    display: inline-block;
+    height: 50px;
+    top: 35px;
+        
+    left: 0px;
+    width: 200px;
+    
+    border: solid 1px #d8d8d8;
+    
+    background-color: white;
+}
+
+.waveform .caption-box .right-handle, .waveform .caption-box .left-handle {
+    content: '';
+    display: none;
+    position: absolute;
+    top: -1px;
+    left: calc(100% - 10px);
+    width: 10px;
+    height: 52px;
+    
+    background-image: url("/images/page-icons/handle.png");
+    background-size: cover;
+}
+
+.waveform .caption-box.selected .right-handle, .waveform .caption-box.selected .left-handle {
+    display: inline-block;
+}
+
+.waveform .caption-box .left-handle {
+    left: auto;
+    right: calc(100% - 10px);
+}
+
+.waveform .caption-box .right-handle:hover, .waveform .caption-box .left-handle:hover {
+    cursor: ew-resize;
+}
+
+.waveform .caption-box:hover {
+    cursor: pointer;
+}
+
+.waveform .caption-box p.caption-text {
+    width: calc(100% - 20px);
+    height: calc(100% - 10px);
+    margin: 5px 10px;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 14px;
+    color: black;
+    
+    overflow: hidden;
+    user-select: none;
+}
+
+
+
 
 .waveform .playhead {
     position: absolute;
@@ -400,6 +483,75 @@ button.add-caption:hover {
     height: 2px;
     background-color: #d8d8d8;
 }
+
+
+
+
+#shortcuts {
+    position: fixed;
+    display: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(3, 18, 30, 0.90);
+    
+    padding: 20px;
+    
+    border-radius: 10px;
+    
+    z-index: 4;
+}
+
+#shortcuts > p, #shortcuts > a {
+    display: inline-block;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+}
+
+#shortcuts > a {
+    color: #d5de01;
+    text-decoration: none;
+    float: right;
+}
+
+#shortcuts > a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#shortcuts > div.sep {
+    width: 100%;
+    border-bottom: 1px solid #b5b5b5;
+    margin: 20px 0;
+}
+
+#shortcuts ul {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#shortcuts li {
+    height: 16px;
+}
+
+#shortcuts li > p {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 14px;
+    color: white;
+}
+
+#shortcuts li > p span.key {
+    font-family: monospace;
+    font-size: 15px;
+    color: #d5de01;
+}
+
+#shortcuts ul:first-of-type li > p {
+    text-align: right;
+}
+
 
 
 

@@ -102,6 +102,130 @@ function onPlayerReady() {
 }
 
 
+
+//Caption Boxes
+var oldMousePosX = 0;
+var oldLeft = 0;
+var oldWidth = 0;
+var mouseDown = false;
+$(document).on({
+    mousedown: function(event) {
+        oldMousePosX = event.pageX;
+        oldWidth = $(this).parent().width();
+        mouseDown = true;
+        $(this).addClass("dragging");
+
+        event.stopPropagation();
+    },
+    mouseup: function(event) {
+        mouseDown = false;
+        $(this).removeClass("dragging");
+
+        var newWidth = $(this).parent().position().left + $(this).parent().width();
+
+        $(".caption-list .caption[data-caption-id='" + $(this).parent().data("caption-id") + "']").find(".times input.end-time").val(secondsToTime(positionToTime(newWidth)));
+
+        event.stopPropagation();
+    }
+}, ".caption-box .right-handle");
+$(document).on({
+    mousedown: function(event) {
+        oldMousePosX = event.pageX;
+        oldLeft = $(this).parent().position().left;
+        oldWidth = $(this).parent().width();
+        mouseDown = true;
+        $(this).addClass("dragging");
+
+        event.stopPropagation();
+    },
+    mouseup: function(event) {
+        mouseDown = false;
+        $(this).removeClass("dragging");
+
+        $(".caption-list .caption[data-caption-id='" + $(this).parent().data("caption-id") + "']").find(".times input.start-time").val(secondsToTime(positionToTime($(this).parent().position().left)));
+
+        event.stopPropagation();
+    }
+}, ".caption-box .left-handle");
+$(document).on({
+    mousedown: function(event) {
+        console.log("HELLO");
+        oldMousePosX = event.pageX;
+        oldLeft = $(this).position().left;
+        mouseDown = true;
+        $(this).addClass("dragging");
+
+        $(".caption-list .caption.selected").removeClass("selected");
+        $(".caption-list .caption[data-caption-id='" + $(this).data("caption-id") + "']").addClass("selected");
+
+        event.stopPropagation();
+    },
+    mouseup: function(event) {
+        mouseDown = false;
+        $(this).removeClass("dragging");
+
+        var newWidth = $(this).position().left + $(this).width();
+
+        $(".caption-list .caption[data-caption-id='" + $(this).data("caption-id") + "']").find(".times input.start-time").val(secondsToTime(positionToTime($(this).position().left)));
+
+        $(".caption-list .caption[data-caption-id='" + $(this).data("caption-id") + "']").find(".times input.end-time").val(secondsToTime(positionToTime(newWidth)));
+
+        event.stopPropagation();
+    },
+    mouseenter: function() {
+        $(this).addClass("selected");
+    },
+    mouseleave: function() {
+        $(this).removeClass("selected");
+    }
+}, ".caption-box");
+
+$(".waveform").mousemove(function(event) {
+    if(mouseDown) {
+        var diff = event.pageX - oldMousePosX;
+        
+        var right = $(".caption-box .right-handle.dragging").length > 0;
+        var left = $(".caption-box .left-handle.dragging").length > 0;
+        if(right) {
+            var el = $(".caption-box .right-handle.dragging");
+
+            var maxRight = timeToPosition(player.getDuration());
+            if(el.parent().next(".caption-box").length > 0)
+                maxRight = el.parent().next(".caption-box").position().left - el.parent().position().left
+
+            var newWidth = clamp(oldWidth + diff, 0.5, maxRight);
+            el.parent().width(newWidth);
+        } else if(left) {
+            var el = $(".caption-box .left-handle.dragging");
+
+            var minLeft = 0;
+            if(el.parent().prev(".caption-box").length > 0)
+                minLeft = el.parent().prev(".caption-box").position().left + el.parent().prev(".caption-box").width();
+
+            var newLeft = oldLeft + diff;
+            var newWidth = oldWidth - diff;
+            el.parent().css("left", newLeft);
+            el.parent().width(newWidth);
+        } else {
+            var el = $(".caption-box.dragging");
+
+            var minLeft = 0;
+            if(el.prev(".caption-box").length > 0)
+                minLeft = el.prev(".caption-box").position().left + el.prev(".caption-box").width();
+            
+            var newLeft = oldLeft + diff;
+            
+            if(newLeft < minLeft)
+                newLeft = minLeft;
+            
+            el.css("left", newLeft);
+        }
+    }
+})
+
+
+
+
 var playheadUpdatingInterval;
 function onPlayerStateChanged() {
     //Get the current player state.
@@ -121,6 +245,9 @@ function onPlayerStateChanged() {
 }
 
 //Utils
+$(window).resize(function() {
+    setZoomLevel(currZoom);
+});
 function setZoomLevel(zoomLevel) {
     currZoom = zoomLevel;
     var numOfTicks = player.getDuration()/zooms[currZoom];
@@ -129,7 +256,22 @@ function setZoomLevel(zoomLevel) {
     $(".waveform canvas").attr("width", numOfTicks * tickSep);
     $(".waveform canvas").css("width", numOfTicks * tickSep);   
     
+    $(".waveform .caption-box").each(function() {
+        updateCaptionBox($(this));
+    });
+    
     updatePlayhead(player.getCurrentTime());
+}
+
+function updateCaptionBox(captionBox) {
+    var cID = captionBox.data("caption-id");
+
+    var caption = $(".caption-list .caption[data-caption-id='" + cID + "']");
+    var startPos = timeToPosition(timeToSeconds(caption.find(".times input.start-time").val()));
+    var endPos = timeToPosition(timeToSeconds(caption.find(".times input.end-time").val()));
+
+    captionBox.css("left", startPos);
+    captionBox.width(endPos - startPos);
 }
 
 function playheadUpdated(finishedSeeking) {    
@@ -195,6 +337,16 @@ function drawTicks(canvasEl, zoomLevel) {
     }
 }
 
+//Converts a time in seconds to a position on the timeline.
+function timeToPosition(seconds) {
+    return (seconds/zooms[currZoom]) * tickSep;
+}
+
+//Converts a position on the timeline to the time in seconds.
+function positionToTime(position) {
+    return clamp((position/tickSep) * zooms[currZoom], 0, player.getDuration());
+}
+
 //Converts seconds to time text, removing hours if unneeded
 function secondsToTime(seconds) {
     var hours = Math.floor(seconds/3600);
@@ -222,6 +374,9 @@ function secondsToTime(seconds) {
         result += "0" + seconds.toString();
     else
         result += seconds.toString();
+    
+    if(Number.isInteger(seconds))
+        result += ".0";
     
     return result;
 }
@@ -268,6 +423,164 @@ $(window).resize(function() {
     $("#options").height($("#video").height());
 });
 
+
+
+
+//Shortcuts
+//Shortcut functions
+function seekBackwards() {
+    if(player.getCurrentTime() > 1) {
+        player.seekTo(player.getCurrentTime() - 1);
+    }
+}
+
+function seekForwards() {
+    if(player.getCurrentTime() < player.getDuration() - 1)
+        player.seekTo(player.getCurrentTime() + 1);
+}
+
+function togglePlay() {
+    if(player.getPlayerState() == YT.PlayerState.PLAYING)
+        player.pauseVideo();
+    else
+        player.playVideo();
+}
+
+function nextSub() {
+    if($(".caption.selected").length > 0) {
+        var next = $(".caption.selected").next(".caption");
+
+        if(next.length > 0) {
+            if($(".caption textarea.caption-text:focus").length > 0) {
+                $(".caption textarea.caption-text:focus").blur()
+                next.find("textarea.caption-text").focus();
+            }
+            if($(".caption .times input.start-time:focus").length > 0) {
+                $(".caption .times input.start-time:focus").blur()
+                next.find(".times input.start-time:focus").focus();
+            }
+            if($(".caption .times input.end-time:focus").length > 0) {
+                $(".caption .times input.end-time:focus").blur()
+                next.find(".times input.end-time:focus").focus();
+            }
+            
+            $(".caption.selected").removeClass("selected");
+            next.addClass("selected");
+        }
+    }            
+}
+
+function prevSub() {
+    if($(".caption.selected").length > 0) {
+        var prev = $(".caption.selected").prev(".caption");
+
+        if(prev.length > 0) {
+            if($(".caption textarea.caption-text:focus").length > 0) {
+                $(".caption textarea.caption-text:focus").blur()
+                prev.find("textarea.caption-text").focus();
+            }
+            if($(".caption .times input.start-time:focus").length > 0) {
+                $(".caption .times input.start-time:focus").blur()
+                prev.find(".times input.start-time:focus").focus();
+            }
+            if($(".caption .times input.end-time:focus").length > 0) {
+                $(".caption .times input.end-time:focus").blur()
+                prev.find(".times input.end-time:focus").focus();
+            }
+            
+            $(".caption.selected").removeClass("selected");
+            prev.addClass("selected");
+        }
+    }  
+}
+
+function insertNewline() {
+    if($("input[type=text]:focus, textarea:focus").length > 0) {
+        insertAtCursor($("input[type=text]:focus, textarea:focus")[0], "\n");
+    }
+}
+
+function addSub() {
+    if($("textarea.add-caption:focus").length > 0) {
+        $("button.add-caption").click();
+        $(this).focus();
+    } else if($(".caption textarea.caption-text:focus").length > 0) {
+        $(this).blur();
+    }
+}
+
+var keysDown = [];
+const SHORTCUTS = {
+    //SHIFT + LEFT = Seek back 1 second
+    "[16, 37]": seekBackwards,
+    //SHIFT + RIGHT = Seek forward 1 second
+    "[16, 39]": seekForwards,
+    //SHIFT + SPACE = Play/Pause
+    "[16, 32]": togglePlay,
+    //SHIFT + DOWN = Next subtitle
+    "[16, 40]": nextSub,
+    //SHIFT + UP = Previous Subtitle
+    "[16, 38]": prevSub,
+    //SHIFT + Enter = New line
+    "[16, 13]": insertNewline,
+    //Enter = Add the subtitle
+    "[13]": addSub
+};
+$(document).on('keydown', function(event) {
+    keysDown.push(event.keyCode);
+    
+    //Loop through all shortcuts and run the first one encountered.
+    for(var keys in SHORTCUTS) {
+        if(keyCombo(JSON.parse(keys))) {
+            SHORTCUTS[keys]();
+            event.preventDefault();
+            break;
+        }
+    }
+}).on('keyup', function(event) {
+    keysDown.splice(keysDown.indexOf(event.keyCode))
+});
+
+$("#video a.shortcuts").click(function() {
+    $("#shortcuts").css("display", "inline-block");
+});
+$("#shortcuts a.close").click(function() {
+    $("#shortcuts").css("display", "");
+})
+
+
+//UTILS
+//Check if a key combination is currently being used.
+function keyCombo(keys) {
+    for(var i = 0; i < keys.length; i++)
+        if(keysDown.indexOf(keys[i]) == -1)
+            return false;
+    
+    return true;
+}
+
+//CREDIT: https://stackoverflow.com/questions/11076975/how-to-insert-text-into-the-textarea-at-the-current-cursor-position
+//Inserts a value at the cursor position in the provided field.
+function insertAtCursor(myField, myValue) {
+    //IE support
+    if (document.selection) {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+    }
+    //MOZILLA and others
+    else if (myField.selectionStart || myField.selectionStart == '0') {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        myField.value = myField.value.substring(0, startPos)
+            + myValue
+            + myField.value.substring(endPos, myField.value.length);
+        myField.selectionStart = startPos + myValue.length;
+        myField.selectionEnd = startPos + myValue.length;
+    } else {
+        myField.value += myValue;
+    }
+}
 
 
 

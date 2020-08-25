@@ -17,18 +17,18 @@
         <?php include($_SERVER["DOCUMENT_ROOT"] . "/php/nav.php"); ?>
         
         <div id="main-content">
-            <form action="/pages/studio.php" method="get">
+            <form action="/pages/studio.php" onsubmit="return checkCreateForm();" method="get">
                 <div id="options">
                     <label for="vid-link">Link to Video</label>
-                    <input id="vid-link" type="text" placeholder="Youtube link">
+                    <input class="vid-link" type="text" placeholder="Youtube link">
                     <input name="vid-id" type="hidden">
                     
-                    <button type="button" name="vid-link-button"><p>Create for Video</p></button>
+                    <button type="button" name="vid-link-button"><p>Show Video</p></button>
                     
                     <div class="sep"></div>
                     
                     <label for="vid-lang">Caption/Subtitle Language</label>
-                    <button type="button" class="select" name="vid-lang">
+                    <button style="margin-bottom: 10px;" type="button" class="select" name="vid-lang">
                         <p class="arrow">Select Language</p>
                         <div>
                             <div value="en"><p>English</p></div>

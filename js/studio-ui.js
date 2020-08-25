@@ -10,9 +10,12 @@ $("form button.select > div div").click(function(event) {
     $(this).closest(".select").blur().find("> p").text($(this).text());
     $("form input[name=" + $(this).parent().parent().attr("name") + "]").val($(this).attr("value"));
     $("form input[name=" + $(this).parent().parent().attr("name") + "-name]").val($(this).text());
+    
+    $(this).closest("button.select").next("p.error-message").remove();
 });
 
 const CAPTION_ITEM = '<div class="caption"><div class="times"><input type="text" class="start-time" placeholder="00:00.0"><input type="text" class="end-time" placeholder="00:00.5"></div><textarea placeholder="Enter subtitle" class="caption-text"></textarea><div class="buttons"> <button class="delete" type="button"><img src="/images/page-icons/close.png" width=20></button> <button class="insert" type="button"><img src="/images/page-icons/add.png" width=11></button></div></div>';
+const CAPTION_BOX_ITEM = '<div class="caption-box" data-caption-id="0"><span class="left-handle"></span><p class="caption-text"></p><span class="right-handle"></span></div>';
 
 $(document).on({
     mouseenter: function() {
@@ -22,7 +25,34 @@ $(document).on({
         $(this).closest(".caption").removeClass("border-hover");
     }, 
     click: function() {
-        $(CAPTION_ITEM).insertAfter($(this).closest(".caption")); 
+        var newCaption = $(CAPTION_ITEM);
+        newCaption.insertAfter($(this).closest(".caption"));
+        
+        //Gets times
+        var times = setTimes(newCaption);
+        
+        //If error was thrown
+        if(times[0] == -1 && times[1] == -1) {
+            var button = $(this);
+            var caption = $(this).closest(".caption");
+            button.addClass("error");
+            caption.addClass("error");
+            setTimeout(function() {
+                button.removeClass("error")
+                caption.removeClass("error");
+            }, 200);
+        } else {        
+            var newCaptionBox = $(CAPTION_BOX_ITEM);
+            newCaptionBox.data("caption-id", CAPTION_ID);
+            newCaption.attr("data-caption-id", CAPTION_ID);
+            CAPTION_ID++;
+
+            newCaptionBox.find("p.caption-text").text($("textarea.add-caption").val());
+            $("textarea.add-caption").val("");
+
+            newCaptionBox.insertBefore($(".waveform .playhead"));
+            updateCaptionBox(newCaptionBox);
+        }
     }
 }, ".caption .buttons button.insert");
 
@@ -42,7 +72,28 @@ $(document).on({
         $(".caption.selected").removeClass("selected");
         $(this).closest(".caption").addClass("selected");
     }
-}, ".caption textarea, .caption .times input");
+}, ".caption textarea, .caption .times input")
+.on({
+    keyup: function() {
+        var cID = $(this).parent().data("caption-id");
+        $(".waveform .caption-box[data-caption-id='" + cID + "'] .caption-text").text($(this).val());
+        console.log(cID);
+    }
+}, ".caption textarea")
+.on({
+    keyup: function() {
+        var cID = $(this).closest(".caption").data("caption-id");
+        console.log(cID);
+        
+        var startPos = timeToPosition(timeToSeconds($(this).parent().find(".start-time").val()));
+        var endPos = timeToPosition(timeToSeconds($(this).parent().find(".end-time").val()));
+
+        console.log(startPos + ":" + endPos);
+        
+        $(".waveform .caption-box[data-caption-id='" + cID + "']").css("left", startPos);
+        $(".waveform .caption-box[data-caption-id='" + cID + "']").width(endPos - startPos);
+    }
+}, ".caption .times input");
 
 
 
@@ -50,15 +101,38 @@ $(document).on({
 
 
 //Captioning
+var CAPTION_ID = 0;
 $("button.add-caption").click(function() {
     var newCaption = $(CAPTION_ITEM);
-    newCaption.find(".caption-text").text($("textarea.add-caption").text());
-    
+    newCaption.find(".caption-text").text($("textarea.add-caption").val());
+
     console.log($(".caption.selected").length)
     if($(".caption.selected").length <= 0)
         newCaption.addClass("selected").prependTo($(".caption-list"));
     else
         newCaption.insertBefore($(".caption.selected"));
+    
+    var times = setTimes(newCaption);
+
+    //If error was thrown
+    if(times[0] == -1 && times[1] == -1) {
+        var button = $(this);
+        button.addClass("error");
+        setTimeout(function() {
+            button.removeClass("error")
+        }, 200);
+    } else {        
+        var newCaptionBox = $(CAPTION_BOX_ITEM);
+        newCaptionBox.data("caption-id", CAPTION_ID);
+        newCaption.attr("data-caption-id", CAPTION_ID);
+        CAPTION_ID++;
+        
+        newCaptionBox.find("p.caption-text").text($("textarea.add-caption").val());
+        $("textarea.add-caption").val("");
+        
+        newCaptionBox.insertBefore($(".waveform .playhead"));
+        updateCaptionBox(newCaptionBox);
+    }
 });
 
 $(document).on({
@@ -99,29 +173,6 @@ $(document).on({
 }, ".caption .times input.end-time");
 
 
-
-//Utils
-//Formats an entered value into a string in the format of MM:SS.MS
-function timeFormat(value) {    
-    if(value.match("^([0-9]*:)?[0-9]{2}:[0-9]{2}\\.[0-9]$"))
-        return value;
+function createCaptionSlider(caption) {
     
-    var steps = ["[0-9]", "[0-9]", ":", "[0-9]", "[0-9]", "\\.", "[0-9]+", ""];
-    var placeholders = "00:00.0";
-    
-    var match = "";
-    for(var i = steps.length - 1; i >= 0; i--) {
-        match = steps[i] + match;
-        if(value.match("^" + match + "$"))
-            return placeholders.substring(0, i) + value.substring(0, steps.length - 1 - i);
-    }
-    
-    if(value.match("^[0-9]+$"))
-        return "00:00." + value.substring(0, 1);
-    
-    if(value.match("^\\.[0-9]+$"))
-        return "00:00" + value.substring(0, 2);
-    
-    if(value.match("^[0-9]\\.[0-9]+$"))
-        return "00:0" + value.substr(0, 3);
 }
