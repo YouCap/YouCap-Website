@@ -15,7 +15,7 @@ $("form button.select > div div").click(function(event) {
 });
 
 const CAPTION_ITEM = '<div class="caption"><div class="times"><input type="text" class="start-time" placeholder="00:00.0"><input type="text" class="end-time" placeholder="00:00.5"></div><textarea placeholder="Enter subtitle" class="caption-text"></textarea><div class="buttons"> <button class="delete" type="button"><img src="/images/page-icons/close.png" width=20></button> <button class="insert" type="button"><img src="/images/page-icons/add.png" width=11></button></div></div>';
-const CAPTION_BOX_ITEM = '<div class="caption-box" data-caption-id="0"><span class="left-handle"></span><p class="caption-text"></p><span class="right-handle"></span></div>';
+const CAPTION_BOX_ITEM = '<div class="caption-box" data-caption-id="0"><span class="left-handle"></span><p class="caption-text"></p><span class="blocker"></span><span class="right-handle"></span></div>';
 
 $(document).on({
     mouseenter: function() {
@@ -43,7 +43,7 @@ $(document).on({
             }, 200);
         } else {        
             var newCaptionBox = $(CAPTION_BOX_ITEM);
-            newCaptionBox.data("caption-id", CAPTION_ID);
+            newCaptionBox.attr("data-caption-id", CAPTION_ID);
             newCaption.attr("data-caption-id", CAPTION_ID);
             CAPTION_ID++;
 
@@ -52,6 +52,12 @@ $(document).on({
 
             newCaptionBox.insertBefore($(".waveform .playhead"));
             updateCaptionBox(newCaptionBox);
+            
+            newCaptionBox.attr("data-caption-id-prev", captionBoxToLeft(newCaptionBox)[1]);
+            newCaptionBox.attr("data-caption-id-next", captionBoxToRight(newCaptionBox)[1]);
+                                    
+            $(".waveform .caption-box[data-caption-id='" + newCaptionBox.attr("data-caption-id-prev") + "']").attr("data-caption-id-next", newCaptionBox.attr("data-caption-id"));
+            $(".waveform .caption-box[data-caption-id='" + newCaptionBox.attr("data-caption-id-next") + "']").attr("data-caption-id-prev", newCaptionBox.attr("data-caption-id"));
         }
     }
 }, ".caption .buttons button.insert");
@@ -64,6 +70,11 @@ $(document).on({
         $(this).find("img").attr("src", "/images/page-icons/close.png");
     }, 
     click: function() {
+        $(".caption-box[data-caption-id='" + $(".caption-box[data-caption-id='" + $(this).closest(".caption").attr("data-caption-id") + "']").attr("data-caption-id-prev") + "']").attr("data-caption-id-next", $(".caption-box[data-caption-id='" + $(this).closest(".caption").attr("data-caption-id") + "']").attr("data-caption-id-next"));
+        
+        $(".caption-box[data-caption-id='" + $(".caption-box[data-caption-id='" + $(this).closest(".caption").attr("data-caption-id") + "']").attr("data-caption-id-next") + "']").attr("data-caption-id-prev", $(".caption-box[data-caption-id='" + $(this).closest(".caption").attr("data-caption-id") + "']").attr("data-caption-id-prev"));
+        
+        $(".caption-box[data-caption-id='" + $(this).closest(".caption").attr("data-caption-id") + "']").remove();
         $(this).closest(".caption").remove(); 
     }
 }, ".caption .buttons button.delete")
@@ -75,20 +86,19 @@ $(document).on({
 }, ".caption textarea, .caption .times input")
 .on({
     keyup: function() {
-        var cID = $(this).parent().data("caption-id");
+        var cID = $(this).parent().attr("data-caption-id");
         $(".waveform .caption-box[data-caption-id='" + cID + "'] .caption-text").text($(this).val());
         console.log(cID);
     }
 }, ".caption textarea")
 .on({
     keyup: function() {
-        var cID = $(this).closest(".caption").data("caption-id");
-        console.log(cID);
+        var cID = $(this).closest(".caption").attr("data-caption-id");
         
         var startPos = timeToPosition(timeToSeconds($(this).parent().find(".start-time").val()));
         var endPos = timeToPosition(timeToSeconds($(this).parent().find(".end-time").val()));
 
-        console.log(startPos + ":" + endPos);
+        console.log(endPos - startPos);
         
         $(".waveform .caption-box[data-caption-id='" + cID + "']").css("left", startPos);
         $(".waveform .caption-box[data-caption-id='" + cID + "']").width(endPos - startPos);
@@ -123,7 +133,7 @@ $("button.add-caption").click(function() {
         }, 200);
     } else {        
         var newCaptionBox = $(CAPTION_BOX_ITEM);
-        newCaptionBox.data("caption-id", CAPTION_ID);
+        newCaptionBox.attr("data-caption-id", CAPTION_ID);
         newCaption.attr("data-caption-id", CAPTION_ID);
         CAPTION_ID++;
         
@@ -132,6 +142,12 @@ $("button.add-caption").click(function() {
         
         newCaptionBox.insertBefore($(".waveform .playhead"));
         updateCaptionBox(newCaptionBox);
+            
+        newCaptionBox.attr("data-caption-id-prev", captionBoxToLeft(newCaptionBox)[1]);
+        newCaptionBox.attr("data-caption-id-next", captionBoxToRight(newCaptionBox)[1]);
+                        
+        $(".waveform .caption-box[data-caption-id='" + newCaptionBox.attr("data-caption-id-prev") + "']").attr("data-caption-id-next", newCaptionBox.attr("data-caption-id"));
+        $(".waveform .caption-box[data-caption-id='" + newCaptionBox.attr("data-caption-id-next") + "']").attr("data-caption-id-prev", newCaptionBox.attr("data-caption-id"));
     }
 });
 
@@ -143,13 +159,13 @@ $(document).on({
                 $(this).val(prev.find(".times .end-time").val());
         
         if($(this).val().match(".*[^0-9:.].*")) {
-            if($(this).data("old") == undefined)
+            if($(this).attr("data-old") == undefined)
                 $(this).val("");
             else
-                $(this).val($(this).data("old"));
+                $(this).val($(this).attr("data-old"));
         } else {
             $(this).val(timeFormat($(this).val()));
-            $(this).data("old", $(this).val());
+            $(this).attr("data-old", $(this).val());
         }
     }
 }, ".caption .times input.start-time")
@@ -161,13 +177,13 @@ $(document).on({
                 $(this).val(next.find(".times .start-time").val());
         
         if($(this).val().match(".*[^0-9:.].*")) {
-            if($(this).data("old") == undefined)
+            if($(this).attr("data-old") == undefined)
                 $(this).val("");
             else
-                $(this).val($(this).data("old"));
+                $(this).val($(this).attr("data-old"));
         } else {
             $(this).val(timeFormat($(this).val()));
-            $(this).data("old", $(this).val());
+            $(this).attr("data-old", $(this).val());
         }
     }
 }, ".caption .times input.end-time");

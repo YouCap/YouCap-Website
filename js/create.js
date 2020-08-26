@@ -20,6 +20,8 @@ $("#main-content form button[name=vid-link-button]").click(function() {
 
 
 function checkCreateForm() {
+    $("#main-content form button[name=vid-link-button]").click();
+    
     var error = false;
     
     var link = $("#main-content form input.vid-link").val();   

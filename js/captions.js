@@ -68,8 +68,11 @@ function setTimes(captionObj) {
     
     //If the difference between the next and prior captions is greater than half a second, there's enough space for an additional caption.
     var diff = start2 - end1;
-    console.log("DIFF:" + diff);
-    if(end1 != -1 && start2 != -1 && diff >= 0.5) {
+    
+    if(start2 == -1)
+        diff = player.getDuration() - end1;
+    
+    if(end1 != -1 && diff >= 0.5) {
         start = end1;
         //The caption will start initially at a length between 0.5 and 5 seconds.
         end = start + clamp(diff, 0.5, 5);

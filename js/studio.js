@@ -89,7 +89,13 @@ function onPlayerReady() {
                 ratio = 0;
             
             //Set the timeline's left position based on that ratio
+            var tmpLeft = $(".waveform canvas").position().left;
             $(".waveform canvas").css("left", ratio * ($(".waveform canvas").width() - $(".waveform").width()))
+            
+            var leftDiff = $(".waveform canvas").position().left - tmpLeft;
+            $(".waveform .caption-box").each(function() {
+                $(this).css("left", $(this).position().left + leftDiff);
+            });
             
             //Set the current time based on the position of the timeline
             currTime = Math.ceil(-$(".waveform canvas").position().left/tickSep);
@@ -107,23 +113,17 @@ function onPlayerReady() {
 var oldMousePosX = 0;
 var oldLeft = 0;
 var oldWidth = 0;
+var minLeft = 0;
+var maxRight = 0;
 var mouseDown = false;
 $(document).on({
     mousedown: function(event) {
         oldMousePosX = event.pageX;
         oldWidth = $(this).parent().width();
+        maxRight = getMaxRight($(this).closest(".caption-box"));
+        //maxRight = captionBoxToRight($(this).closest(".caption-box"));
         mouseDown = true;
         $(this).addClass("dragging");
-
-        event.stopPropagation();
-    },
-    mouseup: function(event) {
-        mouseDown = false;
-        $(this).removeClass("dragging");
-
-        var newWidth = $(this).parent().position().left + $(this).parent().width();
-
-        $(".caption-list .caption[data-caption-id='" + $(this).parent().data("caption-id") + "']").find(".times input.end-time").val(secondsToTime(positionToTime(newWidth)));
 
         event.stopPropagation();
     }
@@ -133,16 +133,10 @@ $(document).on({
         oldMousePosX = event.pageX;
         oldLeft = $(this).parent().position().left;
         oldWidth = $(this).parent().width();
+        minLeft = getMinLeft($(this).closest(".caption-box"));
+        //minLeft = captionBoxToLeft($(this).closest(".caption-box"));
         mouseDown = true;
         $(this).addClass("dragging");
-
-        event.stopPropagation();
-    },
-    mouseup: function(event) {
-        mouseDown = false;
-        $(this).removeClass("dragging");
-
-        $(".caption-list .caption[data-caption-id='" + $(this).parent().data("caption-id") + "']").find(".times input.start-time").val(secondsToTime(positionToTime($(this).parent().position().left)));
 
         event.stopPropagation();
     }
@@ -152,76 +146,106 @@ $(document).on({
         console.log("HELLO");
         oldMousePosX = event.pageX;
         oldLeft = $(this).position().left;
+        minLeft = getMinLeft($(this).closest(".caption-box"));
+        maxRight = getMaxRight($(this).closest(".caption-box"));
+        //minLeft = captionBoxToLeft($(this));
+        //maxRight = captionBoxToRight($(this));
         mouseDown = true;
         $(this).addClass("dragging");
 
         $(".caption-list .caption.selected").removeClass("selected");
-        $(".caption-list .caption[data-caption-id='" + $(this).data("caption-id") + "']").addClass("selected");
-
-        event.stopPropagation();
-    },
-    mouseup: function(event) {
-        mouseDown = false;
-        $(this).removeClass("dragging");
-
-        var newWidth = $(this).position().left + $(this).width();
-
-        $(".caption-list .caption[data-caption-id='" + $(this).data("caption-id") + "']").find(".times input.start-time").val(secondsToTime(positionToTime($(this).position().left)));
-
-        $(".caption-list .caption[data-caption-id='" + $(this).data("caption-id") + "']").find(".times input.end-time").val(secondsToTime(positionToTime(newWidth)));
+        $(".caption-list .caption[data-caption-id='" + $(this).attr("data-caption-id") + "']").addClass("selected");
 
         event.stopPropagation();
     },
     mouseenter: function() {
-        $(this).addClass("selected");
+        if($(".caption-box.selected").length <= 0)
+            $(this).addClass("selected");
     },
     mouseleave: function() {
-        $(this).removeClass("selected");
+        if($(this).find(".dragging").length <= 0 && !mouseDown)
+            $(this).removeClass("selected");
     }
 }, ".caption-box");
 
-$(".waveform").mousemove(function(event) {
+$("body").mousemove(function(event) {
     if(mouseDown) {
+        $("#video iframe").css("pointer-events", "none");       
+        
         var diff = event.pageX - oldMousePosX;
         
         var right = $(".caption-box .right-handle.dragging").length > 0;
         var left = $(".caption-box .left-handle.dragging").length > 0;
         if(right) {
             var el = $(".caption-box .right-handle.dragging");
-
-            var maxRight = timeToPosition(player.getDuration());
-            if(el.parent().next(".caption-box").length > 0)
-                maxRight = el.parent().next(".caption-box").position().left - el.parent().position().left
-
-            var newWidth = clamp(oldWidth + diff, 0.5, maxRight);
+            
+            var newWidth = clamp(oldWidth + diff, timeToPosition(0.5), maxRight - el.closest(".caption-box").position().left);
             el.parent().width(newWidth);
         } else if(left) {
             var el = $(".caption-box .left-handle.dragging");
-
-            var minLeft = 0;
-            if(el.parent().prev(".caption-box").length > 0)
-                minLeft = el.parent().prev(".caption-box").position().left + el.parent().prev(".caption-box").width();
-
-            var newLeft = oldLeft + diff;
-            var newWidth = oldWidth - diff;
+            
+            var newLeft = clamp(oldLeft + diff, minLeft, oldLeft + oldWidth - timeToPosition(0.5));
+            console.log(minLeft);
+            var newWidth = clamp(oldWidth - diff, timeToPosition(0.5), oldLeft + oldWidth - minLeft);
+            
             el.parent().css("left", newLeft);
             el.parent().width(newWidth);
         } else {
             var el = $(".caption-box.dragging");
 
-            var minLeft = 0;
-            if(el.prev(".caption-box").length > 0)
-                minLeft = el.prev(".caption-box").position().left + el.prev(".caption-box").width();
+            var maxLeft = maxRight - el.width();
             
-            var newLeft = oldLeft + diff;
-            
-            if(newLeft < minLeft)
-                newLeft = minLeft;
+            var newLeft = clamp(oldLeft + diff, minLeft, maxLeft);
             
             el.css("left", newLeft);
         }
     }
-})
+}).mouseup(function(event) {
+    if($(".caption-box.dragging, .caption-box .right-handle.dragging, .caption-box .left-handle.dragging").length > 0) {
+        $("#video iframe").css("pointer-events", "");
+        
+        var right = $(".caption-box .right-handle.dragging").length > 0;
+        var left = $(".caption-box .left-handle.dragging").length > 0;
+        
+        
+        mouseDown = false;
+        event.stopPropagation();
+
+        if(right) {
+            var handle = $(".caption-box .right-handle.dragging");
+            handle.removeClass("dragging");
+            
+            if(isOver(event.pageX, event.pageY, handle.closest(".caption-box")) == false)
+                handle.closest(".caption-box").removeClass("selected");
+
+            var newWidth = handle.closest(".caption-box").position().left + handle.closest(".caption-box").width();
+
+            $(".caption-list .caption[data-caption-id='" + handle.closest(".caption-box").attr("data-caption-id") + "']").find(".times input.end-time").val(secondsToTime(positionToTime(newWidth)));
+        } else if(left) {
+            var handle = $(".caption-box .left-handle.dragging");
+            handle.removeClass("dragging");
+            
+            if(isOver(event.pageX, event.pageY, handle.closest(".caption-box")) == false)
+                handle.closest(".caption-box").removeClass("selected");
+
+            $(".caption-list .caption[data-caption-id='" + handle.closest(".caption-box").attr("data-caption-id") + "']").find(".times input.start-time").val(secondsToTime(positionToTime(handle.closest(".caption-box").position().left)));
+        } else {
+            var box = $(".caption-box.dragging")
+            box.removeClass("dragging");
+            
+            if(isOver(event.pageX, event.pageY, box) == false)
+                box.removeClass("selected");
+
+            var newWidth = box.position().left + box.width();
+
+            $(".caption-list .caption[data-caption-id='" + box.attr("data-caption-id") + "']").find(".times input.start-time").val(secondsToTime(positionToTime(box.position().left)));
+
+            $(".caption-list .caption[data-caption-id='" + box.attr("data-caption-id") + "']").find(".times input.end-time").val(secondsToTime(positionToTime(newWidth)));
+        }
+        
+        $(".caption-box.selected").removeClass("selected");
+    }
+});
 
 
 
@@ -264,13 +288,13 @@ function setZoomLevel(zoomLevel) {
 }
 
 function updateCaptionBox(captionBox) {
-    var cID = captionBox.data("caption-id");
-
+    var cID = captionBox.attr("data-caption-id");
+    
     var caption = $(".caption-list .caption[data-caption-id='" + cID + "']");
     var startPos = timeToPosition(timeToSeconds(caption.find(".times input.start-time").val()));
     var endPos = timeToPosition(timeToSeconds(caption.find(".times input.end-time").val()));
 
-    captionBox.css("left", startPos);
+    captionBox.css("left", startPos + $(".waveform canvas").position().left);
     captionBox.width(endPos - startPos);
 }
 
@@ -283,6 +307,8 @@ function playheadUpdated(finishedSeeking) {
 
 function updatePlayhead(time) {      
     //If the time left is less than the amount of time shown in a single timeline section, the playhead's position needs to be updated.
+    var tmpLeft = $(".waveform canvas").position().left;
+    
     if((player.getDuration() - time)/zooms[currZoom] < ticks[currZoom]) {
         //Set the timeline as far over as possible.
         $(".waveform canvas").css("left", -$(".waveform canvas").width() + $(".waveform").width());
@@ -310,6 +336,11 @@ function updatePlayhead(time) {
         $(".waveform canvas").css("left", ((time/zooms[currZoom]) * -tickSep) + $(".waveform .playhead").position().left);
         currTime = Math.round(time/zooms[currZoom]);
     }
+            
+    var leftDiff = $(".waveform canvas").position().left - tmpLeft;
+    $(".waveform .caption-box").each(function() {
+        $(this).css("left", $(this).position().left + leftDiff);
+    });
     
     drawTicks($(".waveform canvas")[0], currZoom);
 }
@@ -344,7 +375,7 @@ function timeToPosition(seconds) {
 
 //Converts a position on the timeline to the time in seconds.
 function positionToTime(position) {
-    return clamp((position/tickSep) * zooms[currZoom], 0, player.getDuration());
+    return Math.round((clamp((position/tickSep) * zooms[currZoom], 0, player.getDuration())) * 10)/10;
 }
 
 //Converts seconds to time text, removing hours if unneeded
@@ -391,6 +422,83 @@ function timeToSeconds(time) {
     return total;
 }
 
+//The closest boundary formed by another caption box on the right side of the provided caption box
+function captionBoxToRight(box) {
+    var lowest = timeToPosition(player.getDuration());
+    var lowestBox = -1;
+    var right = box.position().left + box.width();
+    
+    $(".caption-box").not(".caption-box.selected").each(function() {
+        var left = $(this).position().left - 1;
+        console.log(left + "~" + right);
+        if(left >= right)
+            if(left < lowest) {
+                lowest = left;
+                lowestBox = $(this).attr("data-caption-id");
+            }
+    });
+    
+    return [lowest, lowestBox];
+}
+
+//The closest boundary formed by another caption box on the left side of the provided caption box
+function captionBoxToLeft(box) {
+    var highest = 0;
+    var highestBox = -1;
+    var left = box.position().left;
+    
+    console.log(highest);
+    $(".caption-box").not(".caption-box.selected").each(function() {
+        var right = $(this).position().left + $(this).width();
+        console.log(right + "~" + left);
+        if(right <= left)
+            if(right > highest) {
+                highest = right; 
+                highestBox = $(this).attr("data-caption-id");
+            }
+    });
+    
+    return [highest, highestBox];
+}
+
+//Get the minimum left position of a caption box.
+function getMinLeft(box) {
+    var id = box.attr("data-caption-id-prev");
+    if(id == -1)
+        return 0;
+    
+    var el = $(".caption-box[data-caption-id='" + id + "']");
+    return el.position().left + el.width();
+}
+
+//Get the maximum right position of a caption box.
+function getMaxLeft(box) {
+    var id = box.attr("data-caption-id-next");
+    if(id == -1)
+        return timeToPosition(player.getDuration()) - box.width();
+    
+    var el = $(".caption-box[data-caption-id='" + id + "']");
+    return el.position().left;
+}
+
+//Get the maximum width of a caption box.
+function getMaxRight(box) {
+    var id = box.attr("data-caption-id-next");
+    if(id == -1)
+        return timeToPosition(player.getDuration());
+    
+    var el = $(".caption-box[data-caption-id='" + id + "']");
+    return el.position().left;
+}
+
+//Check if the supplied x and y position is over the provided element
+function isOver(x, y, el) {
+     return 
+        x >= el.offset().left && 
+        x <= el.offset().left + el.width() && 
+        y >= el.offset().top && 
+        y <= el.offset().top + el.height();
+}
 
 
 

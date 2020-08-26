@@ -260,8 +260,13 @@ button.add-caption:not(.error):hover {
     width: 200px;
     
     border: solid 1px #d8d8d8;
-    
     background-color: white;
+    
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .waveform .caption-box .right-handle, .waveform .caption-box .left-handle {
@@ -306,6 +311,22 @@ button.add-caption:not(.error):hover {
     overflow: hidden;
     user-select: none;
 }
+
+.waveform .caption-box .blocker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.waveform .caption-box:hover .blocker {
+    left: 10px;
+    width: calc(100% - 20px);
+}
+
+
 
 
 
