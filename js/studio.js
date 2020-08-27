@@ -199,6 +199,8 @@ $("body").mousemove(function(event) {
             
             el.css("left", newLeft);
         }
+        
+        updateCaption();
     }
 }).mouseup(function(event) {
     if($(".caption-box.dragging, .caption-box .right-handle.dragging, .caption-box .left-handle.dragging").length > 0) {
@@ -271,6 +273,7 @@ function onPlayerStateChanged() {
 //Utils
 $(window).resize(function() {
     setZoomLevel(currZoom);
+    setCaption($("textarea.add-caption").val(), true);
 });
 function setZoomLevel(zoomLevel) {
     currZoom = zoomLevel;
@@ -303,6 +306,8 @@ function playheadUpdated(finishedSeeking) {
     
     player.seekTo(time, true);
     player.pauseVideo();
+    
+    updateCaption();
 }
 
 function updatePlayhead(time) {      
@@ -343,6 +348,21 @@ function updatePlayhead(time) {
     });
     
     drawTicks($(".waveform canvas")[0], currZoom);
+    
+    updateCaption();
+}
+
+function updateCaption() {
+    var playheadPos = $(".waveform .playhead").position().left;
+    
+    var result = "";    
+    $(".waveform .caption-box").each(function() {
+        if(playheadPos >= $(this).position().left && playheadPos <= $(this).position().left + $(this).width())
+            result = $(this).find("p.caption-text").text();
+    });
+    
+    console.log(result);
+    setCaption(result, false);
 }
 
 function drawTicks(canvasEl, zoomLevel) {    
@@ -422,43 +442,20 @@ function timeToSeconds(time) {
     return total;
 }
 
-//The closest boundary formed by another caption box on the right side of the provided caption box
-function captionBoxToRight(box) {
-    var lowest = timeToPosition(player.getDuration());
-    var lowestBox = -1;
-    var right = box.position().left + box.width();
+//Returns an array. The first element is the boundary formed by another caption box on the right side of the provided caption box, while the second element is the ID of said box.
+function captionBoxToRight(box) {    
+    var nextBox = $(".caption-list .caption[data-caption-id='" + box.attr("data-caption-id") + "']").next(".caption");
+    var nextID = nextBox.length > 0 ? prevBox.attr("data-caption-id") : -1;
     
-    $(".caption-box").not(".caption-box.selected").each(function() {
-        var left = $(this).position().left - 1;
-        console.log(left + "~" + right);
-        if(left >= right)
-            if(left < lowest) {
-                lowest = left;
-                lowestBox = $(this).attr("data-caption-id");
-            }
-    });
-    
-    return [lowest, lowestBox];
+    return [nextBox, nextID];
 }
 
-//The closest boundary formed by another caption box on the left side of the provided caption box
-function captionBoxToLeft(box) {
-    var highest = 0;
-    var highestBox = -1;
-    var left = box.position().left;
+//Returns an array. The first element is the boundary formed by another caption box on the left side of the provided caption box, while the second element is the ID of said box.
+function captionBoxToLeft(box) {    
+    var prevBox = $(".caption-list .caption[data-caption-id='" + box.attr("data-caption-id") + "']").prev(".caption");
+    var prevID = prevBox.length > 0 ? prevBox.attr("data-caption-id") : -1;
     
-    console.log(highest);
-    $(".caption-box").not(".caption-box.selected").each(function() {
-        var right = $(this).position().left + $(this).width();
-        console.log(right + "~" + left);
-        if(right <= left)
-            if(right > highest) {
-                highest = right; 
-                highestBox = $(this).attr("data-caption-id");
-            }
-    });
-    
-    return [highest, highestBox];
+    return [prevBox, prevID];
 }
 
 //Get the minimum left position of a caption box.
@@ -611,7 +608,6 @@ function insertNewline() {
 function addSub() {
     if($("textarea.add-caption:focus").length > 0) {
         $("button.add-caption").click();
-        $(this).focus();
     } else if($(".caption textarea.caption-text:focus").length > 0) {
         $(this).blur();
     }

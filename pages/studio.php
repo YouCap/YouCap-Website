@@ -28,9 +28,9 @@
                     <button id="actions" type="button" class="basic-select select inline" name="actions">
                         <p class="arrow">Actions</p>
                         <div>
-                            <div value="auto-gen"><p>Auto-generate</p></div>
-                            <div value="upload"><p>Upload a file</p></div>
-                            <div value="download"><p>Download</p></div>
+                            <div name="auto-gen"><p>Auto-generate</p></div>
+                            <div name="upload"><p>Upload a file</p></div>
+                            <div name="download"><p>Download</p></div>
                         </div>
                     </button>
                     <h1 style="margin: 0 0 0 5px; vertical-align: middle;" class="standard-ui inline">Subtitle Editor</h1>
@@ -54,6 +54,7 @@
                             <img src="/images/icon.png" aria-label="The YouTube video to be edited will be placed here when loaded.">
                         </div>
                         <div id="player"></div>
+                        <div class="editor-captions"></div>
                     </div>
                     <div class="waveform">
                         <canvas width=1700 height=100></canvas>
@@ -100,15 +101,33 @@
             </ul>
         </div>
         
+        <div id="overlay">
+            <div class="popup load-file">
+                <h2>Upload a file</h2>
+                <p>Upload a timed text or subtitle file. <a>Learn More</a></p>
+                <p class="warning">Uploading a file will overwrite any contents.</p>
+                <input type="file" accept=".srt,.sbv,.mpsub,.lrc,.cap,.vtt">
+                <div class="buttons">
+                    <button type="button" class="cancel basic-button">Cancel</button>
+                    <button type="button" class="submit basic-button">Upload</button>
+                </div>
+            </div>
+        </div>
+        
         <?php include($_SERVER["DOCUMENT_ROOT"] . "/php/footer.php"); ?>
     </body>
     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
     <script>
         var vidID = '<?php print $_GET["vid-id"] ?>';
     </script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+    
     <script src="/js/studio.js"></script>
     <script src="/js/captions.js"></script>
     <script src="/js/studio-ui.js"></script>
+    
+    <script src="/js/FileSaver.min.js"></script>
+    <script src="/js/cap-file-handler.js"></script>
 </html>

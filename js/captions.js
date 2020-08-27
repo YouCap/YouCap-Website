@@ -1,25 +1,24 @@
-const MAX_CHARS_PER_LINE = 60;
-
 //Sets the currently displayed caption on the video embed.
-function setCaption(caption) {
-    $(".caption-line").remove();
+function setCaption(caption, temporary) {    
+    //If the caption was entered through the editing textarea, it's a preview and not a real caption.
     
-    while(caption.length > 0) {
-        var substrTo = MAX_CHARS_PER_LINE;
-        if(caption.length <= MAX_CHARS_PER_LINE)
-            substrTo = caption.length;
+    if(!temporary)
+        $(".editor-captions .caption-line").remove();
+    
+    if(caption != "" && caption != undefined) {        
+        if(temporary) {
+            $(".editor-captions .caption-line").remove();
+            $("#video > .yt-video .editor-captions").addClass("temporary");
+        }
         else {
-            while(caption.charAt(substrTo) != ' ' && caption.charAt(substrTo) != '-' && caption.charAt(substrTo + 1) != ' ')
-                substrTo--;
+            $("#video > .yt-video .editor-captions").removeClass("temporary");
         }
         
-        $("#video > .yt-video").append($("<span class='caption-line'>" + caption.substring(0, substrTo) + "</span>"));
-        console.log("<span class='caption-line'>" + caption.substring(0, substrTo) + "</span>");
-        caption = caption.substr(substrTo);
+        $("#video > .yt-video .editor-captions").append($("<span class='caption-line' dir='ltr'>" + caption + "</span>"));
     }
 }
 
-setCaption("Sunless: Have you ever gone on Rocket League and just immediately dominated? Like, for whatever reason you just could not miss.");
+//setCaption("Sunless: Have you ever gone on Rocket League and just immediately dominated? Like, for whatever reason you just could not miss.");
 
 
 
@@ -42,6 +41,7 @@ function timeFormat(value) {
             return placeholders.substring(0, i) + value.substring(0, steps.length - 1 - i);
     }
     
+    return "";
     console.log("REGEX ERROR");
 }
 

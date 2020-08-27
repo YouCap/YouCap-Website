@@ -85,7 +85,7 @@ form input[type=text] {
     padding: 5px 10px 6px;
 }
 
-form input[type=button], form button {
+form input[type=button], form button, button.basic-button {
     position: relative;
     width: 100%;
     height: 36px;
@@ -119,7 +119,7 @@ form button p {
     vertical-align: middle;
 }
 
-form button.basic-select {
+form button.basic-select, button.basic-button {
     display: inline-block;
     height: 30px;
     width: auto;
@@ -130,7 +130,7 @@ form button.basic-select {
     -moz-box-shadow: 0 1px 0 rgba(0,0,0,0.05);
 }
 
-form button.basic-select.select.opened {
+form button.basic-select.select.opened,  button.basic-button:hover {
     background-color: #dbdbdb;
 }
 

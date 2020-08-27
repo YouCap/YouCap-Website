@@ -70,19 +70,18 @@ button.add-caption:not(.error):hover {
 }
 
 .caption {
-    width: calc(100% - 30px);
+    position: relative;
+    width: calc(100% - 15px);
     height: 74px;
-    padding: 10px 15px 0px 15px;
+    padding: 10px 0px 0px 15px;
     background-color: white;
     border-top: 1px solid #d8d8d8;
-    
-    transition: border-bottom ease 0.2s;
 }
 
 .caption.selected {
     background-color: #ffedc8;
     border-left: solid 3px #3cade8;
-    width: calc(100% - 30px - 3px);
+    width: calc(100% - 15px - 3px);
 }
 
 .caption-list div.caption.border-hover {
@@ -155,7 +154,7 @@ button.add-caption:not(.error):hover {
 
 .caption .buttons {
     display: inline-flex;
-    width: 10%;
+    width: 6%;
     height: 100%;
     
     flex-direction: column;
@@ -163,6 +162,30 @@ button.add-caption:not(.error):hover {
     align-items: center;
     
     vertical-align: top;
+}
+
+.caption .buttons.arrow {
+    justify-content: center;
+    width: auto;
+    float: right;
+}
+
+.caption .buttons.arrow button:hover {
+    background-color: #AA7F29;
+}
+
+.caption .buttons.arrow button {
+    border-radius: 0px;
+}
+
+.caption .buttons.arrow button:not(:last-child) {
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+}
+
+.caption .buttons.arrow button:last-child {
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
 }
 
 .caption .buttons button {
@@ -180,7 +203,7 @@ button.add-caption:not(.error):hover {
     margin-bottom: auto;
 }
 
-.caption .buttons button.insert {
+.caption .buttons button.insert, .caption .buttons button.arrow {
     display: inline-block;
     width: 18px;
     height: 18px;
@@ -195,6 +218,17 @@ button.add-caption:not(.error):hover {
     background-color: #ff1414;
 }
 
+.caption button.arrow.up img {
+    transform: rotate(90deg);
+}
+
+.caption button.arrow.down img {
+    transform: rotate(-90deg);
+}
+
+.caption[data-caption-id-prev="-1"] .buttons.arrow .arrow.up, .caption:not([data-caption-id-prev]) .buttons.arrow .arrow.up, .caption[data-caption-id-next="-1"] .buttons.arrow .arrow.down, .caption:not([data-caption-id-next]) .buttons.arrow .arrow.down, .caption:not(.selected) .buttons.arrow button {
+    display: none;
+}
 
 
 
@@ -206,20 +240,40 @@ button.add-caption:not(.error):hover {
 
 
 
-.caption-line {
+.yt-video .editor-captions {
     position: absolute;
     display: inline-block;
+    width: 80%;
+    max-height: 80%;
+    
     bottom: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 3px 1px;
+    left: 10%;
+    
+    text-align: center;
+    overflow: hidden;
+    
+    background: transparent;
+    pointer-events: none;
+}
+
+.caption-line {
+    padding: 4px;
+    opacity: 0.8;
     
     background-color: black;
     
     font-family: "Arial", sans-serif;
     font-size: 20px;
+    line-height: 24px;
     color: white;
+    
+    white-space: pre-wrap;
+    pointer-events: none;
 } 
+
+.editor-captions.temporary .caption-line {
+    opacity: 0.5;
+}
 
 
 .waveform {
@@ -571,6 +625,116 @@ button.add-caption:not(.error):hover {
 
 #shortcuts ul:first-of-type li > p {
     text-align: right;
+}
+
+
+
+
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    
+    display: none;
+    
+    background-color: rgba(248, 248, 248, 0.6);
+    z-index: 12;
+}
+
+#overlay.show {
+    display: block;
+}
+
+#overlay .popup {
+    position: absolute;
+    display: none;
+    
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 40%;
+    
+    padding: 20px 20px 80px 20px;
+    
+    background-color: #fafafa;
+    border: solid 1px #d8d8d8;
+    box-shadow: 0 0px 8px 2px rgba(0,0,0,0.05)
+    -webkit-box-shadow: 0 0px 8px 2px rgba(0,0,0,0.05)
+    -moz-box-shadow: 0 0px 8px 2px rgba(0,0,0,0.05)
+}
+
+#overlay .popup.show {
+    display: inline-block;
+}
+
+#overlay .popup h2 {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+}
+
+#overlay .popup p {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 13px;
+    color: black;
+    
+    margin: 20px 10px;
+}
+
+#overlay .popup p > a {
+    color: #3cade8;
+    text-decoration: none;
+}
+
+#overlay .popup p > a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#overlay .popup p.warning {
+    color: #c44040;
+}
+
+#overlay .popup .buttons {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    
+    padding: 20px;
+    
+    width: calc(100% - 40px);
+    height: 20px;
+    background-color: #e8e8e8;
+}
+
+#overlay .popup .buttons button:not(:last-child) {
+    margin-right: 10px;
+}
+
+#overlay .popup .buttons button:hover {
+    cursor: pointer;
+}
+
+#overlay .popup .buttons button.submit {
+    background-color: #D9A740;
+    border-color: #D9A740;
+}
+
+#overlay .popup .buttons button.submit:hover {
+    background-color: #b99346;
+    border-color: #b99346;
+}
+
+#overlay .popup .buttons button:not(.submit) {
+    color: black;
 }
 
 

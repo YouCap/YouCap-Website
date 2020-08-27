@@ -21,7 +21,7 @@
     padding-bottom: 56.25%;
 }
 
-#video .yt-video > div {
+#video .yt-video > div:not(.editor-captions) {
     background-color: #f1f1f1;
     
     display: flex;
@@ -33,11 +33,11 @@
 box-shadow: inset 0px 0px 40px -16px rgba(0,0,0,0.75);
 }
 
-#video .yt-video > div img {
+#video .yt-video > div:not(.editor-captions) img {
     width: 20%;
 }
 
-#video iframe, #video .yt-video > div {
+#video iframe, #video .yt-video > div:not(.editor-captions) {
     position: absolute;
     top: 0;
     left: 0;
