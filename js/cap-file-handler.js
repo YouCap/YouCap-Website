@@ -29,17 +29,125 @@ function saveSBVFile() {
     saveAs(blob, "captions.sbv");
 }
 
-//Loads an SRT file to the current captions.
-function loadSRTFile(contents) {
+//Loads a file to the current captions.
+function loadFile(file) {
     
 }
 
-var PARSER_SRT = function() {}; //https://stackoverflow.com/questions/33145762/parse-a-srt-file-with-jquery-javascript
-var PARSER_SBV = function() {}; //https://fileinfo.com/img/ss/lg/sbv_4417.png
-var PARSER_MPSUB = function() {}; //http://www.mplayerhq.hu/DOCS/tech/mpsub.sub
-var PARSER_LRC = function() {}; //https://en.wikipedia.org/wiki/LRC_(file_format)
-var PARSER_CAP = function() {}; //https://drive.google.com/file/d/0B9DJydDVOVKKLTJpU3Qtei02NGxzZ0c0QUp6VXAwNUYzTnV3/view
-var PARSER_VTT = function() {}; //https://github.com/mozilla/vtt.js?files=1
+var PARSER_SRT = function(contents) {
+    //Regex for matching SRT entries
+    var REGEX = new RegExp("(\\d+)\\n([\\d:,]+)\\s+-{2}\\>\\s+([\\d:,]+)\\n([\\s\\S]*?)(?=$|\\n{2}\\d+)", "gm");
+    
+    //The resulting matches
+    var result = [];
+        
+    while((match = REGEX.exec(contents)) !== null) {        
+        var append = [];
+        append.push(timeFormat(match[2].replace(",", ".")));
+        append.push(timeFormat(match[3].replace(",", ".")));
+        append.push(match[4]);
+        
+        result.push(append);
+    }
+    
+    return result;
+}; //https://stackoverflow.com/questions/33145762/parse-a-srt-file-with-jquery-javascript
+var PARSER_SBV = function(contents) {
+    //Regex for matching SBV entries
+    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n([\\s\\S]*?)(?=\\Z|\\n{2}(?:\\d{1,2}:)+)", "gm");
+    
+    //The resulting matches
+    var result = [];
+        
+    while((match = REGEX.exec(contents)) !== null) {        
+        var append = [];
+        append.push(timeFormat(match[1].replace(",", ".")));
+        append.push(timeFormat(match[2].replace(",", ".")));
+        append.push(match[3]);
+        
+        result.push(append);
+    }
+    
+    return result;
+}; //https://fileinfo.com/img/ss/lg/sbv_4417.png
+var PARSER_MPSUB = function(contents) {
+    //Regex for matching MPSUB entries
+    var REGEX = new RegExp("(\\d+(?:\\.\\d+)?) (\\d+(?:\\.\\d+)?)\\n([\\s\\S]*?)(?=\\Z|\\n{2}(?:\\d+ \\d+)+)", "gm");
+    
+    //The resulting matches
+    var result = [];
+        
+    var currTime = 0.0;
+    while((match = REGEX.exec(contents)) !== null) {  
+        var append = [];
+        
+        var delay = parseFloat(match[1]);
+        var length = parseFloat(match[2]);
+        
+        //Add the times
+        currTime += delay;       
+        append.push(secondsToTime(currTime));
+        currTime += length;
+        append.push(secondsToTime(currTime));
+        
+        //Add the text
+        append.push(match[3]);
+        
+        result.push(append);
+    }
+    
+    return result;
+}; //http://www.mplayerhq.hu/DOCS/tech/mpsub.sub
+var PARSER_LRC = function(contents) {
+    var REGEX = new RegExp("\\[([\\d.:]+)\\](.*)", "gm");
+    
+    //The resulting matches
+    var result = [];
+    
+    //The entries from the last line. Necessary because LRC files only contain times for the start of the line.
+    var lastTime = "";
+    var lastText = "";
+    while((match = REGEX.exec(contents)) !== null) {
+        if(lastTime != "") {
+            var append = [];
+            append.push(timeFormat(lastTime));
+            append.push(timeFormat(match[1]));
+            append.push(lastText);
+            
+            result.push(append);
+        }
+        
+        lastTime = match[1];
+        lastText = match[2].replace(/<(?:[\d:.]+)>\s?/gm, "").trim();
+    }
+    
+    var append = [];
+    append.push(timeFormat(lastTime));
+    var plus05 = secondsToTime(timeToSeconds(lastTime) + 0.5)
+    append.push(timeFormat(plus05));
+    append.push(lastText);
+    result.push(append);
+    
+    return result;
+    
+}; //https://en.wikipedia.org/wiki/LRC_(file_format)
+var PARSER_VTT = function(contents) {
+    var REGEX = new RegExp("(?:(\\d+)\\n)?([\\d:.]+)\\s-->\\s([\\d:.]+)\\n[\\s\\S]*?(?=NOTE|$|(?:\\n{2}(?:\\d+)?(?:[\\d:.]+)))", "gm");
+    
+    //The resulting matches
+    var result = [];
+        
+    while((match = REGEX.exec(contents)) !== null) {        
+        var append = [];
+        append.push(timeFormat(match[2]));
+        append.push(timeFormat(match[3]));
+        append.push(match[4]);
+        
+        result.push(append);
+    }
+    
+    return result;
+}; //https://github.com/mozilla/vtt.js?files=1
 
 
 //jQuery bindings
@@ -48,8 +156,8 @@ $("#actions > div div[name=upload]").click(function() {
 });
 $("#actions > div div[name=download]").click(saveSBVFile);
 
-$("#overlay .popup.load-file .buttons button.cancel").click(function() {
-    $("#overlay, #overlay .popup.load-file").removeClass("show");
+$("#overlay .popup .buttons button.cancel").click(function() {
+    $(this).closest(".popup").removeClass("show");
 });
 $("#overlay .popup.load-file .buttons button.submit").click(function() {
     $("#overlay .popup.load-file p.warning.temporary").remove();
