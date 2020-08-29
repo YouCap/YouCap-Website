@@ -20,17 +20,17 @@
         <div id="main-content">
             <form action="/pages/studio.php" method="get">
                 <h1 class="inline"><?php echo $_GET["vid-lang-name"] ?></h1>
-                <a class="switch-language inline" href="/pages/create.php?vid-id=<?php echo $_GET["vid-id"] ?>"><p>Switch Language</p></a>
+                <a class="switch-language inline"><p>Switch Language</p></a>
                 <p class="title"></p>
                 <div class="sep"></div>
                 
                 <div id="options">
-                    <button id="actions" type="button" class="basic-select select inline" name="actions">
+                    <button id="actions" type="button" class="basic-select select select-no-change inline" name="actions">
                         <p class="arrow">Actions</p>
                         <div>
-                            <div name="auto-gen"><p>Auto-generate</p></div>
                             <div name="upload"><p>Upload a file</p></div>
                             <div name="download"><p>Download</p></div>
+                            <div name="auto-gen" disabled><p>Auto-generate</p></div>
                         </div>
                     </button>
                     <h1 style="margin: 0 0 0 5px; vertical-align: middle;" class="standard-ui inline">Subtitle Editor</h1>
@@ -102,6 +102,23 @@
         </div>
         
         <div id="overlay">
+            <div class="popup switch-language">
+                <h2>Switch Language</h2>
+                <p>Select a language to translate to</p>
+                <p style="font-weight: bold">Select language:</p>
+                <button style="margin-bottom: 10px; width: 200px;" type="button" class="select basic-select standard-ui" name="vid-lang">
+                    <p class="arrow">Select Language</p>
+                    <div style="width: 100%;">
+                        <div value="en"><p>English</p></div>
+                        <div value="es"><p>Spanish</p></div>
+                        <div value="fr"><p>French</p></div>
+                    </div>
+                </button>
+                <div class="buttons">
+                    <button type="button" class="cancel basic-button">Cancel</button>
+                    <button type="button" class="submit basic-button">Change Language</button>
+                </div>
+            </div>
             <div class="popup load-file">
                 <h2>Upload a file</h2>
                 <p>Upload a timed text or subtitle file. <a>Learn More</a></p>

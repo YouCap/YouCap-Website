@@ -95,7 +95,6 @@ function setTimes(captionObj) {
         else if(end1 != -1 && end2 != -1 && (end1 - start1) + (end2 - start2) >= 1.5) {
             var tmpEnd1 = end1;
             end1 = clamp(end1 - 0.5, start1 + 0.5, end1);
-            console.log(tmpEnd1 + ":" + end1);
             var endDiff = tmpEnd1 - end1;
             start2 += 0.5 - endDiff;
             start = end1;

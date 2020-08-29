@@ -31,7 +31,49 @@ function saveSBVFile() {
 
 //Loads a file to the current captions.
 function loadFile(file) {
+    var fileReader = new FileReader();
     
+    fileReader.onload = function(evt) {
+        var ext = file["name"].split('\.').pop().toLocaleLowerCase();
+        
+        var captions = parseCaptionFileContents(evt.target.result, ext);
+                        
+        $(".caption-list .caption").remove();
+        $(".waveform .caption-box").remove();
+        captions.forEach(function(element, index) {
+            var newCaption = $(CAPTION_ITEM);
+            createCaption(newCaption, element[2], [element[0], element[1]], function() {
+                $(".caption-list").append(newCaption);
+            })
+        });
+    };
+    
+    fileReader.readAsText(file, "UTF-8");
+}
+
+function parseCaptionFileContents(contents, extension) {
+    //CRLF -> LF
+    contents = contents.replace(/\r\n/g, "\n");
+    
+    switch(extension) {
+        case "srt":
+            return PARSER_SRT(contents);
+            break;
+        case "sbv":
+            return PARSER_SBV(contents);
+            break;
+        case "mpsub":
+            return PARSER_MPSUB(contents);
+            break;
+        case "lrc":
+            return PARSER_LRC(contents);
+            break;
+        case "vtt":
+            return PARSER_VTT(contents);
+            break;
+    }
+    
+    return [];
 }
 
 var PARSER_SRT = function(contents) {
@@ -52,14 +94,15 @@ var PARSER_SRT = function(contents) {
     
     return result;
 }; //https://stackoverflow.com/questions/33145762/parse-a-srt-file-with-jquery-javascript
+
 var PARSER_SBV = function(contents) {
     //Regex for matching SBV entries
-    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n([\\s\\S]*?)(?=\\Z|\\n{2}(?:\\d{1,2}:)+)", "gm");
+    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n([\\s\\S]*?)(?=$|\\n{2}(?:\\d{1,2}:)+)", "gm");
     
     //The resulting matches
     var result = [];
         
-    while((match = REGEX.exec(contents)) !== null) {        
+    while((match = REGEX.exec(contents)) !== null) {  
         var append = [];
         append.push(timeFormat(match[1].replace(",", ".")));
         append.push(timeFormat(match[2].replace(",", ".")));
@@ -132,7 +175,7 @@ var PARSER_LRC = function(contents) {
     
 }; //https://en.wikipedia.org/wiki/LRC_(file_format)
 var PARSER_VTT = function(contents) {
-    var REGEX = new RegExp("(?:(\\d+)\\n)?([\\d:.]+)\\s-->\\s([\\d:.]+)\\n[\\s\\S]*?(?=NOTE|$|(?:\\n{2}(?:\\d+)?(?:[\\d:.]+)))", "gm");
+    var REGEX = new RegExp("(?:(\\d+)\\n)?([\\d:.]+)\\s-->\\s([\\d:.]+).*\\n([\\s\\S]*?)(?=NOTE|$|(?:\\n{2}(?:\\d+)?(?:[\\d:.]+)))", "gm");
     
     //The resulting matches
     var result = [];
@@ -158,12 +201,13 @@ $("#actions > div div[name=download]").click(saveSBVFile);
 
 $("#overlay .popup .buttons button.cancel").click(function() {
     $(this).closest(".popup").removeClass("show");
+    $("#overlay").removeClass("show");
 });
 $("#overlay .popup.load-file .buttons button.submit").click(function() {
     $("#overlay .popup.load-file p.warning.temporary").remove();
     
     if($("#overlay .popup.load-file input").val() != "") {
-        loadSRTFile();
+        loadFile($("#overlay .popup.load-file input")[0].files[0]);
         $("#overlay, #overlay .popup.load-file").removeClass("show");
     }
     else

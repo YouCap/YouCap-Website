@@ -44,6 +44,8 @@ form > a, .standard-ui > a {
     font-family: "Noto Sans", sans-serif;
     font-size: 16px;
     color: #3cade8;
+    
+    text-decoration: none;
 }
 
 form > a:hover, .standard-ui > a:hover {
@@ -119,7 +121,7 @@ form button p {
     vertical-align: middle;
 }
 
-form button.basic-select, button.basic-button {
+form button.basic-select, .standard-ui.basic-select, button.basic-button {
     display: inline-block;
     height: 30px;
     width: auto;
@@ -130,40 +132,45 @@ form button.basic-select, button.basic-button {
     -moz-box-shadow: 0 1px 0 rgba(0,0,0,0.05);
 }
 
-form button.basic-select.select.opened,  button.basic-button:hover {
+form button.basic-select.select.opened, button.standard-ui.basic-select.select.opened, button.basic-button:hover {
     background-color: #dbdbdb;
 }
 
-form button.basic-select.select.opened > div {
+form button.basic-select.select.opened > div, button.standard-ui.basic-select.select.opened > div {
     display: inline-block;
     width: auto;
 }
 
-form button.basic-select > p {
+form button.basic-select > p, button.standard-ui.basic-select > p {
     color: black;
 }
 
-form button.basic-select > p.arrow {
+form button.basic-select > p.arrow, button.standard-ui.basic-select > p.arrow {
     margin-right: 10px;
 }
 
-form button.select.basic-select p.arrow:after {
+form button.select.basic-select p.arrow:after, button.select.standard-ui.basic-select p.arrow:after {
     border-top-color: black;
 }
 
-form button.select {
+form button.select, button.standard-ui.select {
+    position: relative;
     z-index: 1;
 }
 
-form button.select.opened {
+form button.select:hover, button.standard-ui.select:hover {
+    cursor: pointer;
+}
+
+form button.select.opened, button.standard-ui.select.opened {
     background-color: #7e7e7e;
 }
 
-form button.select.opened > div {
+form button.select.opened > div, button.standard-ui.select.opened > div {
     display: block;
 }
 
-form button.select p.arrow:after {
+form button.select p.arrow:after, button.standard-ui.select p.arrow:after {
     content: '';
     position: absolute;
     top: 50%;
@@ -179,7 +186,7 @@ form button.select p.arrow:after {
     border-top: 4px solid white;
 }
 
-form button.select > div {
+form button.select > div, button.standard-ui.select > div {
     position: absolute;
     display: none;
     top: 100%;
@@ -194,11 +201,11 @@ form button.select > div {
     box-shadow: 0 0 15px rgba(0,0,0,.18);
 }
 
-form button.select > div:hover {
+form button.select > div:hover, button.standard-ui.select > div:hover {
     cursor: default;
 }
 
-form button.select > div div {
+form button.select > div div, button.standard-ui.select > div div {
     position: relative;
     display: flex;
     justify-content: flex-start;
@@ -210,24 +217,28 @@ form button.select > div div {
     z-index: 3;
 }
 
-form button.select > div div:first-of-type {
+form button.select > div div[disabled] {
+    text-decoration: line-through black;
+}
+
+form button.select > div div:first-of-type, button.standard-ui.select > div div:first-of-type {
     margin-top: 5px;
 }
 
-form button.select > div div:last-of-type {
+form button.select > div div:last-of-type, button.standard-ui.select > div div:last-of-type {
     margin-bottom: 5px;
 }
 
-form button.select > div div p {
+form button.select > div div p, button.standard-ui.select > div div p {
     color: #333;
 }
 
-form button.select > div div:hover {
+form button.select > div div:not([disabled]):hover, button.standard-ui.select > div div:not([disabled]):hover {
     background-color: #333;
     cursor: pointer;
 }
 
-form button.select > div div:hover p {
+form button.select > div div:not([disabled]):hover p, button.standard-ui.select > div div:not([disabled]):hover p {
     color: white;
 }
 

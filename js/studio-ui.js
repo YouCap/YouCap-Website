@@ -1,10 +1,10 @@
-$("form button.select").click(function() {
+$("button.select").click(function() {
     $(this).addClass("opened");
 }).blur(function() {
     $(this).removeClass("opened");
 });
 
-$("form button.select > div div").click(function(event) {
+$("button.select > div div").click(function(event) {
     event.stopPropagation();
     
     $(this).closest(".select").blur()
@@ -14,7 +14,7 @@ $("form button.select > div div").click(function(event) {
     if($(this).attr("value") != "")
         $("form input[name=" + $(this).closest(".select").attr("name") + "]").val($(this).attr("value"));
     
-    if(!$(this).closest(".select").hasClass("basic-select")) {
+    if(!$(this).closest(".select").hasClass("select-no-change")) {
         $(this).closest(".select").find("> p").text($(this).text());
     }
     
@@ -30,6 +30,10 @@ $(document).on({
     click: function() {
         $(".caption.selected").removeClass("selected");
         $(this).addClass("selected");
+        
+        var time = timeToSeconds($(this).find(".times input.start-time").val());
+        player.seekTo(time, true);
+        updatePlayhead(time);
     }
 }, ".caption")
 .on({
@@ -44,57 +48,58 @@ $(document).on({
     click: function() {
         //Create and insert
         var newCaption = $(CAPTION_ITEM);
-        newCaption.insertAfter($(this).closest(".caption"));
+        var currCaption = $(this).closest(".caption");
         
-        //Get the times available after this caption (max of 5 seconds long)
-        var times = setTimes(newCaption);
-        
-        //If there's not enough space for the new caption
-        if(times[0] == -1 && times[1] == -1) {
-            //Delete everything and flash a small error symbol.
-            newCaption.remove();
-            
-            var button = $(this);
-            var caption = $(this).closest(".caption");
-            button.addClass("error");
-            caption.addClass("error");
-            setTimeout(function() {
-                button.removeClass("error")
-                caption.removeClass("error");
-            }, 200);
-        } else {      
-            //Create a corresponding caption box and set both elements to have the correct caption ID
-            var newCaptionBox = $(CAPTION_BOX_ITEM);
-            newCaptionBox.attr("data-caption-id", CAPTION_ID);
-            newCaption.attr("data-caption-id", CAPTION_ID);
-            CAPTION_ID++;
-
-            //Insert the caption box
-            newCaptionBox.insertBefore($(".waveform .playhead"));
-            
-            //Set the caption box's position in relation to the times on the caption
-            updateCaptionBox(newCaptionBox);
-            
-            var currID = newCaption.attr("data-caption-id");
-            var prevID = captionBoxToLeft(newCaptionBox)[1];
-            var nextID = captionBoxToRight(newCaptionBox)[1]
-            
-            newCaption.attr("data-caption-id-prev", prevID);
-            newCaption.attr("data-caption-id-next", nextID);
-            
-            newCaptionBox.attr("data-caption-id-prev", prevID);
-            newCaptionBox.attr("data-caption-id-next", nextID);
-            
-            //Set the data-caption-id-prev and data-caption-id-next attributes for the surrounding captions and caption boxes.
-            $(".waveform .caption-box[data-caption-id='" + prevID + "']").attr("data-caption-id-next", currID);
-            $(".waveform .caption-box[data-caption-id='" + nextID + "']").attr("data-caption-id-prev", currID);
-            
-            $(".caption-list .caption[data-caption-id='" + prevID + "']").attr("data-caption-id-next", currID);
-            $(".caption-list .caption[data-caption-id='" + nextID + "']").attr("data-caption-id-prev", currID);
-            
-            //Update the currently displayed caption in case the insertion is now under the playhead. 
-            updateCaption();
-        }
+        createCaption(newCaption, "", [], function(caption) {
+            newCaption.insertAfter(currCaption);
+        });
+//        
+//        //If there's not enough space for the new caption
+//        if(times[0] == -1 && times[1] == -1) {
+//            //Delete everything and flash a small error symbol.
+//            newCaption.remove();
+//            
+//            var button = $(this);
+//            var caption = $(this).closest(".caption");
+//            button.addClass("error");
+//            caption.addClass("error");
+//            setTimeout(function() {
+//                button.removeClass("error")
+//                caption.removeClass("error");
+//            }, 200);
+//        } else {      
+//            //Create a corresponding caption box and set both elements to have the correct caption ID
+//            var newCaptionBox = $(CAPTION_BOX_ITEM);
+//            newCaptionBox.attr("data-caption-id", CAPTION_ID);
+//            newCaption.attr("data-caption-id", CAPTION_ID);
+//            CAPTION_ID++;
+//
+//            //Insert the caption box
+//            newCaptionBox.insertBefore($(".waveform .playhead"));
+//            
+//            //Set the caption box's position in relation to the times on the caption
+//            updateCaptionBox(newCaptionBox);
+//            
+//            var currID = newCaption.attr("data-caption-id");
+//            var prevID = captionBoxToLeft(newCaptionBox)[1];
+//            var nextID = captionBoxToRight(newCaptionBox)[1]
+//            
+//            newCaption.attr("data-caption-id-prev", prevID);
+//            newCaption.attr("data-caption-id-next", nextID);
+//            
+//            newCaptionBox.attr("data-caption-id-prev", prevID);
+//            newCaptionBox.attr("data-caption-id-next", nextID);
+//            
+//            //Set the data-caption-id-prev and data-caption-id-next attributes for the surrounding captions and caption boxes.
+//            $(".waveform .caption-box[data-caption-id='" + prevID + "']").attr("data-caption-id-next", currID);
+//            $(".waveform .caption-box[data-caption-id='" + nextID + "']").attr("data-caption-id-prev", currID);
+//            
+//            $(".caption-list .caption[data-caption-id='" + prevID + "']").attr("data-caption-id-next", currID);
+//            $(".caption-list .caption[data-caption-id='" + nextID + "']").attr("data-caption-id-prev", currID);
+//            
+//            //Update the currently displayed caption in case the insertion is now under the playhead. 
+//            updateCaption();
+//        }
     }
 }, ".caption .buttons button.insert");
 
@@ -137,6 +142,9 @@ $(document).on({
     keyup: function() {
         var cID = $(this).parent().attr("data-caption-id");
         $(".waveform .caption-box[data-caption-id='" + cID + "'] .caption-text").text($(this).val());
+        
+        if($("#video .options .checkbox input[type=checkbox]:checked").length > 0)
+            player.pauseVideo();
     }
 }, ".caption textarea")
 .on({
@@ -145,11 +153,12 @@ $(document).on({
         
         var startPos = timeToPosition(timeToSeconds($(this).parent().find(".start-time").val()));
         var endPos = timeToPosition(timeToSeconds($(this).parent().find(".end-time").val()));
-
-        console.log(endPos - startPos);
         
         $(".waveform .caption-box[data-caption-id='" + cID + "']").css("left", startPos);
         $(".waveform .caption-box[data-caption-id='" + cID + "']").width(endPos - startPos);
+        
+        if($("#video .options .checkbox input[type=checkbox]:checked").length > 0)
+            player.pauseVideo();
     }
 }, ".caption .times input")
 .on({
@@ -174,9 +183,7 @@ $(document).on({
     click: function() {
         var currID = $(this).closest(".caption").attr("data-caption-id");
         var nextID = $(this).closest(".caption").attr("data-caption-id-next");
-        
-        console.log("(" + nextID);
-        
+                
         var currText = $(this).closest(".caption").find(".caption-text").val();
         var nextText = $(".caption-list .caption[data-caption-id='" + nextID + "'] .caption-text").val();
         
@@ -197,19 +204,18 @@ $(document).on({
 
 
 //Captioning
-var CAPTION_ID = 0;
-$("button.add-caption").click(function() {
-    var newCaption = $(CAPTION_ITEM);
-    newCaption.find(".caption-text").text($("textarea.add-caption").val());
-
-    console.log($(".caption.selected").length)
-    if($(".caption.selected").length <= 0)
-        newCaption.addClass("selected").prependTo($(".caption-list"));
-    else
-        newCaption.insertBefore($(".caption.selected"));
+function createCaption(newCaption, captionText, times, insertionCallback) {
+    newCaption.find(".caption-text").text(captionText);
     
-    var times = setTimes(newCaption);
-
+    insertionCallback(newCaption);
+    
+    if(times.length == 0)
+        //Get the times available after this caption (max of 5 seconds long)
+        times = setTimes(newCaption);
+    
+    newCaption.find(".times input.start-time").val(times[0]);
+    newCaption.find(".times input.end-time").val(times[1]);
+    
     //If error was thrown
     if(times[0] == -1 && times[1] == -1) {
         var button = $(this);
@@ -248,12 +254,30 @@ $("button.add-caption").click(function() {
 
             updateCaption();
         }, 50);
-        
-        updateCaption();
     }
+}
+
+var CAPTION_ID = 0;
+$("button.add-caption").click(function() {
+    var newCaption = $(CAPTION_ITEM);
+    var times = setTimes(newCaption);
+
+    createCaption(newCaption, $("textarea.add-caption").val(), [], function(caption) {
+        if($(".caption.selected").length <= 0)
+            caption.addClass("selected").prependTo($(".caption-list"));
+        else
+            caption.insertBefore($(".caption.selected"));
+    });
 });
-$("textarea.add-caption").on("keyup focus", function() {
-    setCaption($(this).val(), true);
+$("textarea.add-caption").on("keyup", function() { 
+    if($("#video .options .checkbox input[type=checkbox]:checked").length > 0)
+        player.pauseVideo();
+    
+    if(player.getPlayerState() != YT.PlayerState.PLAYING)
+        setCaption($(this).val(), true);
+}).on("focus", function() {
+    if(player.getPlayerState() != YT.PlayerState.PLAYING)
+        setCaption($(this).val(), true);
 });
 
 $(document).on({
@@ -292,3 +316,23 @@ $(document).on({
         }
     }
 }, ".caption .times input.end-time");
+
+
+$("form a.switch-language").click(function() {
+    $("#overlay").addClass("show");
+    $("#overlay .popup.switch-language").addClass("show");
+});
+$("#overlay .popup.switch-language button.select > div div").click(function() {
+    $(this).siblings().removeClass("selected");
+    $(this).addClass("selected");
+})
+$("#overlay .popup.switch-language .buttons button.submit").click(function() {
+    $(this).closest(".popup.switch-language").children("p.warning").remove();
+    
+    var langEl = $("#overlay .popup.switch-language button.select > div div.selected");
+    
+    if(langEl.length > 0)
+        window.location = "/pages/studio.php?vid-id=" + vidID + "&vid-lang=" + langEl.attr("value") + "&vid-lang-name=" + langEl.text();
+    else
+        $("<p class='warning'>Please select a language.</p>").insertAfter($(this).closest(".buttons").siblings(".select.standard-ui"));
+});

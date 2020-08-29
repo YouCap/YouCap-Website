@@ -80,6 +80,9 @@ button.add-caption:not(.error):hover {
 
 .caption.selected {
     background-color: #ffedc8;
+}
+
+.caption.playing {
     border-left: solid 3px #3cade8;
     width: calc(100% - 15px - 3px);
 }
@@ -670,14 +673,14 @@ button.add-caption:not(.error):hover {
     display: inline-block;
 }
 
-#overlay .popup h2 {
+#overlay .popup > h2 {
     font-family: "Noto Sans", sans-serif;
     font-size: 16px;
     font-weight: bold;
     color: black;
 }
 
-#overlay .popup p {
+#overlay .popup > p {
     font-family: "Noto Sans", sans-serif;
     font-size: 13px;
     color: black;
