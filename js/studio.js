@@ -49,7 +49,7 @@ function onPlayerReady() {
         axis: 'x',
         containment: 'parent'
     });
-    $(".waveform canvas").draggable({
+    $(".waveform .caption-boxes").draggable({
         axis: 'x',       
         drag: function(event, ui){            
             //Stops from going too far to the left (below 00:00)
@@ -61,7 +61,7 @@ function onPlayerReady() {
             //Adjust the scrollbar position
             
             //Get the ratio between the timeline and its container & the scrollbar and its container.
-            var ratio = -ui.position.left/($(".waveform canvas").width() - $(".waveform").width());
+            var ratio = -ui.position.left/($(".waveform .caption-boxes").width() - $(".waveform").width());
             
             //Set the scrollnar's left position based on that ratio
             $(".waveform .scroll .scrollbar").css("left", ratio * ($(".waveform .scroll").width() - SCROLL_BAR_WIDTH))
@@ -70,7 +70,7 @@ function onPlayerReady() {
             currTime = Math.ceil(-ui.position.left/tickSep);
             
             //Update the drawn tick marks
-            drawTicks(this, currZoom);
+            drawTicks($(".waveform canvas")[0], currZoom);
             
             updateCaptionBoxParent();
             playheadUpdated(false);
@@ -90,16 +90,16 @@ function onPlayerReady() {
                 ratio = 0;
             
             //Set the timeline's left position based on that ratio
-            var tmpLeft = $(".waveform canvas").position().left;
-            $(".waveform canvas").css("left", ratio * ($(".waveform canvas").width() - $(".waveform").width()))
+            var tmpLeft = $(".waveform .caption-boxes").position().left;
+            $(".waveform .caption-boxes").css("left", ratio * ($(".waveform .caption-boxes").width() - $(".waveform").width()))
             
-            var leftDiff = $(".waveform canvas").position().left - tmpLeft;
+            var leftDiff = $(".waveform .caption-boxes").position().left - tmpLeft;
             $(".waveform .caption-box").each(function() {
-                $(this).css("left", $(this).position().left + leftDiff);
+                //$(this).css("left", $(this).position().left + leftDiff);
             });
             
             //Set the current time based on the position of the timeline
-            currTime = Math.ceil(-$(".waveform canvas").position().left/tickSep);
+            currTime = Math.ceil(-$(".waveform .caption-boxes").position().left/tickSep);
             
             drawTicks($(".waveform canvas")[0], currZoom);
             
@@ -279,8 +279,9 @@ function setZoomLevel(zoomLevel) {
     var numOfTicks = player.getDuration()/zooms[currZoom];
     tickSep = $(".waveform").width()/ticks[currZoom];
     
-    $(".waveform canvas").attr("width", numOfTicks * tickSep);
-    $(".waveform canvas").css("width", numOfTicks * tickSep);   
+    $(".waveform .caption-boxes").css("width", numOfTicks * tickSep);
+    $(".waveform canvas").attr("width", $(".waveform").width());
+    $(".waveform canvas").css("width", $(".waveform").width());
     
     updateCaptionBoxParent();
     $(".waveform .caption-box").each(function() {
@@ -291,9 +292,7 @@ function setZoomLevel(zoomLevel) {
 }
 
 function updateCaptionBoxParent() {
-    var parent = $(".waveform .caption-boxes");
-    parent.css("left", parent.siblings("canvas").css("left"));
-    parent.width(parent.siblings("canvas").width());
+    
 }
 
 function updateCaptionBox(captionBox) {
@@ -304,7 +303,7 @@ function updateCaptionBox(captionBox) {
     var startPos = timeToPosition(timeToSeconds(caption.find(".times input.start-time").val()));
     var endPos = timeToPosition(timeToSeconds(caption.find(".times input.end-time").val()));
 
-    captionBox.css("left", startPos + $(".waveform canvas").position().left);
+    captionBox.css("left", startPos);
     captionBox.width(endPos - startPos);
     captionBox.find("p.caption-text").text(captionText);
 }
@@ -320,13 +319,13 @@ function playheadUpdated(finishedSeeking) {
 
 function updatePlayhead(time) {    
     //If the time left is less than the amount of time shown in a single timeline section, the playhead's position needs to be updated.
-    var tmpLeft = $(".waveform canvas").position().left;
+    var tmpLeft = $(".waveform .caption-boxes").position().left;
     
     if((player.getDuration() - time)/zooms[currZoom] < ticks[currZoom]) {
         //Set the timeline as far over as possible.
-        $(".waveform canvas").css("left", -$(".waveform canvas").width() + $(".waveform").width());
+        $(".waveform .caption-boxes").css("left", -$(".waveform .caption-boxes").width() + $(".waveform").width());
         
-        var leftTime = ($(".waveform canvas").width() - $(".waveform").width())/tickSep;
+        var leftTime = ($(".waveform .caption-boxes").width() - $(".waveform").width())/tickSep;
         
         if(leftTime < 0)
             leftTime = 0;
@@ -336,17 +335,17 @@ function updatePlayhead(time) {
         //The number of ticks that have already passed.
         var ticksPassed = ticks[currZoom] - ((player.getDuration() - time)/zooms[currZoom]);
         
-        if($(".waveform canvas").width() - $(".waveform").width() < 0)
+        if($(".waveform .caption-boxes").width() - $(".waveform").width() < 0)
             ticksPassed = time/zooms[currZoom];
     
-        if($(".waveform canvas").position().left > 0) {
-            $(".waveform canvas").css("left", 0);
+        if($(".waveform .caption-boxes").position().left > 0) {
+            $(".waveform .caption-boxes").css("left", 0);
         }
         
         //Set the playhead to the correct position.
         $(".waveform .playhead").css("left", ticksPassed * tickSep);
     } else {        
-        $(".waveform canvas").css("left", ((time/zooms[currZoom]) * -tickSep) + $(".waveform .playhead").position().left);
+        $(".waveform .caption-boxes").css("left", ((time/zooms[currZoom]) * -tickSep) + $(".waveform .playhead").position().left);
         currTime = Math.round((time/zooms[currZoom]) -($(".waveform .playhead").position().left/tickSep));
     }
             
@@ -367,10 +366,9 @@ function updateCaption() {
     $(".caption-list .caption.playing").removeClass("playing");
     
     var result = "";    
-    $(".waveform .caption-box").each(function() {
-        var leftParPos = $(this).parent(".caption-boxes").position().left;
-        
-        if(playheadPos >= leftParPos + $(this).position().left && playheadPos <= leftParPos + $(this).position().left + $(this).width()) {
+    var offset = $(".waveform .caption-boxes").position().left;
+    $(".waveform .caption-box").each(function() {    
+        if(playheadPos >= $(this).position().left + offset && playheadPos <= $(this).position().left + offset + $(this).width()) {
             result = $(this).find("p.caption-text").text();
             $(".caption-list .caption[data-caption-id='" + $(this).attr("data-caption-id") + "']").addClass("playing");
         }
@@ -389,16 +387,16 @@ function drawTicks(canvasEl, zoomLevel) {
     canvas.font = "10px Arial";
     
     //Go between the current time and the number of ticks that should be drawn, with 2 extra ticks of padding
-    for(var i = currTime - marks[zoomLevel]; i < currTime + ticks[zoomLevel] + marks[zoomLevel]; i++) {  
+    for(var i = -marks[zoomLevel]; i < ticks[zoomLevel] + marks[zoomLevel]; i++) {  
+        //Draw text if needed
+        if((i + currTime) % marks[zoomLevel] == 0)
+            canvas.fillText(secondsToTime(zooms[zoomLevel] * (i + currTime)), tickSep * i, 25);
+        
         if(i < 0)
             continue;
         
         //Draw the tick mark
-        canvas.fillRect(tickSep * i, 0, 1, i % marks[zoomLevel] == 0 ? 10 : 5);
-        
-        //Draw text if needed
-        if(i % marks[zoomLevel] == 0)
-            canvas.fillText(secondsToTime(zooms[zoomLevel] * i), tickSep * i, 25);
+        canvas.fillRect(tickSep * i, 0, 1, (i + currTime) % marks[zoomLevel] == 0 ? 10 : 5);
     }
 }
 
@@ -517,7 +515,7 @@ function isOver(x, y, el) {
 
 
 //Studio UI
-$(".waveform canvas, .waveform").mousedown(function(event) {
+$(".waveform .caption-boxes, .waveform").mousedown(function(event) {
     $(this).addClass("moving");
 }).mouseup(function() {
     $(this).removeClass("moving");
@@ -529,7 +527,7 @@ $(".waveform canvas, .waveform").mousedown(function(event) {
     }
 });
 
-$(".waveform canvas, .waveform .playhead, .waveform .scroll .scrollbar").mouseup(function() {
+$(".waveform .caption-boxes, .waveform .playhead, .waveform .scroll .scrollbar").mouseup(function() {
     playheadUpdated(true);
 });
 

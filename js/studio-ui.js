@@ -269,13 +269,13 @@ $("button.add-caption").click(function() {
             caption.insertBefore($(".caption.selected"));
     });
 });
-$("textarea.add-caption").on("keyup", function() { 
-    if($("#video .options .checkbox input[type=checkbox]:checked").length > 0)
+$("textarea.add-caption").on("keyup", function(event) { 
+    if($("#video .options .checkbox input[type=checkbox]:checked").length > 0 && !keyCombo([16, 32]) && event.which != 16)
         player.pauseVideo();
     
     if(player.getPlayerState() != YT.PlayerState.PLAYING)
         setCaption($(this).val(), true);
-}).on("focus", function() {
+}).on("focusin", function() {
     if(player.getPlayerState() != YT.PlayerState.PLAYING)
         setCaption($(this).val(), true);
 });
