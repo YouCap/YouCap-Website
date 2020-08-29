@@ -72,6 +72,7 @@ function onPlayerReady() {
             //Update the drawn tick marks
             drawTicks(this, currZoom);
             
+            updateCaptionBoxParent();
             playheadUpdated(false);
         }
     });
@@ -281,11 +282,18 @@ function setZoomLevel(zoomLevel) {
     $(".waveform canvas").attr("width", numOfTicks * tickSep);
     $(".waveform canvas").css("width", numOfTicks * tickSep);   
     
+    updateCaptionBoxParent();
     $(".waveform .caption-box").each(function() {
         updateCaptionBox($(this));
     });
     
     updatePlayhead(player.getCurrentTime());
+}
+
+function updateCaptionBoxParent() {
+    var parent = $(".waveform .caption-boxes");
+    parent.css("left", parent.siblings("canvas").css("left"));
+    parent.width(parent.siblings("canvas").width());
 }
 
 function updateCaptionBox(captionBox) {
@@ -342,13 +350,15 @@ function updatePlayhead(time) {
         currTime = Math.round((time/zooms[currZoom]) -($(".waveform .playhead").position().left/tickSep));
     }
             
-    var leftDiff = $(".waveform canvas").position().left - tmpLeft;
-    $(".waveform .caption-box").each(function() {
-        $(this).css("left", $(this).position().left + leftDiff);
-    });
+//    var leftDiff = $(".waveform canvas").position().left - tmpLeft;
+    updateCaptionBoxParent();
+//    $(".waveform .caption-box").each(function() {
+//        $(this).css("left", $(this).position().left + leftDiff);
+//    });
     
     drawTicks($(".waveform canvas")[0], currZoom);
     
+    updateCaptionBoxParent();
     updateCaption();
 }
 
@@ -358,7 +368,9 @@ function updateCaption() {
     
     var result = "";    
     $(".waveform .caption-box").each(function() {
-        if(playheadPos >= $(this).position().left && playheadPos <= $(this).position().left + $(this).width()) {
+        var leftParPos = $(this).parent(".caption-boxes").position().left;
+        
+        if(playheadPos >= leftParPos + $(this).position().left && playheadPos <= leftParPos + $(this).position().left + $(this).width()) {
             result = $(this).find("p.caption-text").text();
             $(".caption-list .caption[data-caption-id='" + $(this).attr("data-caption-id") + "']").addClass("playing");
         }

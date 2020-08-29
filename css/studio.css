@@ -299,8 +299,13 @@ button.add-caption:not(.error):hover {
     cursor: grabbing;
 }
 
-.waveform canvas {
+.waveform canvas, .waveform .caption-boxes {
     height: 100px;
+}
+
+.waveform .caption-boxes {
+    position: absolute;
+    top: 0;
 }
 
 

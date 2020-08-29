@@ -232,7 +232,7 @@ function createCaption(newCaption, captionText, times, insertionCallback) {
         newCaptionBox.find("p.caption-text").text($("textarea.add-caption").val());
         $("textarea.add-caption").val("");
         
-        newCaptionBox.insertBefore($(".waveform .playhead"));
+        newCaptionBox.appendTo($(".waveform .caption-boxes"));
         updateCaptionBox(newCaptionBox);
             
         var currID = newCaptionBox.attr("data-caption-id");

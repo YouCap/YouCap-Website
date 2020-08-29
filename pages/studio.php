@@ -58,7 +58,7 @@
                     </div>
                     <div class="waveform">
                         <canvas width=1700 height=100></canvas>
-                        
+                        <div class="caption-boxes"></div>
                         <div class="playhead"></div>
                         <div class="scroll">
                             <div class="scrollbar"></div>
