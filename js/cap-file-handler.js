@@ -12,7 +12,7 @@ function generateSBVContents() {
         }
         
         result += startTime + "," + endTime + "\n";
-        result += ">> " + $(this).find("textarea.caption-text").val() + "\n\n";
+        result += $(this).find("textarea.caption-text").val() + "\n\n";
     });
     
     result = result.substr(0, result.length - 2);
@@ -198,6 +198,9 @@ $("#actions > div div[name=upload]").click(function() {
     $("#overlay, #overlay .popup.load-file").addClass("show");
 });
 $("#actions > div div[name=download]").click(saveSBVFile);
+$("#submit-button").click(function() {
+    $("#overlay, #overlay .popup.submission").addClass("show");
+});
 
 $("#overlay .popup .buttons button.cancel").click(function() {
     $(this).closest(".popup").removeClass("show");
@@ -211,7 +214,22 @@ $("#overlay .popup.load-file .buttons button.submit").click(function() {
         $("#overlay, #overlay .popup.load-file").removeClass("show");
     }
     else
-        $("<p class='warning temporary'>Please select a file.</p>").insertAfter($("#overlay .popup.load-file input"));
+        $("<p class='temporary warning'>Please select a file.</p>").insertAfter($("#overlay .popup.load-file input"));
+});
+$("#overlay .popup.submission .buttons button.submit").click(function() {
+    $(".popup.submission p.warning.temporary").remove();
+    
+    if($(".caption-list .caption").length <= 0)
+        $("<p class='temporary warning'>Please add captions before submitting.</p>").insertBefore($(this).closest(".buttons"));
+    else {
+        var form = $(this).closest(".buttons").siblings("form");
+        
+        form.find("input[name=fileName]").val(vidID);
+        form.find("input[name=content]").val(generateSBVContents());
+        form.find("input[name=user]").val("James");
+        
+        form.submit();
+    }
 });
 
 //Utils

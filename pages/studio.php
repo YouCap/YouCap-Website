@@ -1,3 +1,4 @@
+<?php require($_SERVER["DOCUMENT_ROOT"] . "/backend/csrf-handler.php"); ?>
 <html>
     <head>        
         <!-- Meta -->
@@ -18,10 +19,12 @@
         <?php include($_SERVER["DOCUMENT_ROOT"] . "/php/nav.php"); ?>
         
         <div id="main-content">
-            <form action="/pages/studio.php" method="get">
+            <form>
                 <h1 class="inline"><?php echo $_GET["vid-lang-name"] ?></h1>
                 <a class="switch-language inline"><p>Switch Language</p></a>
-                <p class="title"></p>
+                <br />
+                <p class="title">&#10240;</p>
+                <button type="button" class="basic-button" id="submit-button">Submit Subtitle</button>
                 <div class="sep"></div>
                 
                 <div id="options">
@@ -129,6 +132,32 @@
                     <button type="button" class="submit basic-button">Upload</button>
                 </div>
             </div>
+            <div class="popup submission">
+                <h2>Submit subtitles?</h2>
+                <p>Only submit the captions if you've finished working on them.</p>
+                <p>To save your progress and return later, download the file through the Actions menu. Then you can upload the file at a later point in time and continue working.</p>
+                <div class="buttons">
+                    <button type="button" class="cancel basic-button">Cancel</button>
+                    <button type="button" class="submit basic-button">Upload</button>
+                </div>
+                <form style="display: none;" action="/backend/create-file.php" method="post">
+                    <input type="hidden" value="subtitle-creation-form" name="formName">
+                    <input type="hidden" name="CSRFToken" value="<?php echo generate_csrf("subtitle-creation-form"); ?>">
+                    <input type="hidden" name="fileName">
+                    <input type="hidden" name="content">
+                    <input type="hidden" name="user">
+                </form>
+            </div>
+            <div class="popup captions-exist">
+                <h2>Subtitles Already Exist</h2>
+                <p>There are currently subtitles that exist for this video in this language.</p>
+                <p>These subtitles may not be available at the moment, as they're still in the review phase.</p>
+                <p>You can help speed along this process by reviewing subtitles. (Note that subtitles are given to reviewers randomly to mitigate abuse)</p>
+                <div class="buttons">
+                    <a href="/" style="margin-right: 10px;"><button type="button" class="basic-button">Exit</button></a>
+                    <a href="/pages/review"><button type="button" class="submit basic-button">Review</button></a>
+                </div>
+            </div>
         </div>
         
         <?php include($_SERVER["DOCUMENT_ROOT"] . "/php/footer.php"); ?>
@@ -147,4 +176,10 @@
     
     <script src="/js/FileSaver.min.js"></script>
     <script src="/js/cap-file-handler.js"></script>
+    
+    <script src="/js/github-utils.js"></script>
+    <script>
+        if(fileExists("<?php echo $_GET['vid-id']; ?>", "<?php echo $_GET['vid-lang-name']; ?>") != "none")
+            $("#overlay, #overlay .popup.captions-exist").addClass("show");
+    </script>
 </html>

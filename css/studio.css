@@ -691,6 +691,7 @@ button.add-caption:not(.error):hover {
     color: black;
     
     margin: 20px 10px;
+    line-height: 20px;
 }
 
 #overlay .popup p > a {

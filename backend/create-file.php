@@ -1,7 +1,17 @@
 <?php
-    require(__DIR__ . '/csrf_handler.php');
-    if(!isset($_POST) || !verify_csrf($_POST))
+    require(__DIR__ . '/csrf-handler.php');
+    if(!isset($_POST))
+    {
+        http_response_code(400);
+        echo "400";
         return;
+    }
+    else if(!verify_csrf($_POST))
+    {
+        http_response_code(403);
+        header("Location: /pages/errors/403.php");
+        return;
+    }
 
     require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/autoload.php';
 
