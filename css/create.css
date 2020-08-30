@@ -7,6 +7,24 @@
     float: left;
 }
 
+#options > .generating {
+    position: absolute;
+    display: none;
+    top: -20px;
+    left: -20px;
+    width: calc(100% + 50px);
+    height: calc(100% + 40px);
+    
+    background-color: #ffffff;
+    opacity: 0.65;
+    
+    z-index: 3;
+}
+
+#options.generating > .generating {
+    display: block;
+}
+
 #video {
     position: relative;
     display: inline-block;

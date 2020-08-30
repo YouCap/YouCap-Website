@@ -46,9 +46,35 @@ function loadFile(file) {
                 $(".caption-list").append(newCaption);
             })
         });
+        
+        updateVisibleBoxes();
     };
     
     fileReader.readAsText(file, "UTF-8");
+}
+
+function autoGen() {
+    $("#options").addClass("generating");
+    
+    $.ajax({
+        url: "http://localhost/backend/auto-generate.php?vid-id=" + vidID,
+        success: function(data) {
+            var captions = PARSER_YOUCAP(data);
+                        
+            $(".caption-list .caption").remove();
+            $(".waveform .caption-box").remove();
+            captions.forEach(function(element, index) {
+                var newCaption = $(CAPTION_ITEM);
+                createCaption(newCaption, element[2], [element[0], element[1]], function() {
+                    $(".caption-list").append(newCaption);
+                })
+            });
+        
+            updateVisibleBoxes();
+        }
+    }).done(function() {
+        $("#options").removeClass("generating");
+    });
 }
 
 function parseCaptionFileContents(contents, extension) {
@@ -191,9 +217,43 @@ var PARSER_VTT = function(contents) {
     
     return result;
 }; //https://github.com/mozilla/vtt.js?files=1
+var PARSER_YOUCAP = function(contents) {
+    var REGEX = new RegExp("(\\d+\\.\\d+),(\\d+\\.\\d+)\\n([\\s\\S]*?)(?=$|\\n{2}(?:(?:\\d+\\.\\d+)))", "gm");
+    
+    var result = [];
+    
+    //The entries from the last line. Necessary because YouTube's auto-generated subtitles are in a multi-line, rolling subtitle format.
+    var lastTime = "";
+    var lastDuration = "";
+    var lastText = "";
+    while((match = REGEX.exec(contents)) !== null) {
+        if(lastTime != "") {
+            var append = [];
+            append.push(timeFormat(secondsToTime(lastTime)));
+            append.push(timeFormat(secondsToTime(match[1])));
+            append.push(lastText);
+            
+            result.push(append);
+        }
+        
+        lastTime = match[1];
+        lastDuration = match[2];
+        lastText = match[3];
+    }
+    
+    var append = [];
+    append.push(timeFormat(secondsToTime(lastTime)));
+    var endTime = secondsToTime(parseFloat(lastTime) + parseFloat(lastDuration));
+    append.push(timeFormat(endTime));
+    append.push(lastText);
+    result.push(append);
+    
+    return result;
+}; //Created to parse contents sent from server (which in turn was obtained from YouTube)
 
 
 //jQuery bindings
+$("#actions > div div[name=auto-gen]").click(autoGen);
 $("#actions > div div[name=upload]").click(function() {
     $("#overlay, #overlay .popup.load-file").addClass("show");
 });

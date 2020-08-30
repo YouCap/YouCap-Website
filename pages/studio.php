@@ -31,9 +31,9 @@
                     <button id="actions" type="button" class="basic-select select select-no-change inline" name="actions">
                         <p class="arrow">Actions</p>
                         <div>
+                            <div name="auto-gen"><p>Auto-generate</p></div>
                             <div name="upload"><p>Upload a file</p></div>
                             <div name="download"><p>Download</p></div>
-                            <div name="auto-gen" disabled><p>Auto-generate</p></div>
                         </div>
                     </button>
                     <h1 style="margin: 0 0 0 5px; vertical-align: middle;" class="standard-ui inline">Subtitle Editor</h1>
@@ -45,6 +45,8 @@
                     
                     <div class="caption-list">
                     </div>
+                    
+                    <div class="generating"></div>
                 </div>
                 <div id="video">
                     <div class="standard-ui flex">

@@ -72,7 +72,6 @@ function onPlayerReady() {
             //Update the drawn tick marks
             drawTicks($(".waveform canvas")[0], currZoom);
             
-            updateCaptionBoxParent();
             playheadUpdated(false);
         }
     });
@@ -283,7 +282,6 @@ function setZoomLevel(zoomLevel) {
     $(".waveform canvas").attr("width", $(".waveform").width());
     $(".waveform canvas").css("width", $(".waveform").width());
     
-    updateCaptionBoxParent();
     $(".waveform .caption-box").each(function() {
         updateCaptionBox($(this));
     });
@@ -291,8 +289,34 @@ function setZoomLevel(zoomLevel) {
     updatePlayhead(player.getCurrentTime());
 }
 
-function updateCaptionBoxParent() {
+//Creates new boxes when they become visible and deletes old boxes as they become invisible.
+function updateVisibleBoxes() {
+    var startPos = -$(".waveform .caption-boxes").position().left;
+    var endPos = -$(".waveform .caption-boxes").position().left + $(".waveform").width();
+    var startTime = positionToTime(startPos);
+    var endTime = positionToTime(endPos);
     
+    //Removes unnecessary caption boxes.
+    $(".caption-boxes .caption-box").each(function() {
+        var capStartPos = $(this).position().left;
+        var capEndPos = $(this).position().left + $(this).width();
+        var capDuration = capEndPos - capStartPos;
+        
+        if(capStartPos <= startPos - capDuration || capEndPos >= endPos + capDuration)
+            $(this).remove();
+    });
+    
+    $(".caption-list .caption").each(function() {
+        var capStartTime = timeToSeconds($(this).find(".times input.start-time").val());
+        var capEndTime = timeToSeconds($(this).find(".times input.end-time").val());
+        var capDuration = capEndTime - capStartTime;
+        
+        if(capStartTime >= startTime - capDuration && capEndTime <= endTime + capDuration) {
+            if($(".caption-boxes .caption-box[data-caption-id='" + $(this).attr("data-caption-id") + "']").length <= 0) {
+                createCaptionBox($(this));
+            }
+        }
+    });
 }
 
 function updateCaptionBox(captionBox) {
@@ -302,7 +326,7 @@ function updateCaptionBox(captionBox) {
     var captionText = caption.find("textarea.caption-text").val();
     var startPos = timeToPosition(timeToSeconds(caption.find(".times input.start-time").val()));
     var endPos = timeToPosition(timeToSeconds(caption.find(".times input.end-time").val()));
-
+    
     captionBox.css("left", startPos);
     captionBox.width(endPos - startPos);
     captionBox.find("p.caption-text").text(captionText);
@@ -314,10 +338,11 @@ function playheadUpdated(finishedSeeking) {
     player.seekTo(time, true);
     player.pauseVideo();
     
+    updateVisibleBoxes();
     updateCaption();
 }
 
-function updatePlayhead(time) {    
+function updatePlayhead(time) {     
     //If the time left is less than the amount of time shown in a single timeline section, the playhead's position needs to be updated.
     var tmpLeft = $(".waveform .caption-boxes").position().left;
     
@@ -350,14 +375,13 @@ function updatePlayhead(time) {
     }
             
 //    var leftDiff = $(".waveform canvas").position().left - tmpLeft;
-    updateCaptionBoxParent();
 //    $(".waveform .caption-box").each(function() {
 //        $(this).css("left", $(this).position().left + leftDiff);
 //    });
     
     drawTicks($(".waveform canvas")[0], currZoom);
     
-    updateCaptionBoxParent();
+    updateVisibleBoxes();
     updateCaption();
 }
 

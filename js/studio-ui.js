@@ -205,7 +205,7 @@ $(document).on({
 
 //Captioning
 function createCaption(newCaption, captionText, times, insertionCallback) {
-    newCaption.find(".caption-text").text(captionText);
+    newCaption.find(".caption-text").html(captionText);
     
     insertionCallback(newCaption);
     
@@ -224,37 +224,52 @@ function createCaption(newCaption, captionText, times, insertionCallback) {
             button.removeClass("error")
         }, 200);
     } else {        
-        var newCaptionBox = $(CAPTION_BOX_ITEM);
-        newCaptionBox.attr("data-caption-id", CAPTION_ID);
         newCaption.attr("data-caption-id", CAPTION_ID);
+        var newCaptionBox = createCaptionBox(newCaption);
         CAPTION_ID++;
         
-        newCaptionBox.find("p.caption-text").text($("textarea.add-caption").val());
         $("textarea.add-caption").val("");
-        
-        newCaptionBox.appendTo($(".waveform .caption-boxes"));
-        updateCaptionBox(newCaptionBox);
-            
+                    
         var currID = newCaptionBox.attr("data-caption-id");
         var prevID = captionBoxToLeft(newCaptionBox)[1];
         var nextID = captionBoxToRight(newCaptionBox)[1]
 
         newCaption.attr("data-caption-id-prev", prevID);
         newCaption.attr("data-caption-id-next", nextID);
-
-        newCaptionBox.attr("data-caption-id-prev", prevID);
-        newCaptionBox.attr("data-caption-id-next", nextID);
         
-        setTimeout(function() {
-            $(".waveform .caption-box[data-caption-id='" + prevID + "']").attr("data-caption-id-next", currID);
-            $(".waveform .caption-box[data-caption-id='" + nextID + "']").attr("data-caption-id-prev", currID);
-            
+        setTimeout(function() {            
             $(".caption-list .caption[data-caption-id='" + prevID + "']").attr("data-caption-id-next", currID);
             $(".caption-list .caption[data-caption-id='" + nextID + "']").attr("data-caption-id-prev", currID);
 
             updateCaption();
         }, 50);
     }
+}
+
+function createCaptionBox(caption) {
+    var currID = caption.attr("data-caption-id");
+    var prevID = caption.attr("data-caption-id-prev");
+    var nextID = caption.attr("data-caption-id-next");
+    
+    var newCaptionBox = $(CAPTION_BOX_ITEM);
+    newCaptionBox.attr("data-caption-id", currID);
+
+    newCaptionBox.find("p.caption-text").text($("textarea.add-caption").val());
+    $("textarea.add-caption").val("");
+
+    newCaptionBox.appendTo($(".waveform .caption-boxes"));
+    updateCaptionBox(newCaptionBox);
+
+    newCaptionBox.attr("data-caption-id-prev", prevID);
+    newCaptionBox.attr("data-caption-id-next", nextID);
+
+    $(".waveform .caption-box[data-caption-id='" + prevID + "']").attr("data-caption-id-next", currID);
+    $(".waveform .caption-box[data-caption-id='" + nextID + "']").attr("data-caption-id-prev", currID);
+
+    updateCaption();
+    //updateVisibleBoxes()
+    
+    return newCaptionBox;
 }
 
 var CAPTION_ID = 0;
