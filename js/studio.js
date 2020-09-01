@@ -73,7 +73,8 @@ function onPlayerReady() {
             drawTicks($(".waveform canvas")[0], currZoom);
             
             playheadUpdated(false);
-        }
+        },
+        cancel: ".caption-box"
     });
     $(".waveform .scroll .scrollbar").draggable({
         axis: 'x',
@@ -145,8 +146,8 @@ $(document).on({
     mousedown: function(event) {
         oldMousePosX = event.pageX;
         oldLeft = $(this).position().left;
-        minLeft = getMinLeft($(this).closest(".caption-box"));
-        maxRight = getMaxRight($(this).closest(".caption-box"));
+        minLeft = getMinLeft($(this));
+        maxRight = getMaxRight($(this));
         //minLeft = captionBoxToLeft($(this));
         //maxRight = captionBoxToRight($(this));
         mouseDown = true;
@@ -154,7 +155,11 @@ $(document).on({
 
         $(".caption-list .caption.selected").removeClass("selected");
         $(".caption-list .caption[data-caption-id='" + $(this).attr("data-caption-id") + "']").addClass("selected");
-
+        
+        $(".caption-list").animate({
+            scrollTop: $(this).position().top
+        });
+        
         event.stopPropagation();
     },
     mouseenter: function() {
@@ -270,6 +275,9 @@ function onPlayerStateChanged() {
 
 //Utils
 $(window).resize(function() {
+    if(player == null)
+        return;
+    
     setZoomLevel(currZoom);
     setCaption($("textarea.add-caption").val(), true);
 });
@@ -481,7 +489,7 @@ function timeToSeconds(time) {
 //Returns an array. The first element is the boundary formed by another caption box on the right side of the provided caption box, while the second element is the ID of said box.
 function captionBoxToRight(box) {    
     var nextBox = $(".caption-list .caption[data-caption-id='" + box.attr("data-caption-id") + "']").next(".caption");
-    var nextID = nextBox.length > 0 ? prevBox.attr("data-caption-id") : -1;
+    var nextID = nextBox.length > 0 ? nextBox.attr("data-caption-id") : -1;
     
     return [nextBox, nextID];
 }
@@ -501,6 +509,10 @@ function getMinLeft(box) {
         return 0;
     
     var el = $(".caption-box[data-caption-id='" + id + "']");
+    
+    if(el.length <= 0)
+        return 0;
+    
     return el.position().left + el.width();
 }
 
@@ -511,6 +523,10 @@ function getMaxLeft(box) {
         return timeToPosition(player.getDuration()) - box.width();
     
     var el = $(".caption-box[data-caption-id='" + id + "']");
+    
+    if(el.length <= 0)
+        return timeToPosition(player.getDuration()) - box.width();
+    
     return el.position().left;
 }
 
@@ -721,8 +737,6 @@ function insertAtCursor(myField, myValue) {
         myField.value += myValue;
     }
 }
-
-
 
 
 

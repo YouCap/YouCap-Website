@@ -53,6 +53,7 @@ function loadFile(file) {
     fileReader.readAsText(file, "UTF-8");
 }
 
+//Get the automatically generated captions from YouTube.
 function autoGen() {
     $("#options").addClass("generating");
     
@@ -288,7 +289,14 @@ $("#overlay .popup.submission .buttons button.submit").click(function() {
         form.find("input[name=content]").val(generateSBVContents());
         form.find("input[name=user]").val("James");
         
-        form.submit();
+        $.ajax({
+            url: '/backend/create-file.php',
+            type: 'post',
+            data: form.serialize(),
+            success: function(){
+                window.location = "/pages/thanks.php";
+            }
+        });
     }
 });
 

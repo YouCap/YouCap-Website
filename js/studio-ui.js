@@ -225,17 +225,18 @@ function createCaption(newCaption, captionText, times, insertionCallback) {
         }, 200);
     } else {        
         newCaption.attr("data-caption-id", CAPTION_ID);
-        var newCaptionBox = createCaptionBox(newCaption);
         CAPTION_ID++;
         
         $("textarea.add-caption").val("");
                     
-        var currID = newCaptionBox.attr("data-caption-id");
-        var prevID = captionBoxToLeft(newCaptionBox)[1];
-        var nextID = captionBoxToRight(newCaptionBox)[1]
+        var currID = newCaption.attr("data-caption-id");
+        var prevID = captionBoxToLeft(newCaption)[1];
+        var nextID = captionBoxToRight(newCaption)[1]
 
         newCaption.attr("data-caption-id-prev", prevID);
         newCaption.attr("data-caption-id-next", nextID);
+        
+        var newCaptionBox = createCaptionBox(newCaption);
         
         setTimeout(function() {            
             $(".caption-list .caption[data-caption-id='" + prevID + "']").attr("data-caption-id-next", currID);

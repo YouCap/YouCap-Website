@@ -160,6 +160,12 @@
                     <a href="/pages/review"><button type="button" class="submit basic-button">Review</button></a>
                 </div>
             </div>
+            <div class="popup google-signin">
+                <h2>Sign-in Required</h2>
+                <p>To mitigate abuse, YouCap requires all captioners to sign-in to their Google accounts.</p>
+                <p>Since this uses Google's OAuth 2.0 library, you can rest assured that your information is protected. <a href="/pages/privacy.php">Learn more here</a>.</p>
+                <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            </div>
         </div>
         
         <?php include($_SERVER["DOCUMENT_ROOT"] . "/php/footer.php"); ?>
@@ -181,7 +187,18 @@
     
     <script src="/js/github-utils.js"></script>
     <script>
-        if(fileExists("<?php echo $_GET['vid-id']; ?>", "<?php echo $_GET['vid-lang-name']; ?>") != "none")
-            $("#overlay, #overlay .popup.captions-exist").addClass("show");
+        onSignedIn = function() {
+            $(".popup.google-signin, #overlay").removeClass("show");
+            $(".popup.submission input[name=user]").val(profile.getEmail());
+        };
+        
+        if(!isLoggedIn()) {
+            $(".popup.google-signin, #overlay").addClass("show");
+        }
+        
+        fileExists("<?php echo $_GET['vid-id']; ?>", "<?php echo $_GET['vid-lang-name']; ?>", function(result) {
+            if(result != "none")
+                $("#overlay, #overlay .popup.captions-exist").addClass("show");
+        });
     </script>
 </html>

@@ -746,6 +746,10 @@ button.add-caption:not(.error):hover {
     color: black;
 }
 
+#overlay .popup.google-signin .g-signin2 > div {
+    margin: auto;
+}
+
 
 
 

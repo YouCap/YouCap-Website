@@ -6,6 +6,8 @@
 <meta property="og:title" content="YouCap: Open-Source YouTube Community Captioning" />
 <meta property="og:type" content="website" />
 <meta property="og:description" content="YouCap is a free, open-source alternative to the recently deprecated YouTube community captioning system." />
+
+<meta name="google-signin-client_id" content="244600529413-0ari1hd8rrkkgk7696nbb4tg2bea4hii.apps.googleusercontent.com">
         
 <!-- Icons -->
 <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-touch-icon.png">

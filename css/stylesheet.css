@@ -1,4 +1,5 @@
 nav {
+    position: relative;
     width: 100%;
     height: 80px;
     background-color: #d9a740;
@@ -6,6 +7,15 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+nav > .g-signin2 {
+    position: absolute;
+    
+    top: 50%;
+    right: 40px;
+    
+    transform: translateY(-50%);
 }
 
 nav > #img {

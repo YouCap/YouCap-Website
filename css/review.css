@@ -1,0 +1,84 @@
+#video {
+    width: calc(60% - 60px);
+    max-width: 131.2vh;
+    margin-left: 0px;
+    
+    padding: 0 30px;
+    
+    float: right;
+}
+
+#video > .yt-video {
+    width: 100%;
+    
+    max-width: 100%;
+    margin: 0;
+}
+
+#video iframe, #video .yt-video > div:not(.editor-captions) {
+    max-height: 100%;
+}
+
+#options {
+    width: 39%;
+    min-width: calc(100% - 131.2vh);
+    min-height: 0;
+}
+
+#options .caption-list {
+    margin-top: 20px;
+    border: 1px solid #d8d8d8;
+    overflow-y: auto;
+}
+
+.caption-list .review-caption {
+    display: inline-block;
+    width: calc(100% - 40px);
+    padding: 5px 20px;
+}
+
+.caption-list .review-caption.playing {
+    border-left: solid 3px #d9a740;
+    width: calc(100% - 40px - 3px);
+}
+
+.review-caption p {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.review-caption p:not(:last-child) {
+    margin-right: 15px;
+}
+
+.review-caption p.start-time, .review-caption p.end-time {
+    font-weight: bold;
+}
+
+@media only screen and (max-width: 785px) {
+    form {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+    
+    #options {
+        width: 100%;
+        float: right;
+        order: 1;
+        
+        margin-top: 30px;
+    }
+    
+    #options .caption-list {
+        min-height: 60px;
+        max-height: 300px;
+    }
+
+    #video {
+        width: calc(100% - 60px);
+        max-width: calc(100% - 60px);
+    }
+}
