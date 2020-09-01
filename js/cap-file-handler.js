@@ -68,7 +68,7 @@ function autoGen() {
                 var newCaption = $(CAPTION_ITEM);
                 createCaption(newCaption, element[2], [element[0], element[1]], function() {
                     $(".caption-list").append(newCaption);
-                })
+                }, false);
             });
         
             updateVisibleBoxes();

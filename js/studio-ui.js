@@ -204,7 +204,7 @@ $(document).on({
 
 
 //Captioning
-function createCaption(newCaption, captionText, times, insertionCallback) {
+function createCaption(newCaption, captionText, times, insertionCallback, createBox=true) {
     newCaption.find(".caption-text").html(captionText);
     
     insertionCallback(newCaption);
@@ -236,14 +236,13 @@ function createCaption(newCaption, captionText, times, insertionCallback) {
         newCaption.attr("data-caption-id-prev", prevID);
         newCaption.attr("data-caption-id-next", nextID);
         
-        var newCaptionBox = createCaptionBox(newCaption);
+        if(createBox)
+            var newCaptionBox = createCaptionBox(newCaption);
         
-        setTimeout(function() {            
-            $(".caption-list .caption[data-caption-id='" + prevID + "']").attr("data-caption-id-next", currID);
-            $(".caption-list .caption[data-caption-id='" + nextID + "']").attr("data-caption-id-prev", currID);
+        $(".caption-list .caption[data-caption-id='" + prevID + "']").attr("data-caption-id-next", currID);
+        $(".caption-list .caption[data-caption-id='" + nextID + "']").attr("data-caption-id-prev", currID);
 
-            updateCaption();
-        }, 50);
+        updateCaption();
     }
 }
 

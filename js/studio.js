@@ -51,7 +51,7 @@ function onPlayerReady() {
     });
     $(".waveform .caption-boxes").draggable({
         axis: 'x',       
-        drag: function(event, ui){            
+        drag: function(event, ui){ 
             //Stops from going too far to the left (below 00:00)
             ui.position.left = Math.min(ui.position.left, 0);
             
@@ -153,12 +153,14 @@ $(document).on({
         mouseDown = true;
         $(this).addClass("dragging");
 
+        
         $(".caption-list .caption.selected").removeClass("selected");
+        
         $(".caption-list .caption[data-caption-id='" + $(this).attr("data-caption-id") + "']").addClass("selected");
         
         $(".caption-list").animate({
-            scrollTop: $(this).position().top
-        });
+            scrollTop: $(".caption[data-caption-id='" + $(this).attr("data-caption-id") + "']").position().top
+        }, 2000);
         
         event.stopPropagation();
     },
@@ -419,16 +421,19 @@ function drawTicks(canvasEl, zoomLevel) {
     canvas.font = "10px Arial";
     
     //Go between the current time and the number of ticks that should be drawn, with 2 extra ticks of padding
+    var offset = ((timeToPosition(player.getCurrentTime())/tickSep) - currTime) * -tickSep;
+    offset = offset % tickSep;
+    
     for(var i = -marks[zoomLevel]; i < ticks[zoomLevel] + marks[zoomLevel]; i++) {  
         //Draw text if needed
         if((i + currTime) % marks[zoomLevel] == 0)
-            canvas.fillText(secondsToTime(zooms[zoomLevel] * (i + currTime)), tickSep * i, 25);
+            canvas.fillText(secondsToTime(zooms[zoomLevel] * (i + currTime)), (tickSep * i) + offset, 25);
         
         if(i < 0)
             continue;
         
         //Draw the tick mark
-        canvas.fillRect(tickSep * i, 0, 1, (i + currTime) % marks[zoomLevel] == 0 ? 10 : 5);
+        canvas.fillRect((tickSep * i) + offset, 0, 1, (i + currTime) % marks[zoomLevel] == 0 ? 10 : 5);
     }
 }
 
@@ -440,6 +445,11 @@ function timeToPosition(seconds) {
 //Converts a position on the timeline to the time in seconds.
 function positionToTime(position) {
     return Math.round((clamp((position/tickSep) * zooms[currZoom], 0, player.getDuration())) * 10)/10;
+}
+
+//Converts a position on the timeline to the time in seconds, without clamping the decimal position.
+function positionToTimeRaw(position) {
+    return (clamp((position/tickSep) * zooms[currZoom], 0, player.getDuration()));
 }
 
 //Converts seconds to time text, removing hours if unneeded
