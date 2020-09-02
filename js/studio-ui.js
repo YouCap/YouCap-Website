@@ -52,7 +52,16 @@ $(document).on({
         
         createCaption(newCaption, "", [], function(caption) {
             newCaption.insertAfter(currCaption);
+                
+            setTimeout(function() {
+                $(".caption[data-caption-id='" + newCaption.attr("data-caption-id") + "']").click();
+                $(".caption[data-caption-id='" + newCaption.attr("data-caption-id") + "'] textarea.caption-text").focus();
+                
+                if($("#video .options .checkbox input[type=checkbox]").is(":checked"))
+                    player.pauseVideo();
+            }, 50);
         });
+        
 //        
 //        //If there's not enough space for the new caption
 //        if(times[0] == -1 && times[1] == -1) {
@@ -145,6 +154,8 @@ $(document).on({
         
         if($("#video .options .checkbox input[type=checkbox]:checked").length > 0)
             player.pauseVideo();
+        
+        setCaption($(this).val(), false);
     }
 }, ".caption textarea")
 .on({
