@@ -16,36 +16,35 @@ function onPlayerReady() {
     $(".title").text(player.getVideoData()["title"]);
 }
 
-var startTime;
-var elapsedTime = 0;
+var capInterval;
+var timesWatched = [];
 
 function onPlayerStateChanged() {
     //Get the current player state.
     var currState = player.getPlayerState();
     
     if(currState == YT.PlayerState.PLAYING) {
-        startTime = (new Date()).getTime();
-        changeReviewCaption();
+        capInterval = setInterval(changeReviewCaption, 16);
     } else if(currState == YT.PlayerState.PAUSED || currState == YT.PlayerState.ENDED) {
-        elapsedTime += ((new Date()).getTime() - startTime);
+        clearInterval(capInterval);
+        
+        if(timesWatched.every(function(caption) {
+            return caption == 1;
+        })) {
+            console.log("HELLO");
+        }
     }
-    
-    if(elapsedTime/1000 >= player.getDuration())
-        console.log("FULL VIDEO WATCHED");
 };
 
 function loadReviewCaptions() {
     $.ajax({
-        url: "/backend/get-review-caption.php",
+        url: "/backend/get-review-caption.php?print&vid-lang-name=" + langName.toLocaleLowerCase(),
         success: function(data) {
-            console.log(typeof(data));
-            data = "jtXw0VnW9l4\n00:00:00.0,00:00:05.0\n*Intro*";
-
             var newLineSplit = data.indexOf('\n');
             player = new YT.Player('player', {
                 height: '390',
                 width: '640',
-                videoId: data.substring(0, newLineSplit),
+                videoId: vidID,
                 events: {
                     'onReady': onPlayerReady,
                     'onStateChange': onPlayerStateChanged
@@ -56,27 +55,36 @@ function loadReviewCaptions() {
             });
     
             var captions = PARSER_YOUCAP_SBV(data.substring(newLineSplit));
-            console.log(captions);
+                        
             for(var i = 0; i < captions.length; i++) {
                 $("<div class='review-caption' data-caption-id='" + i + "' data-seconds=" + captions[i][0] + "><p class='start-time inline'>" + secondsToTime(captions[i][0]) + "</p><p class='caption-text inline'>" + captions[i][2] + "</p></div>").appendTo($(".caption-list"));
+                
+                timesWatched.push(0);
             }
         }
     })
 }
 
+var currReviewCaption;
+var oldValue;
 function changeReviewCaption() {
-    var result;
     $(".caption-list .review-caption").each(function() {
         if($(this).data("seconds") <= player.getCurrentTime())
-            result = $(this);
-    })
-    
-    if(result) {
-        $(".caption-list .review-caption.playing").removeClass("playing");
-        result.addClass("playing");
-        setCaption(result.find("p.caption-text").text(), false);
+            currReviewCaption = $(this);
+    });
         
-        $(".caption-list").scrollTop(result.position().top + ($(".caption-list").height()/2));
+    if(currReviewCaption != null && currReviewCaption.length > 0) {
+        $(".caption-list .review-caption.playing").removeClass("playing");
+        currReviewCaption.addClass("playing");
+        setCaption(currReviewCaption.find("p.caption-text").text(), false);
+            
+        if(oldValue != currReviewCaption.attr("data-caption-id")) {
+            $(".caption-list").scrollTop(currReviewCaption.position().top - $(".review-caption:first-of-type").position().top - $(".caption-list").height()/2 + currReviewCaption.height());
+            console.log("HELLO");
+        }
+        
+        oldValue = currReviewCaption.attr("data-caption-id");
+        timesWatched[oldValue] = 1;
     }
 }
 
@@ -89,8 +97,9 @@ $(document).on({
 
 //Parses a saved YouCap SBV caption file to an interpretable format.
 var PARSER_YOUCAP_SBV = function(contents) {
+    contents = contents.replace(/\r\n/g, "\n");
     //Regex for matching SBV entries
-    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n([\\s\\S]*?)(?=$|\\n{2}(?:\\d{1,2}:)+)", "gm");
+    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n([\\s\\S]*?)(?=\\Z|\\n{2}(?:\\d{1,2}:)+)", "gm");
     
     //The resulting matches
     var result = [];
@@ -141,6 +150,8 @@ function secondsToTime(seconds) {
     
     if(Number.isInteger(seconds))
         result += ".0";
+    else
+        result = result.substr(0, result.indexOf('.') + 2);
     
     return result;
 }
@@ -151,6 +162,8 @@ function timeToSeconds(time) {
     for(var i = split.length - 1; i >= 0; i--) {
         total += parseFloat(split[i]) * Math.pow(60, split.length - 1 - i);
     }
+    
+    total = Math.round(total * 10)/10;
     
     return total;
 }

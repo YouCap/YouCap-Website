@@ -31,9 +31,17 @@
                     <button style="margin-bottom: 10px;" type="button" class="select" name="vid-lang">
                         <p class="arrow">Select Language</p>
                         <div>
-                            <div value="en"><p>English</p></div>
-                            <div value="es"><p>Spanish</p></div>
-                            <div value="fr"><p>French</p></div>
+                            <?php
+                                //Get JSON settings and offer all languages as an option.
+                                $settings = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/backend/youcap-info.json"), true);
+        
+                                foreach($settings["languages"] as $languageOBJ)
+                                {
+                                    $name = $languageOBJ["name"];
+                                    $code = $languageOBJ["code"];
+                                   echo "<div value='$code'><p>$name</p></div>";
+                                }
+                            ?>
                         </div>
                     </button>
                     <input type="hidden" name="vid-lang">

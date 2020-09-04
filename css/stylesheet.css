@@ -18,7 +18,12 @@ nav > .g-signin2 {
     transform: translateY(-50%);
 }
 
-nav > #img {
+nav > a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+nav > a > .img {
     position: relative;
     
     width: 65px;
@@ -31,11 +36,11 @@ nav > #img {
     transition: 0.4s ease;
 }
 
-nav > #img:hover {
+nav > a > .img:hover {
     width: 175px;
 }
 
-nav > #img .mask {
+nav > a > .img .mask {
     position: relative;
     left: 65px;
     
@@ -48,18 +53,14 @@ nav > #img .mask {
     transition: 0.4s ease;
 }
 
-nav > #img:hover .mask {
+nav > a > .img:hover .mask {
     width: 130px;
 }
 
-nav > #img h1 {
+nav > a > .img h1 {
     font-family: 'Alata', sans-serif;
     font-size: 24pt;
     color: white;
-}
-
-nav > #img h1:hover {
-    cursor: default;
 }
 
 

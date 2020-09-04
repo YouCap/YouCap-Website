@@ -48,12 +48,18 @@
     line-height: 16px;
 }
 
+.review-caption p.caption-text {
+    width: calc(100% - 55px);
+}
+
 .review-caption p:not(:last-child) {
     margin-right: 15px;
 }
 
 .review-caption p.start-time, .review-caption p.end-time {
     font-weight: bold;
+    width: 40px;
+    vertical-align: top;
 }
 
 @media only screen and (max-width: 785px) {

@@ -28,4 +28,21 @@
         
         return $github;
     }
+
+    function mysqliConnection() {
+        $credJSON = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/secrets/secrets.json"), true)["mysql"];
+
+        $sqlServer = $credJSON["servername"];
+        $sqlUsername = $credJSON["username"];
+        $sqlPassword = $credJSON["password"];
+        
+        $conn = new mysqli($sqlServer, $sqlUsername, $sqlPassword, "review_users");
+        
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+        
+        return $conn;
+    }
 ?>

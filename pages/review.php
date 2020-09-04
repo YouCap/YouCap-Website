@@ -2,7 +2,6 @@
 
 <?php require($_SERVER["DOCUMENT_ROOT"] . "/backend/get-review-caption.php"); ?>
 
-
 <html>
     <head>        
         <!-- Meta -->
@@ -20,6 +19,9 @@
         <link rel="stylesheet" type="text/css" href="/css/studio.css">
         <link rel="stylesheet" type="text/css" href="/css/review.css">
     </head>
+    <script>
+        var vidID = "<?php echo $vidID; ?>";
+    </script>
     <body>    
         <?php include($_SERVER["DOCUMENT_ROOT"] . "/php/nav.php"); ?>
         
@@ -71,7 +73,7 @@
             </ul>
         </div>
         
-        <div id="overlay" class="">
+        <div id="overlay" class="show">
             <div class="popup switch-language">
                 <h2>Switch Language</h2>
                 <p>Select a language to translate to</p>
@@ -89,7 +91,7 @@
                     <button type="button" class="submit basic-button">Change Language</button>
                 </div>
             </div>
-            <div class="popup submission">
+            <div class="popup submission show">
                 <h2>Finish Review</h2>
                 <p>Having watched the video, click either the accept or reject buttons below. Altenatively, you can keep watching if you're still not sure. Read our <a href="/pages/standards" target="_blank">standards policy</a> if you're having trouble deciding whether to approve this submission or not.</p>
                 <div class="buttons">
@@ -99,7 +101,7 @@
                 </div>
                 <form style="display: none;" action="/backend/create-file.php" method="post">
                     <input type="hidden" value="subtitle-creation-form" name="formName">
-                    <input type="hidden" name="CSRFToken" value="<?php echo generate_csrf("subtitle-creation-form"); ?>">
+                    <input type="hidden" name="CSRFToken" value="<?php echo generate_csrf("subtitle-review-form-" . $vidID); ?>">
                     <input type="hidden" name="fileName">
                     <input type="hidden" name="content">
                     <input type="hidden" name="user">
@@ -117,7 +119,7 @@
     </body>
     
     <script>
-        var vidID = '<?php print $_GET["vid-id"] ?>';
+        var langName = "<?php echo $_GET['vid-lang-name']; ?>";
     </script>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -136,8 +138,5 @@
         if(!isLoggedIn()) {
             $(".popup.google-signin, #overlay").addClass("");
         }
-        
-        if(fileExists("<?php echo $_GET['vid-id']; ?>", "<?php echo $_GET['vid-lang-name']; ?>") != "none")
-            $("#overlay, #overlay .popup.captions-exist").addClass("show");
     </script>
 </html>
