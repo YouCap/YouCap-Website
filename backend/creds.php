@@ -1,4 +1,6 @@
 <?php
+    require($_SERVER["DOCUMENT_ROOT"] . "/vendor/autoload.php");
+
     use Http\Adapter\Guzzle6\Client as GuzzleClient;
     use Lcobucci\JWT\Builder;
     use Lcobucci\JWT\Signer\Key;

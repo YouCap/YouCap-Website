@@ -265,7 +265,9 @@ $("#submit-button").click(function() {
 
 $("#overlay .popup .buttons button.cancel").click(function() {
     $(this).closest(".popup").removeClass("show");
-    $("#overlay").removeClass("show");
+    
+    if($("#overlay .popup.show").length <= 0)
+        $("#overlay").removeClass("show");
 });
 $("#overlay .popup.load-file .buttons button.submit").click(function() {
     $("#overlay .popup.load-file p.warning.temporary").remove();

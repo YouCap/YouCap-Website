@@ -1,6 +1,10 @@
 <?php require($_SERVER["DOCUMENT_ROOT"] . "/backend/csrf-handler.php"); ?>
 
-<?php require($_SERVER["DOCUMENT_ROOT"] . "/backend/get-review-caption.php"); ?>
+<?php
+    $user = $_GET["user"];
+
+    require($_SERVER["DOCUMENT_ROOT"] . "/backend/get-review-caption.php");
+?>
 
 <html>
     <head>        
@@ -31,6 +35,7 @@
                 <a class="switch-language inline"><p>Switch Language</p></a>
                 <br />
                 <p class="title">&#10240;</p>
+                <button type="button" class="basic-button" id="submit-button">Submit Review</button>
                 <div class="sep"></div>
                 
                 <div id="options">
@@ -73,7 +78,7 @@
             </ul>
         </div>
         
-        <div id="overlay" class="show">
+        <div id="overlay">
             <div class="popup switch-language">
                 <h2>Switch Language</h2>
                 <p>Select a language to translate to</p>
@@ -91,20 +96,22 @@
                     <button type="button" class="submit basic-button">Change Language</button>
                 </div>
             </div>
-            <div class="popup submission show">
+            <div class="popup submission">
                 <h2>Finish Review</h2>
                 <p>Having watched the video, click either the accept or reject buttons below. Altenatively, you can keep watching if you're still not sure. Read our <a href="/pages/standards" target="_blank">standards policy</a> if you're having trouble deciding whether to approve this submission or not.</p>
                 <div class="buttons">
                     <button type="button" class="cancel basic-button">Keep Watching</button>
-                    <button type="button" class="submit basic-button">Reject</button>
-                    <button type="button" class="submit basic-button">Accept</button>
+                    <button type="button" class="reject submit basic-button">Reject</button>
+                    <button type="button" class="accept submit basic-button">Accept</button>
                 </div>
-                <form style="display: none;" action="/backend/create-file.php" method="post">
-                    <input type="hidden" value="subtitle-creation-form" name="formName">
-                    <input type="hidden" name="CSRFToken" value="<?php echo generate_csrf("subtitle-review-form-" . $vidID); ?>">
-                    <input type="hidden" name="fileName">
-                    <input type="hidden" name="content">
+                <form style="display: none;" method="post">
+                    <input type="hidden" value="<?php echo "subtitle-review-form-" . $vidID . "-" . $_GET["vid-lang-name"]; ?>" name="formName">
+                    <input type="hidden" name="CSRFToken" value="<?php echo generate_csrf("subtitle-review-form-" . $vidID . "-" . $_GET["vid-lang-name"]); ?>">
+                    <input type="hidden" name="vidID" value="<?php echo $_GET["vid-id"]; ?>">
                     <input type="hidden" name="user">
+                    <input type="hidden" name="email">
+                    <input type="hidden" name="language" value="<?php echo $_GET["vid-lang-name"]; ?>">
+                    <input type="hidden" name="rating">
                 </form>
             </div>
             <div class="popup google-signin">
@@ -136,7 +143,7 @@
         };
         
         if(!isLoggedIn()) {
-            $(".popup.google-signin, #overlay").addClass("");
+            $(".popup.google-signin, #overlay").addClass("show");
         }
     </script>
 </html>

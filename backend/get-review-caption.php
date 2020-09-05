@@ -6,20 +6,20 @@
 
     function chooseID($language, $user)
     {        
-        $language = mysqli_real_escape_string($language);
-        $user = mysqli_real_escape_string($user);
-        
         // Create connection (From creds.php)
         $conn = mysqliConnection();
+        
+        $language = mysqli_real_escape_string($conn, $language);
+        $user = mysqli_real_escape_string($conn, $user);
         
         $sql = 
         "SELECT * FROM `$language` WHERE `users` NOT LIKE '%$user%' ORDER BY RAND() LIMIT 1";
         $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
         $row = mysqli_fetch_array($result);
-        
+                
         if(sizeof($row) > 0)
         {
-            return $row["vidID"];
+            return array($row["vidID"], $row["repoID"]);
         }
     }
 
@@ -51,7 +51,7 @@
 
     if(!isset($_SESSION["cache-review-id"]) || $_SESSION["cache-review-id"] == "")
     {
-        $vidInfo = chooseID($_GET['vid-lang-name']);
+        $vidInfo = chooseID($_GET['vid-lang-name'], $_GET["user"]);
                 
         $vidID = $vidInfo[0];
         $repoID = $vidInfo[1];

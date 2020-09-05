@@ -48,25 +48,37 @@
 
     $language = $_POST["language"];
     $vidID = $_POST["vidID"];
+    $user = $_POST["user"];
     $email = $_POST["email"];
     $rating = $_POST["rating"];
 
-    if($rating !== 1 && $rating !== -1)
+    if(!is_numeric($rating) || (intval($rating) !== 1 && intval($rating) !== -1))
     {
         http_response_code(400);
         echo "Error 400: Bad Request.";
         return;
     }
 
-    $language = mysqli_real_escape_string($language);
-    $vidID = mysqli_real_escape_string($vidID);
-    $email = mysqli_real_escape_string($email);
+    $language = mysqli_real_escape_string($conn, $language);
+    $vidID = mysqli_real_escape_string($conn, $vidID);
+    $email = mysqli_real_escape_string($conn, $email);
+
+
+    $sql = "SELECT `vidID` FROM `$language` WHERE `vidID`=\"$vidID\" AND `users` LIKE \"%$email%\"";
+    $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+    if(sizeof(mysqli_fetch_array($result)) > 0)
+    {
+        http_response_code(403);
+        return;
+    }
+
+
 
 
     $sql = "UPDATE `$language` SET `rating`=`rating` + $rating,`users`=CONCAT(`users`, \",$email\") WHERE `vidID`=\"$vidID\"";
     mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
-    $sql = "SELECT `repoID`, `rating`, `sha` FROM `$language` WHERE `vidID` IS \"$vidID\"";
+    $sql = "SELECT `repoID`, `rating`, `sha` FROM `$language` WHERE `vidID`=\"$vidID\"";
     $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
     $row = mysqli_fetch_array($result);

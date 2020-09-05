@@ -28,17 +28,18 @@ function onPlayerStateChanged() {
     } else if(currState == YT.PlayerState.PAUSED || currState == YT.PlayerState.ENDED) {
         clearInterval(capInterval);
         
-        if(timesWatched.every(function(caption) {
+        if(submitted || !timesWatched.every(function(caption) {
             return caption == 1;
         })) {
-            console.log("HELLO");
+            $("#submit-button").click();
         }
     }
 };
 
+var googleUser = JSON.parse(sessionStorage.getItem("googleUser"));
 function loadReviewCaptions() {
     $.ajax({
-        url: "/backend/get-review-caption.php?print&vid-lang-name=" + langName.toLocaleLowerCase(),
+        url: "/backend/get-review-caption.php?print&vid-lang-name=" + langName.toLocaleLowerCase() + "&user=" + googleUser.Email,
         success: function(data) {
             var newLineSplit = data.indexOf('\n');
             player = new YT.Player('player', {
@@ -64,6 +65,46 @@ function loadReviewCaptions() {
         }
     })
 }
+
+var submitted = false;
+function submitReview(rating) {
+    $("#overlay .popup.submission p.warning").remove();
+    
+    if(submitted || !timesWatched.every(function(caption) {
+        return caption == 1;
+    })) {
+        $("<p class='warning'>Please watch the entire video before reviewing it.</p>").insertAfter($("#overlay .popup.submission > p"));
+        return;
+    }
+    
+    var form = $("#overlay .popup.submission > form");
+    form.find("input[name=user]").val(googleUser.Name);
+    form.find("input[name=email]").val(googleUser.Email);
+    form.find("input[name=rating]").val(rating);
+    
+    submitted = true;
+    $.ajax({
+        url: "/backend/set-review-caption.php",
+        type: "post",
+        data: form.serialize(),
+        success: function(data) {
+            window.location = "/pages/thanks?review";
+        },
+        error: function(xhr, status, error) {
+            $("<p class='warning'>The server returned a " + xhr.status + " error. Please contact support for more information.</p>").insertAfter($("#overlay .popup.submission > p"));
+        }
+    })
+}
+$("#overlay .popup.submission .buttons button.accept").click(function() {
+    submitReview(1);
+});
+$("#overlay .popup.submission .buttons button.reject").click(function() {
+    submitReview(-1);
+});
+$("#submit-button").click(function() {
+    $("#overlay, #overlay .popup.submission").addClass("show");
+});
+
 
 var currReviewCaption;
 var oldValue;
@@ -220,5 +261,7 @@ $("button.select > div div").click(function(event) {
 
 $("#overlay .popup .buttons button.cancel").click(function() {
     $(this).closest(".popup").removeClass("show");
-    $("#overlay").removeClass("show");
+    
+    if($("#overlay .popup.show").length <= 0)
+        $("#overlay").removeClass("show");
 });
