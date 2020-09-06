@@ -455,11 +455,11 @@ button.add-caption:not(.error):hover {
     align-items: center;
 }
 
-#video .options .checkbox {
+#video .options .checkbox, .checkbox.standard-ui {
     position: relative;
     display: inline-block;
-    width: 15px;
-    height: 15px;
+    width: 17px;
+    height: 17px;
     
     cursor: pointer;
     font-size: 22px;
@@ -469,23 +469,23 @@ button.add-caption:not(.error):hover {
     user-select: none;
 }
 
-#video > .options .checkbox input[type=checkbox] {
+#video > .options .checkbox input[type=checkbox], .checkbox.standard-ui input[type=checkbox] {
     position: absolute;
     top: 0;
     left: 0;
-    width: 15px;
-    height: 15px;
+    width: 17px;
+    height: 17px;
     margin: 0;
     opacity: 0;
     cursor: pointer;
     z-index: 1;
 }
 
-#video > .options .checkbox input[type=checkbox]:hover ~ .checkmark {
+#video > .options .checkbox input[type=checkbox]:hover ~ .checkmark, .checkbox.standard-ui input[type=checkbox]:hover ~ .checkmark {
     background-color: rgba(229, 229, 229, 0.75);
 }
 
-#video > .options .checkbox .checkmark { 
+#video > .options .checkbox .checkmark, .checkbox.standard-ui .checkmark { 
     position: absolute;
     top: 0;
     left: 0;
@@ -495,7 +495,7 @@ button.add-caption:not(.error):hover {
     border: solid black 1px;
 }
 
-#video > .options .checkbox .checkmark img { 
+#video > .options .checkbox .checkmark img, .checkbox.standard-ui .checkmark img { 
     position: absolute;
     top: 0;
     left: 0;
@@ -504,8 +504,8 @@ button.add-caption:not(.error):hover {
     opacity: 0;
 }
 
-#video > .options .checkbox input[type=checkbox]:checked ~ .checkmark img {
-    opacity: 1
+#video > .options .checkbox input[type=checkbox]:checked ~ .checkmark img, .checkbox.standard-ui input[type=checkbox]:checked ~ .checkmark img {
+    opacity: 1;
 }
 
 #video > .options > p {

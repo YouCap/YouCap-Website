@@ -24,6 +24,7 @@
     $user = $_POST["user"];
     $email = $_POST["email"];
     $language = strtolower($_POST["vid-lang-name"]);
+    $nsfw = $_POST["nsfw"];
 
     $settings = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/backend/youcap-info.json"), true);
         
@@ -42,7 +43,7 @@
         'author': '$user',
         'language': '$language',
         'contents': '$captionContent',
-        'nsfw': false
+        'nsfw': $nsfw
     }";
 
 
@@ -54,12 +55,13 @@
     //From creds.php
     $conn = mysqliConnection();
 
-    $language = mysqli_real_escape_string($language);
-    $vidID = mysqli_real_escape_string($vidID);
-    $email = mysqli_real_escape_string($email);
+    $language = mysqli_real_escape_string($conn, $language);
+    $vidID = mysqli_real_escape_string($conn, $vidID);
+    $email = mysqli_real_escape_string($conn, $email);
+    $nsfw = mysqli_real_escape_string($conn, $nsfw);
     $sha = $fileInfo["sha"];
 
-    $sql = "INSERT INTO `$language`(`vidID`, `repoID`, `rating`, `users`, `sha`) VALUES ($vidID, $repoNum, 0, $email, $sha)";
+    $sql = "INSERT INTO `$language`(`vidID`, `repoID`, `rating`, `users`, `sha`, `filters`) VALUES ($vidID, $repoNum, 0, $email, $sha, 'nsfw=$nsfw')";
     mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
 ?>

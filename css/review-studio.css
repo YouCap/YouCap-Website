@@ -1,0 +1,101 @@
+#video > .options {
+    margin: 0;
+    width: 100%;
+    flex-wrap: wrap;
+    height: auto;
+}
+
+.options .empty-space {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    
+    width: calc(100% - 10px);
+    height: 30px;
+    padding: 5px;
+    border-radius: 5px;
+    
+    margin-top: 95px;
+    
+    background: repeating-linear-gradient(
+        -45deg,
+        #d9a740,
+        #d9a740 10px,
+        #565656 10px,
+        #565656 20px
+    );
+}
+
+.options .empty-space:hover {
+    cursor: pointer;
+}
+
+.options .empty-space > p {   
+    display: inline-block;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 30px;
+    
+    border-radius: 5px;
+    padding: 0 10px;
+    
+    background-color: white;
+}
+
+.options .empty-space .popup {
+    display: none;
+    
+    position: absolute;
+    bottom: calc(100% + 15px);
+    left: 0px;
+    width: calc(100% - 10px);
+    
+    padding: 5px;
+    
+    border-radius: 5px;
+    
+    background-color: rgb(229, 229, 229);
+    border: #d0d0d0 solid 1px;
+}
+
+.options .empty-space .popup.show {
+    display: block;
+}
+
+.options .empty-space .popup:before {
+    content: "";
+    position: absolute;
+    top: -webkit-calc(100% - 10px); /*may require prefix for old browser support*/
+    top: calc(100% - 7px); /*i.e. half the height*/
+    left: 50%;
+    transform: translateX(-50%);
+    height: 15px;
+    width: 15px;
+    
+    background: inherit;
+    transform: rotate(45deg);
+    border-bottom: inherit;
+    border-right: inherit;
+    box-shadow: inherit;
+}
+
+.options .empty-space .popup > p {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 15px;
+    text-align: center;
+    line-height: 20px;
+}
+
+@media only screen and (min-width: 786px) {
+    #options {
+        width: 29%;
+    }
+
+    #video {
+        width: calc(70% - 30px);
+        margin-left: 30px;
+    }
+}

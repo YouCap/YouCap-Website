@@ -30,7 +30,7 @@
                     <p>Approve or reject captions based on their appropriateness and accuracy.</p>
                 </div>
             </a>
-            <a href="/pages/about">
+            <a href="/pages/organization/about">
                 <div class="selection">
                     <div class="img" style="background-image: url(/images/hd/nordwood-themes-8LfE0Lywyak-unsplash.jpg)"></div>
                     <h2>About</h2>

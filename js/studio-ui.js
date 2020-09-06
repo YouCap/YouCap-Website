@@ -362,3 +362,10 @@ $("#overlay .popup.switch-language .buttons button.submit").click(function() {
     else
         $("<p class='warning'>Please select a language.</p>").insertAfter($(this).closest(".buttons").siblings(".select.standard-ui"));
 });
+
+$("#overlay .popup .buttons button.cancel").click(function() {
+    $(this).closest(".popup").removeClass("show");
+    
+    if($("#overlay .popup.show").length <= 0)
+        $("#overlay").removeClass("show");
+});

@@ -263,12 +263,6 @@ $("#submit-button").click(function() {
     $("#overlay, #overlay .popup.submission").addClass("show");
 });
 
-$("#overlay .popup .buttons button.cancel").click(function() {
-    $(this).closest(".popup").removeClass("show");
-    
-    if($("#overlay .popup.show").length <= 0)
-        $("#overlay").removeClass("show");
-});
 $("#overlay .popup.load-file .buttons button.submit").click(function() {
     $("#overlay .popup.load-file p.warning.temporary").remove();
     
@@ -290,6 +284,8 @@ $("#overlay .popup.submission .buttons button.submit").click(function() {
         form.find("input[name=fileName]").val(vidID);
         form.find("input[name=content]").val(generateSBVContents());
         form.find("input[name=user]").val("James");
+        
+        form.find("input[name=nsfw]").val($("checkbox[name=nsfw-check] > input[type=checkbox]").prop("checked"));
         
         $.ajax({
             url: '/backend/create-file.php',

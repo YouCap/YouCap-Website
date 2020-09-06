@@ -1,14 +1,17 @@
 #main-content {
     background-color: #f1f1f1;
     padding: 2% 5%;
+    width: calc(100vw - 10%);
 }
 
 form {
     position: relative;
     display: inline-block;
     top: 10px;
-    width: calc(90% - 40px);
+    width: calc(100% - 40px);
     padding: 20px;
+    
+    min-height: calc(100vh - 160px - 4%);
     
     background-color: white;
     

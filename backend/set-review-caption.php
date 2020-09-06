@@ -102,6 +102,8 @@
             $sql = "DELETE FROM `$language` WHERE `vidID`=\"$vidID\"";
             mysqli_query($conn, $sql) or die(mysqli_error($conn));
         }
+        
+        session_destroy();
     }
 
 ?>

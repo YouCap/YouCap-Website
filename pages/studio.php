@@ -52,7 +52,7 @@
                     <div class="standard-ui flex">
                         <a class="shortcuts" style="margin-left: auto;">Keyboard Shortcuts</a>
                         <p class="inline">|</p>
-                        <a class="help" href="/pages/help.php" target="_blank">Help</a>
+                        <a class="help" href="/pages/organization/help.php" target="_blank">Help</a>
                     </div>
                     <div class="yt-video">
                         <div>
@@ -114,9 +114,17 @@
                 <button style="margin-bottom: 10px; width: 200px;" type="button" class="select basic-select standard-ui" name="vid-lang">
                     <p class="arrow">Select Language</p>
                     <div style="width: 100%;">
-                        <div value="en"><p>English</p></div>
-                        <div value="es"><p>Spanish</p></div>
-                        <div value="fr"><p>French</p></div>
+                        <?php
+                                //Get JSON settings and offer all languages as an option.
+                                $settings = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/backend/youcap-info.json"), true);
+        
+                                foreach($settings["languages"] as $languageOBJ)
+                                {
+                                    $name = $languageOBJ["name"];
+                                    $code = $languageOBJ["code"];
+                                   echo "<div value='$code'><p>$name</p></div>";
+                                }
+                            ?>
                     </div>
                 </button>
                 <div class="buttons">
@@ -138,6 +146,12 @@
                 <h2>Submit subtitles?</h2>
                 <p>Only submit the captions if you've finished working on them.</p>
                 <p>To save your progress and return later, download the file through the Actions menu. Then you can upload the file at a later point in time and continue working.</p>
+                <p>Additionally, to maintain a positive experience for all users, please take a moment to mark below whether this video contains any explicit or "not safe for work" content. You can read more about it by <a href="/pages/organization/privacy.php#coppa">clicking here.</a></p>
+                <div class="checkbox standard-ui" name="nsfw-check" style="margin-left: 10px;">
+                    <input type="checkbox">
+                    <span class="checkmark"><img src="/images/page-icons/checkbox.png"></span>
+                </div>
+                <p style="display: inline; line-height: 17px; vertical-align: top;">Contains Explicit Content</p>
                 <div class="buttons">
                     <button type="button" class="cancel basic-button">Cancel</button>
                     <button type="button" class="submit basic-button">Upload</button>
@@ -148,6 +162,7 @@
                     <input type="hidden" name="fileName">
                     <input type="hidden" name="content">
                     <input type="hidden" name="user">
+                    <input type="hidden" name="nsfw">
                 </form>
             </div>
             <div class="popup captions-exist">
@@ -186,6 +201,7 @@
     <script src="/js/cap-file-handler.js"></script>
     
     <script src="/js/github-utils.js"></script>
+    <script src="/js/google-utils.js"></script>
     <script>
         onSignedIn = function() {
             $(".popup.google-signin, #overlay").removeClass("show");
@@ -198,7 +214,7 @@
         
         fileExists("<?php echo $_GET['vid-id']; ?>", "<?php echo $_GET['vid-lang-name']; ?>", function(result) {
             if(result != "none")
-                $("#overlay, #overlay .popup.captions-exist").addClass("show");
+                $("#overlay, #overlay .popup.captions-exist").addClass("");
         });
     </script>
 </html>

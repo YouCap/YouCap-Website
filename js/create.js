@@ -24,16 +24,18 @@ function checkCreateForm() {
     
     var error = false;
     
-    var link = $("#main-content form input.vid-link").val();   
-    if(!vidLinkRegex.test(link)) {
-        if($("form input.vid-link + p.error-message").length <= 0)
-            $("<p class='error-message'>Invalid YouTube link</p>").insertAfter($("form input.vid-link"));
-        error = true;
+    if($("form input.vid-link").length > 0) {
+        var link = $("#main-content form input.vid-link").val();   
+        if(!vidLinkRegex.test(link)) {
+            if($("form input.vid-link + p.error-message").length <= 0)
+                $("<p class='error-message'>Invalid YouTube link</p>").insertAfter($("form input.vid-link"));
+            error = true;
+        }
     }
     
     if($("form input[name=vid-lang]").val() == "") {
         if($("form button[name=vid-lang] + p.error-message").length <= 0)
-            $("<p class='error-message'>Please select a language to make subtitles for</p>").insertAfter($("form button[name=vid-lang]"));
+            $("<p class='error-message'>Please select a language.</p>").insertAfter($("form button[name=vid-lang]"));
         error = true;
     }
     
