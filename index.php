@@ -30,13 +30,22 @@
                     <p>Approve or reject captions based on their appropriateness and accuracy.</p>
                 </div>
             </a>
+            <a href="/pages/organization/extension">
+                <div class="selection">
+                    <div class="img" style="background-image: url(/images/hd/photo-1541877944-ac82a091518a.jpg)"></div>
+                    <h2>Extension</h2>
+                    <p>Get the browser extension to have YouCap's captions overlaid onto YouTube videos.</p>
+                </div>
+            </a>
             <a href="/pages/organization/about">
                 <div class="selection">
                     <div class="img" style="background-image: url(/images/hd/nordwood-themes-8LfE0Lywyak-unsplash.jpg)"></div>
                     <h2>About</h2>
-                    <p>Learn more about the YouCap service, including additional ways to contribute.</p>
+                    <p>Learn more about the YouCap service, including our standards and additional ways to contribute.</p>
                 </div>
             </a>
         </div>
+        
+        <?php include($_SERVER["DOCUMENT_ROOT"] . "/php/footer.php"); ?>
     </body>
 </html>

@@ -39,9 +39,8 @@ function onPlayerStateChanged() {
 var googleUser = JSON.parse(sessionStorage.getItem("googleUser"));
 function loadReviewCaptions() {
     $.ajax({
-        url: "/backend/get-review-caption.php?print&vid-lang-name=" + langName.toLocaleLowerCase() + "&user=" + googleUser.Email,
+        url: "/backend/get-review-caption.php?print&vid-lang-name=" + langName.toLocaleLowerCase(),
         success: function(data) {
-            var newLineSplit = data.indexOf('\n');
             player = new YT.Player('player', {
                 height: '390',
                 width: '640',
@@ -54,9 +53,11 @@ function loadReviewCaptions() {
                     fs: 0
                 }
             });
-    
-            var captions = PARSER_YOUCAP_SBV(data.substring(newLineSplit));
-                        
+                            
+            var captions = PARSER_YOUCAP_SBV(data);
+            
+            console.log(captions);
+                                    
             for(var i = 0; i < captions.length; i++) {
                 $("<div class='review-caption' data-caption-id='" + i + "' data-seconds=" + captions[i][0] + "><p class='start-time inline'>" + secondsToTime(captions[i][0]) + "</p><p class='caption-text inline'>" + captions[i][2] + "</p></div>").appendTo($(".caption-list"));
                 
@@ -140,7 +141,7 @@ $(document).on({
 var PARSER_YOUCAP_SBV = function(contents) {
     contents = contents.replace(/\r\n/g, "\n");
     //Regex for matching SBV entries
-    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n([\\s\\S]*?)(?=\\Z|\\n{2}(?:\\d{1,2}:)+)", "gm");
+    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n([\\s\\S]*?)(?=$|\\n{2}(?:\\d{1,2}:)+)", "gm");
     
     //The resulting matches
     var result = [];

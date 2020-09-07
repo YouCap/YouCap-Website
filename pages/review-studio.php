@@ -113,9 +113,9 @@
                     <button type="button" class="accept submit basic-button">Accept</button>
                 </div>
                 <form style="display: none;" method="post">
-                    <input type="hidden" value="<?php echo "subtitle-review-form-" . $vidID . "-" . $_POST["vid-lang-name"]; ?>" name="formName">
-                    <input type="hidden" name="CSRFToken" value="<?php echo generate_csrf("subtitle-review-form-" . $vidID . "-" . $_POST["vid-lang-name"]); ?>">
-                    <input type="hidden" name="vidID" value="<?php echo $_POST["vid-id"]; ?>">
+                    <input type="hidden" value="<?php echo "subtitle-review-form-" . $vidID . "-" . strtolower($_POST["vid-lang-name"]); ?>" name="formName">
+                    <input type="hidden" name="CSRFToken" value="<?php echo generate_csrf("subtitle-review-form-" . $vidID . "-" . strtolower($_POST["vid-lang-name"])); ?>">
+                    <input type="hidden" name="vidID" value="<?php echo $vidID; ?>">
                     <input type="hidden" name="user">
                     <input type="hidden" name="email">
                     <input type="hidden" name="language" value="<?php echo $_POST["vid-lang-name"]; ?>">

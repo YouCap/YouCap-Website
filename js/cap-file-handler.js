@@ -279,20 +279,23 @@ $("#overlay .popup.submission .buttons button.submit").click(function() {
     if($(".caption-list .caption").length <= 0)
         $("<p class='temporary warning'>Please add captions before submitting.</p>").insertBefore($(this).closest(".buttons"));
     else {
+        var googleUser = JSON.parse(sessionStorage.getItem("googleUser"));
+        
         var form = $(this).closest(".buttons").siblings("form");
         
         form.find("input[name=fileName]").val(vidID);
         form.find("input[name=content]").val(generateSBVContents());
-        form.find("input[name=user]").val("James");
+        form.find("input[name=user]").val(googleUser.Name);
+        form.find("input[name=email]").val(googleUser.Email);
         
-        form.find("input[name=nsfw]").val($("checkbox[name=nsfw-check] > input[type=checkbox]").prop("checked"));
+        form.find("input[name=nsfw]").val($(".checkbox[name=nsfw-check] > input[type=checkbox]").prop("checked"));
         
         $.ajax({
             url: '/backend/create-file.php',
             type: 'post',
             data: form.serialize(),
-            success: function(){
-                window.location = "/pages/thanks.php";
+            success: function(data){
+                window.location = "/pages/thanks?create";
             }
         });
     }

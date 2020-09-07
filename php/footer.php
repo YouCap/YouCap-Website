@@ -1,8 +1,9 @@
 <footer>
     <ul id="menu" style="top: -5px;">
-        <li><a href="/pages/about"><p>About</p></a></li>
+        <li><a href="/pages/organization/about"><p>About</p></a></li>
         <li><a href="/pages/create"><p>Create</p></a></li>
         <li><a href="/pages/review"><p>Review</p></a></li>
+        <li><a href="/pages/organization/extension"><p>Extension</p></a></li>
     </ul>
     <ul id="social">
         <li><a href="https://www.twitter.com/YouCap" target="_blank"><img src="/images/ex-icons/twitter.png" alt="View the YouCap Twitter page." height=27></a></li>

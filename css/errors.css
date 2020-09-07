@@ -1,0 +1,70 @@
+#main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    
+    background: linear-gradient(45deg, rgba(255,252,213,.8), rgba(255,0,0,0) 70.71%),
+        linear-gradient(-45deg, rgba(255,252,213,.8), rgba(0,255,0,0) 70.71%);
+}
+
+.error {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 80vw;
+    min-width: 400px;
+    font-size: 20vmax;
+}
+
+.error > h1 {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 100%;
+    font-weight: bold;
+    color: #FCBF40;
+    
+    display: inline-block;
+}
+
+.error > img {
+    position: relative;
+    display: inline-block;
+    width: 20vw; 
+    min-width: 120px;
+}
+
+#main-content > p {
+    margin-top: 20px;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 25px;
+    text-align: center;
+    padding: 0 20px;
+    
+    max-width: 800px;
+}
+
+#main-content > a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 20px;
+    
+    margin-top: 30px;
+    padding: 5px;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    
+    background-color: #d9a740;
+    border: none;
+    border-radius: 2px;
+    
+    color: white;
+    text-decoration: none;
+}
+
+#main-content > a:hover {
+    background-color: #ba9240;
+}

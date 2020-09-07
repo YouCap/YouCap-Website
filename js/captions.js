@@ -27,8 +27,8 @@ function setCaption(caption, temporary) {
 
 //Utils
 //Formats an entered value into a string in the format of MM:SS.MS
-function timeFormat(value) {    
-    if(value.match("^([0-9]*:)?[0-9]{2}:[0-9]{2}\\.[0-9]$"))
+function timeFormat(value) { 
+    if(value.match("^([0-9]*:)?[0-9]{2}:[0-9]{2}\\.[0-9]+$"))
         return value;
     
     var steps = ["[0-9]", "[0-9]", ":", "[0-9]", "[0-9]", ":", "[0-9]", "[0-9]", "\\.", "[0-9]+", ""];

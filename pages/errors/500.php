@@ -1,7 +1,7 @@
 <html>
     <head>
         <!-- Meta -->
-        <title>Thanks - YouCap</title>
+        <title>500 - YouCap</title>
         <?php include($_SERVER["DOCUMENT_ROOT"] . '/php/meta.php'); ?>
         
         <!-- Imports -->
@@ -11,17 +11,19 @@
         <link rel="stylesheet" type="text/css" href="/css/reset.css">
         <link rel="stylesheet" type="text/css" href="/css/stylesheet.css">
         <link rel="stylesheet" type="text/css" href="/css/studio-ui.css">
-        <link rel="stylesheet" type="text/css" href="/css/thanks.css">
+        <link rel="stylesheet" type="text/css" href="/css/errors.css">
     </head>
     <body>    
         <?php include($_SERVER["DOCUMENT_ROOT"] . "/php/nav.php"); ?>
         
         <div id="main-content">
-            <div class="bg"></div>
-            <h1 class="standard-ui">Thanks for Contributing!</h1>
-            <p>You're contributions are supporting those who rely on subtitles and captions to watch YouTube. <br>
-            <a href="/">Go Home</a>
-            </p>
+            <div class="error">
+                <h1>5</h1>
+                <img src="/images/icon.png">
+                <h1>0</h1>
+            </div>
+            <p>It seems something went wrong on our end. We're sorry for any inconvenience this may cause, but we assure you we're working on fixing it ASAP.</p>
+            <a href="/"><p>Go Home</p></a>
         </div>
         
         <?php include($_SERVER["DOCUMENT_ROOT"] . "/php/footer.php"); ?>

@@ -1,9 +1,12 @@
+ErrorDocument 400 /pages/errors/400.php
 ErrorDocument 403 /pages/errors/403.php
 ErrorDocument 404 /pages/errors/404.php
+ErrorDocument 500 /pages/errors/500.php
 
 RewriteEngine On
 RewriteRule (^|/)backend/creds.php(/|$) - [F]
 RewriteRule (^|/)backend/csrf-handler.php(/|$) - [F]
+RewriteRule (^|/)secrets(/|$) - [F]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]

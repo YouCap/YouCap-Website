@@ -1,6 +1,6 @@
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="keywords" content="YouCap, captions, community, YouTube, open-source">
-<meta name="description" content="YouCap is a service that offers a free, open-source alternative to the deprecated YouTube community captions system.">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="keywords" content="YouCap, captions, community, YouTube, open-source" />
+<meta name="description" content="YouCap is a service that offers a free, open-source alternative to the deprecated YouTube community captions system." />
 <meta name=”robots” content=”index,follow”>
 <link rel="canonical" href="localhost" />
 <meta property="og:title" content="YouCap: Open-Source YouTube Community Captioning" />

@@ -1,0 +1,160 @@
+nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background-color: transparent;
+    justify-content: flex-start;
+}
+
+nav > a {
+    margin-left: 20px;
+}
+
+nav > a > .img {
+    width: 175px;
+}
+
+nav > a > .img .mask {
+    width: 130px;
+}
+
+#main-content {
+    padding: 0;
+    background-color: white;
+    width: 100vw;
+    padding-bottom: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background-position: center center;
+    background-size: cover;
+    
+    width: 100%;
+    height: 400px;
+}
+
+.header > h1 {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 60px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    
+    max-width: 80%;
+    
+    padding: 10px;
+    border-bottom: solid white 5px;
+}
+
+#main-content > a:not(.anchor) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+    height: 35px;
+    margin: 30px auto;
+    
+    padding: 5px;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 18px;
+    
+    background-color: #d9a740;
+    border: none;
+    border-radius: 2px;
+    
+    color: white;
+    text-decoration: none;
+}
+
+#main-content > a:not(.anchor):hover {
+    background-color: #ba9240;
+}
+
+#main-content > h2, #main-content > h3, #main-content > p {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 21px;
+    
+    width: 80%;
+    max-width: 700px;
+    
+    margin: 20px auto;
+}
+
+#main-content p a {
+    color: #3cade8;
+}
+
+#main-content > ul {
+    width: 80%;
+    max-width: 700px;
+    
+    margin: 20px auto;
+}
+
+#main-content > div.badges {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+}
+
+#main-content > div.badges img {
+    transition: ease 0.4s;
+}
+
+#main-content > div.badges img:not(:last-child) {
+    margin-right: 20px;
+}
+
+#main-content > div.badges img:hover {
+    cursor: pointer;
+    transform: translateY(-10px);
+}
+
+#main-content > ul p {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 21px;
+    line-height: 21px;
+    
+    margin: 10px;
+}
+
+#main-content span.color-box {
+    display: inline-block;
+    border: 2px solid #727272;
+    width: 21px;
+    height: 21px;
+    float: right;
+}
+
+#main-content > h2, #main-content > h3 {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 50px;
+}
+
+#main-content > h3 {
+    font-size: 24px;
+}
+
+@media only screen and (max-width: 400px) {
+    nav > a {
+        margin-left: 10px;
+    }
+    
+    nav > a > .img {
+        width: 175px;
+    }
+
+    nav > a > .img .mask {
+        width: 0;
+    }
+}

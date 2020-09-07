@@ -1,0 +1,70 @@
+#main-content {
+    background-color: white;
+}
+
+#main-content > .bg {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 80px);
+    
+    background-image: url("/images/hd/nordwood-themes-8LfE0Lywyak-unsplash.jpg");
+    background-position: bottom center;
+    background-size: cover;
+    clip-path: polygon(100% 0, 100% 40%, calc(50% + 250px) calc(48% - 20px), calc(50% - 250px) calc(48% - 20px), 0 40%, 0% 0%);
+}
+
+#main-content > h1 {
+    position: absolute;
+    top: calc(48% + 21px);
+    left: 50%;
+    transform: translateX(-50%);
+    
+    width: 500px;
+    height: 50px;
+    padding: 20px 0;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-weight: bold;
+    font-size: 40px;
+    line-height: 40px;
+    text-align: center;
+    
+    background-color: white;
+}
+
+#main-content > p {
+    position: absolute;
+    top: calc(48% + 20px + 40px + 40px + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "Noto Sans", sans-serif;
+    font-size: 24px;
+    text-align: center;
+}
+
+#main-content p > a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 20px;
+    
+    margin-top: 30px;
+    padding: 5px;
+    
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    
+    background-color: #d9a740;
+    border: none;
+    border-radius: 2px;
+    
+    color: white;
+    text-decoration: none;
+}
+
+#main-content p > a:hover {
+    background-color: #ba9240;
+}

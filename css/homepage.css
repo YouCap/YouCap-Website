@@ -1,11 +1,12 @@
 #main-content {
-    display: flex;
+    display: grid;
+    grid-template-columns: 50% 50%;
 }
 
 #main-content > a {    
     position: relative;
-    height: calc(100vh - 80px);
-    width: calc(100%/3);
+    height: calc((2/3) * (100vh - 80px));
+    width: 100%;
     
     text-decoration: none;
 }
@@ -80,12 +81,12 @@
 
 @media only screen and (max-width: 700px) {
     #main-content {
-        flex-direction: column;
+        grid-template-columns: 100%;
     }
     
-    .selection {
-        height: calc((100vh - 80px)/3);
-        width: 100vw;
+    #main-content > a {
+        height: calc((100vh - 80px) * 0.4);
+        width: 100%;
     }
     
     .selection h2 {

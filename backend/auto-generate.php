@@ -10,6 +10,12 @@
         return $out;
     }
 
+    if(!isset($_GET['vid-id']))
+    {
+        http_response_code(400);
+        return;
+    }
+
     // get video id from url
     $video_url = 'https://www.youtube.com/watch?v=' . $_GET['vid-id'];
     preg_match("#(?<=v=)[a-zA-Z0-9-]+(?=&)|(?<=v\/)[^&\n]+(?=\?)|(?<=v=)[^&\n]+|(?<=youtu.be/)[^&\n]+#", $video_url, $matches);

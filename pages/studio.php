@@ -157,11 +157,13 @@
                     <button type="button" class="submit basic-button">Upload</button>
                 </div>
                 <form style="display: none;" action="/backend/create-file.php" method="post">
-                    <input type="hidden" value="subtitle-creation-form" name="formName">
-                    <input type="hidden" name="CSRFToken" value="<?php echo generate_csrf("subtitle-creation-form"); ?>">
+                    <input type="hidden" value="<?php echo "subtitle-creation-form-" . $_GET["vid-id"] . "-" . strtolower($_GET["vid-lang-name"]); ?>" name="formName">
+                    <input type="hidden" name="CSRFToken" value="<?php echo generate_csrf("subtitle-creation-form-" . $_GET["vid-id"] . "-" . strtolower($_GET["vid-lang-name"])); ?>">
                     <input type="hidden" name="fileName">
                     <input type="hidden" name="content">
                     <input type="hidden" name="user">
+                    <input type="hidden" name="email">
+                    <input type="hidden" name="vid-lang-name" value="<?php echo strtolower($_GET["vid-lang-name"]) ?>">
                     <input type="hidden" name="nsfw">
                 </form>
             </div>
