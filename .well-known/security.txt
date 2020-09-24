@@ -1,0 +1,6 @@
+Contact: mailto:YouCapService@gmail.com
+Encryption: https://www.youcap.com/.well-known/pgp.txt
+Acknowledgments: https://www.youcap.com/security
+Preferred-Languages: en
+Canonical: https://www.youcap.com/.well-known/security.txt
+Policy: https://www.youcap.com/security

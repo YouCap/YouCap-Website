@@ -14,8 +14,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png">
 <link rel="manifest" href="/images/icons/site.webmanifest">
-<link rel="mask-icon" href="/images/icons/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="mask-icon" href="/images/icons/safari-pinned-tab.svg" color="#d9a740">
 <link rel="shortcut icon" href="/images/icons/favicon.ico">
-<meta name="msapplication-TileColor" content="#00aba9">
+<meta name="msapplication-TileColor" content="#ffc40d">
 <meta name="msapplication-config" content="/images/icons/browserconfig.xml">
-<meta name="theme-color" content="#7bc1c6">
+<meta name="theme-color" content="#d9a740">

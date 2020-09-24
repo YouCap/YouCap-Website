@@ -3,6 +3,8 @@ ErrorDocument 403 /pages/errors/403.php
 ErrorDocument 404 /pages/errors/404.php
 ErrorDocument 500 /pages/errors/500.php
 
+Redirect /security /pages/organization/security
+
 RewriteEngine On
 RewriteRule (^|/)backend/creds.php(/|$) - [F]
 RewriteRule (^|/)backend/csrf-handler.php(/|$) - [F]

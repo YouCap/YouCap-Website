@@ -206,7 +206,11 @@
     <script src="/js/google-utils.js"></script>
     <script>
         onSignedIn = function() {
-            $(".popup.google-signin, #overlay").removeClass("show");
+            $(".popup.google-signin").removeClass("show");
+            
+            if($("#overlay .popup.show").length <= 0)
+                $("#overlay").removeClass("show");
+            
             $(".popup.submission input[name=user]").val(profile.getEmail());
         };
         
@@ -216,7 +220,7 @@
         
         fileExists("<?php echo $_GET['vid-id']; ?>", "<?php echo $_GET['vid-lang-name']; ?>", function(result) {
             if(result != "none")
-                $("#overlay, #overlay .popup.captions-exist").addClass("");
+                $("#overlay, #overlay .popup.captions-exist").addClass("show");
         });
     </script>
 </html>

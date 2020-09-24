@@ -93,6 +93,7 @@ function submitReview(rating) {
         },
         error: function(xhr, status, error) {
             $("<p class='warning'>The server returned a " + xhr.status + " error. Please contact support for more information.</p>").insertAfter($("#overlay .popup.submission > p"));
+            submitted = false;
         }
     })
 }

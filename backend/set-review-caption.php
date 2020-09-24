@@ -94,7 +94,7 @@
             if($row["rating"] >= RATING_THRESHOLD)
             {
                 $content = getCaptions($repo, $vidID);
-                $fileInfo = $client->api('repo')->contents()->create('YouCap', $repo, "published/$vidID", $content, "Committed by $user", "master", $committer);
+                $fileInfo = $client->api('repo')->contents()->create('YouCap', $repo, "published/$vidID", $content, "Committed by YouCap website", "master", $committer);
             }
             
             $fileInfo = $client->api('repo')->contents()->rm('YouCap', $repo, "review/$vidID", "Rating reached negative threshold. File removed by YouCap Website.", $row['sha'], "master", $committer);

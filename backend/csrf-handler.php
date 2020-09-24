@@ -13,7 +13,7 @@
 
     // Generates a CSRF token for a form.
     function generate_csrf($formName) {
-        return hash_hmac('sha256', $formName, $_SESSION["csrf_key"]);
+        return hash_hmac('sha256', session_id() . $formName, $_SESSION["csrf_key"]);
     }
 
     // Verifies that the CSRF token of a POST request from a specific form matches the expected value.
@@ -23,7 +23,7 @@
         
         return hash_equals(
             $post["CSRFToken"],                                             // Compare CSRF token from post request.
-            hash_hmac('sha256', $post["formName"], $_SESSION["csrf_key"])   // Mirror generation process with form name.
+            hash_hmac('sha256', session_id() . $post["formName"], $_SESSION["csrf_key"])   // Mirror generation process with form name.
         );
     }
 ?>

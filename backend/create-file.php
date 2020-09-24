@@ -48,7 +48,7 @@
 
 
     $committer = array('name' => 'YouCap Website', 'email' => 'youcapservice@gmail.com');
-    $fileInfo = $client->api('repo')->contents()->create('YouCap', "captions-$language-$repoNum", $path, $content, "Committed by $user", "master", $committer);
+    $fileInfo = $client->api('repo')->contents()->create('YouCap', "captions-$language-$repoNum", $path, $content, "Committed by YouCap website", "master", $committer);
     
 
     //From creds.php

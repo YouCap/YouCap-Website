@@ -64,7 +64,7 @@
     position: absolute;
     width: calc(100% + 20px);
     height: 4px;
-    background-color: #cceff1;
+    background-color: #ffeecc;
     top: 100%;
     left: -10px;
 }

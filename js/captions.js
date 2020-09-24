@@ -156,7 +156,7 @@ function setTimes(captionObj) {
     captionObj.find(".times .start-time").val(secondsToTime(start));
     captionObj.find(".times .end-time").val(secondsToTime(end));
     
-    return [start, end];
+    return [secondsToTime(start), secondsToTime(end)];
 }
 
 //Keeps a value clamped between two other values

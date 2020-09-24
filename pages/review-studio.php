@@ -106,7 +106,7 @@
             </div>
             <div class="popup submission">
                 <h2>Finish Review</h2>
-                <p>Having watched the video, click either the accept or reject buttons below. Altenatively, you can keep watching if you're still not sure. Read our <a href="/pages/standards" target="_blank">standards policy</a> if you're having trouble deciding whether to approve this submission or not.</p>
+                <p>Having watched the video, click either the accept or reject buttons below. Altenatively, you can keep watching if you're still not sure. Read our <a href="/pages/organization/help#standards" target="_blank">standards policy</a> if you're having trouble deciding whether to approve this submission or not.</p>
                 <div class="buttons">
                     <button type="button" class="cancel basic-button">Keep Watching</button>
                     <button type="button" class="reject submit basic-button">Reject</button>
@@ -157,7 +157,11 @@
     <script src="/js/google-utils.js"></script>
     <script>
         onSignedIn = function() {
-            $(".popup.google-signin, #overlay").removeClass("show");
+            $(".popup.google-signin").removeClass("show");
+            
+            if($("#overlay .popup.show").length <= 0)
+                $("#overlay").removeClass("show");
+            
             $(".popup.submission input[name=user]").val(profile.getEmail());
         };
         
