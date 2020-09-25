@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /backend
+Disallow: /css
+Disallow: /js
+Disallow: /php
+Disallow: /secrets
+Disallow: /vendor
+Disallow: /pages/errors

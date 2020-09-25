@@ -4,11 +4,15 @@ ErrorDocument 404 /pages/errors/404.php
 ErrorDocument 500 /pages/errors/500.php
 
 Redirect /security /pages/organization/security
+Redirect /about /pages/organization/about
+Redirect /humans.txt /.well-known/humans.txt
+Redirect /robots.txt /.well-known/robots.txt
 
 RewriteEngine On
 RewriteRule (^|/)backend/creds.php(/|$) - [F]
 RewriteRule (^|/)backend/csrf-handler.php(/|$) - [F]
 RewriteRule (^|/)secrets(/|$) - [F]
+RewriteRule (^|/)php(/|$) - [F]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]

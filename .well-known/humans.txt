@@ -1,0 +1,1 @@
+YouCap is a free, open-source alternative to YouTube's community captions. It was created after YouTube announced the discontinuation of their community captions service in an effort to preserve the idea of accessible information and content. Learn more at youcap.com/about

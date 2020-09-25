@@ -3,9 +3,20 @@
 <meta name="description" content="YouCap is a service that offers a free, open-source alternative to the deprecated YouTube community captions system." />
 <meta name=”robots” content=”index,follow”>
 <link rel="canonical" href="localhost" />
-<meta property="og:title" content="YouCap: Open-Source YouTube Community Captioning" />
-<meta property="og:type" content="website" />
-<meta property="og:description" content="YouCap is a free, open-source alternative to the recently deprecated YouTube community captioning system." />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="localhost">
+<meta property="og:title" content="YouCap - Open-Source YouTube Community Captions">
+<meta property="og:description" content="YouCap is a free, open-source alternative to the YouTube community captioning system.">
+<meta property="og:image" content="/images/hd/homepage.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="localhost">
+<meta property="twitter:title" content="YouCap - Open-Source YouTube Community Captions">
+<meta property="twitter:description" content="YouCap is a free, open-source alternative to the YouTube community captioning system.">
+<meta property="twitter:image" content="/images/hd/homepage.png">
 
 <meta name="google-signin-client_id" content="244600529413-0ari1hd8rrkkgk7696nbb4tg2bea4hii.apps.googleusercontent.com">
         

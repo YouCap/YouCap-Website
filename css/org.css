@@ -85,6 +85,7 @@ nav > a > .img .mask {
     max-width: 700px;
     
     margin: 20px auto;
+    line-height: 30px;
 }
 
 #main-content p a {
@@ -122,9 +123,9 @@ nav > a > .img .mask {
 #main-content > ul p {
     font-family: "Noto Sans", sans-serif;
     font-size: 21px;
-    line-height: 21px;
     
     margin: 10px;
+    line-height: 25px;
 }
 
 #main-content span.color-box {
