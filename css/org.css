@@ -12,14 +12,6 @@ nav > a {
     margin-left: 20px;
 }
 
-nav > a > .img {
-    width: 175px;
-}
-
-nav > a > .img .mask {
-    width: 130px;
-}
-
 #main-content {
     padding: 0;
     background-color: white;
@@ -144,18 +136,4 @@ nav > a > .img .mask {
 
 #main-content > h3 {
     font-size: 24px;
-}
-
-@media only screen and (max-width: 400px) {
-    nav > a {
-        margin-left: 10px;
-    }
-    
-    nav > a > .img {
-        width: 175px;
-    }
-
-    nav > a > .img .mask {
-        width: 0;
-    }
 }

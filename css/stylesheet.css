@@ -65,6 +65,16 @@ nav > a > .img h1 {
 
 
 
+@media only screen and (max-width: 435px) {    
+    nav > a > .img {
+        width: 175px;
+    }
+
+    nav > a > .img .mask {
+        width: 0;
+    }
+}
+
 
 
 
