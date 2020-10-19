@@ -6,3 +6,4 @@ Disallow: /php
 Disallow: /secrets
 Disallow: /vendor
 Disallow: /pages/errors
+Sitemap: https://www.youcap.video/sitemap.xml

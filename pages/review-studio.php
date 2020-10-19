@@ -125,7 +125,7 @@
             <div class="popup google-signin">
                 <h2>Sign-in Required</h2>
                 <p>To mitigate abuse, YouCap requires all captioners to sign-in to their Google accounts.</p>
-                <p>Since this uses Google's OAuth 2.0 library, you can rest assured that your information is protected. <a href="/pages/privacy.php">Learn more here</a>.</p>
+                <p>Since this uses Google's OAuth 2.0 library, you can rest assured that your information is protected. <a href="/pages/organization/privacy.php" target="_blank">Learn more here</a>.</p>
                 <div class="g-signin2" data-onsuccess="onSignIn"></div>
             </div>
             <div class="popup not-available">
