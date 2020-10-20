@@ -47,6 +47,25 @@
             <p>Any activity conducted as a part of this policy will be considered authorized and legal action against any involved parties will not be intiated. Should legal action be intiated by a third-party, in connection with activities conducted under this policy, we will take action to make it known that your activities were authorized under this policy.</p>
             <h3>How to Report</h3>
             <p>To report a vulnerability, please email it to us at <a href="mailto:youcapservice@gmail.com">YouCapService@gmail.com</a>.</p>
+            <p>If desired, the following PGP key may be used to encrypt files:</p>
+            <pre class="code">
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: FlowCrypt Email Encryption 7.9.0
+Comment: Seamlessly send and receive encrypted email
+
+xjMEX2wJghYJKwYBBAHaRw8BAQdAaKsbyTU507TzcHOuDRJ32GZ7S5AeZgYO
+ZA5wvg37VePNIVlvdSBDYXAgPHlvdWNhcHNlcnZpY2VAZ21haWwuY29tPsKP
+BBAWCgAgBQJfbAmCBgsJBwgDAgQVCAoCBBYCAQACGQECGwMCHgEAIQkQGRaR
+mlTFuBEWIQSdq/yzu64J2NDQeGEZFpGaVMW4EenHAQDVzuZ/tpklMdGZSFQg
+qPSYefllWBYKAuDPpMMdJsoF0QEA+vD7PW4HipYouR7V+iZYvpLMfR/ndfIf
+XfbpD1cVpgPOOARfbAmCEgorBgEEAZdVAQUBAQdAKfrM3HQP9gStt8pGuVDN
+sniG0onQS2a+iulXQwmbGg0DAQgHwngEGBYIAAkFAl9sCYICGwwAIQkQGRaR
+mlTFuBEWIQSdq/yzu64J2NDQeGEZFpGaVMW4EcSWAP4xjigKIjDPy61XyEWa
+wigFZ8sqo800K8pfb72xFQiWeQEAzaTJYUQrpWeOKuFtu5xPK+M4p4CBHCBI
+G7f+fGujAgQ=
+=qvTY
+-----END PGP PUBLIC KEY BLOCK-----
+            </pre>
             <h3>Report Standards</h3>
             <p>All vulnerability reports must include the following:</p>
             <ul>

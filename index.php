@@ -52,7 +52,7 @@
                 <p>Our goal is to provide captions for as many YouTube videos as possible, in as many languages as possible. To that end, we offer a caption studio to create new captions or review those created by others.</p>
                 <a href="/pages/create"><p>Start Creating</p></a>
             </div>
-            <div class="sep span2"></div>
+            <div class="sep span2"><div></div></div>
             <div class="span right">
                 <img src="images/illustrations/mobile-post-colour-800px.png" width="70%">
             </div>
@@ -61,7 +61,7 @@
                 <p>YouCap's website works in conjunction with a browser extension to offer a seamless experience for users. Simply install it on your device and navigate to YouTube. From there you'll have a nearly identical experience to YouTube's own caption system.</p>
                 <a href="/pages/organization/extension"><p>Get the Extension</p></a>
             </div>
-            <div class="sep span2"></div>
+            <div class="sep span2"><div></div></div>
             <div class="span left">
                 <img src="images/illustrations/unlock-800px.png" width="70%">
             </div>

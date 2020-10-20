@@ -84,6 +84,13 @@ nav > a {
     color: #3cade8;
 }
 
+#main-content pre.code {
+    font-family: "Courier New", monospace;
+    width: 80%;
+    max-width: 700px;
+    margin: 20px auto;
+}
+
 #main-content > ul {
     width: 80%;
     max-width: 700px;
