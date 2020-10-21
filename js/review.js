@@ -36,10 +36,12 @@ function onPlayerStateChanged() {
     }
 };
 
-var googleUser = JSON.parse(sessionStorage.getItem("googleUser"));
 function loadReviewCaptions() {
+    if(vidID == "-1")
+        return;
+    
     $.ajax({
-        url: "/backend/get-review-caption.php?print&vid-lang-name=" + langName.toLocaleLowerCase(),
+        url: "/backend/get-review-caption.php?print&vid-lang-name=" + langName.toLocaleLowerCase() + "&CSRFToken=" + CapCSRF + "&formName=captions,
         success: function(data) {
             player = new YT.Player('player', {
                 height: '390',
@@ -79,8 +81,8 @@ function submitReview(rating) {
     }
     
     var form = $("#overlay .popup.submission > form");
-    form.find("input[name=user]").val(googleUser.Name);
-    form.find("input[name=email]").val(googleUser.Email);
+    form.find("input[name=user]").val(profile.getName());
+    form.find("input[name=email]").val(profile.getEmail());
     form.find("input[name=rating]").val(rating);
     
     submitted = true;

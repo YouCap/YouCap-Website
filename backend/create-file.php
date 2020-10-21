@@ -22,7 +22,7 @@
     $path = "review/" . $vidID;
     $captionContent = base64_encode($_POST["content"]);
     $user = $_POST["user"];
-    $email = $_POST["email"];
+    $email = hash('sha256', $_POST["email"]);
     $language = strtolower($_POST["vid-lang-name"]);
     $nsfw = $_POST["nsfw"];
 

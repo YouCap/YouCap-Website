@@ -1,8 +1,7 @@
-<?php require($_SERVER["DOCUMENT_ROOT"] . "/backend/csrf-handler.php"); ?>
-
 <?php
     $user = $_POST["user"];
 
+    $csrfOverride = true;
     require($_SERVER["DOCUMENT_ROOT"] . "/backend/get-review-caption.php");
 ?>
 
@@ -150,6 +149,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
     
+    <script>
+        var CapCSRF = "<?php echo generate_csrf("captions"); ?>";
+    </script>
     <script src="/js/captions.js"></script>
     <script src="/js/review.js"></script>
         
@@ -162,10 +164,11 @@
             if($("#overlay .popup.show").length <= 0)
                 $("#overlay").removeClass("show");
             
-            $(".popup.submission input[name=user]").val(profile.getEmail());
+            $(".popup.submission input[name=name]").val(profile.getName());
+            $(".popup.submission input[name=email]").val(profile.getEmail());
         };
         
-        if(!isLoggedIn()) {
+        onNotSignedIn = function() {
             $(".popup.google-signin, #overlay").addClass("show");
         }
         

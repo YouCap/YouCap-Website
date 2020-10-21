@@ -1,8 +1,16 @@
 <?php
     require(__DIR__ . '/creds.php');
+    require(__DIR__ . '/csrf-handler.php');
 
     if(!isset($_SESSION))
         session_start();
+
+    if(!isset($csrfOverride) && !verify_csrf($_GET))
+    {
+        http_response_code(403);
+        header("Location: /pages/errors/403.php");
+        return;
+    }
 
     function chooseID($language, $user, $filters)
     {        
@@ -61,12 +69,16 @@
 
     if(!isset($_SESSION["cache-review-id"]) || $_SESSION["cache-review-id"] == "" || $_SESSION["cache-review-id"] == "-1")
     {
+        if(isset($user))
+            $vidInfo = chooseID(strtolower($_POST['vid-lang-name']), hash('sha256', $user), array(
+                "nsfw" => isset($_POST["nsfw"]) ? $_POST["nsfw"] : "false"
+            ));
         if(isset($_POST["vid-lang-name"]))
-            $vidInfo = chooseID(strtolower($_POST['vid-lang-name']), $_POST["user"], array(
+            $vidInfo = chooseID(strtolower($_POST['vid-lang-name']), hash('sha256', $_POST["user"]), array(
                 "nsfw" => isset($_POST["nsfw"]) ? $_POST["nsfw"] : "false"
             ));
         else
-            $vidInfo = chooseID(strtolower($_GET['vid-lang-name']), $_GET["user"], array(
+            $vidInfo = chooseID(strtolower($_GET['vid-lang-name']), hash('sha256', $_GET["user"]), array(
                 "nsfw" => isset($_GET["nsfw"]) ? $_GET["nsfw"] : "false"
             ));
                         

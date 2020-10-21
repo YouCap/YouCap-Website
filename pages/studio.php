@@ -214,7 +214,7 @@
             $(".popup.submission input[name=user]").val(profile.getEmail());
         };
         
-        if(!isLoggedIn()) {
+        onNotSignedIn = function() {
             $(".popup.google-signin, #overlay").addClass("show");
         }
         

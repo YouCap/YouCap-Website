@@ -1,6 +1,6 @@
 <?php
 
-    define("RATING_THRESHOLD", 1);
+    define("RATING_THRESHOLD", 3);
 
     require(__DIR__ . '/csrf-handler.php');
     if(!isset($_POST))
@@ -49,7 +49,7 @@
     $language = strtolower($_POST["language"]);
     $vidID = $_POST["vidID"];
     $user = $_POST["user"];
-    $email = $_POST["email"];
+    $email = hash('sha256', $_POST["email"]);
     $rating = $_POST["rating"];
 
     if(!is_numeric($rating) || (intval($rating) !== 1 && intval($rating) !== -1))
