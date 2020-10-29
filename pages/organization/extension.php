@@ -23,8 +23,8 @@
             <p>The YouCap extension allows you to access YouCap captions from any YouTube video that has been captioned. It interfaces with YouTube's player to provide a seamless experience from start to finish. Click the appropriate browser link below to get access to high-quality YouTube captions today!</p>
             
             <div class="badges">
-                <img src="/images/badges/chrome.png">
-                <img src="/images/badges/firefox.png">
+                <a href="https://chrome.google.com/webstore/detail/youcap/bcolhilfagkeohpjnffcmflomabbbkel" target="_blank"><img src="/images/badges/chrome.png"></a>
+                <a href="https://addons.mozilla.org/en-US/firefox/addon/youcap/" target="_blank"><img src="/images/badges/firefox.png"></a>
             </div>
         </div>
         
