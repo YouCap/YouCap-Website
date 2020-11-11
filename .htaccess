@@ -13,6 +13,7 @@ RewriteRule (^|/)backend/creds.php(/|$) - [F]
 RewriteRule (^|/)backend/csrf-handler.php(/|$) - [F]
 RewriteRule (^|/)secrets(/|$) - [F]
 RewriteRule (^|/)php(/|$) - [F]
+RewriteRule (^|/)vendor(/|$) - [F]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]

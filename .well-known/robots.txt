@@ -1,9 +1,16 @@
-User-agent: *
+User-agent: Twitterbot
+Disallow:
+
+User-agent: Googlebot
 Disallow: /backend
 Disallow: /css
+Disallow: /images
 Disallow: /js
 Disallow: /php
 Disallow: /secrets
 Disallow: /vendor
-Disallow: /pages/errors
+
+User-agent: *
+Disallow: /
+
 Sitemap: https://www.youcap.video/sitemap.xml

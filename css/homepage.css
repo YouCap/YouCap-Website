@@ -230,13 +230,3 @@ nav > a > .img .mask {
         border-bottom: solid 2px #e6e6e6;
     }
 }
-
-@media only screen and (max-width: 435px) {    
-    nav > a > .img {
-        width: 175px;
-    }
-
-    nav > a > .img .mask {
-        width: 0;
-    }
-}
