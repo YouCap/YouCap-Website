@@ -2,6 +2,7 @@
     "require": {
         "knplabs/github-api": "^2.15",
         "php-http/guzzle6-adapter": "^1.1",
-        "lcobucci/jwt": "^3.3"
+        "lcobucci/jwt": "^3.3",
+        "google/apiclient": "^2.8"
     }
 }

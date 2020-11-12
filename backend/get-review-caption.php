@@ -14,6 +14,16 @@
 
     function chooseID($language, $user, $filters)
     {        
+        $payload = validateGoogleIDToken($user);
+        if(!$payload)
+        {
+            echo "403";
+            http_response_code(403);
+            return;
+        }
+        
+        $user = $payload['sub'];
+        
         // Create connection (From creds.php)
         $conn = mysqliConnection();
         
@@ -57,10 +67,7 @@
         $infoFile = file_get_contents("https://raw.githubusercontent.com/YouCap/$repo/master/review/$vidID", false, $context);
         $json = json_decode($infoFile, true);
                                         
-        $content = $json["contents"];
-        $captions = base64_decode($content);
-        
-        return $captions;
+        return $json["contents"];
     }
 
     $vidID = "";
@@ -70,15 +77,15 @@
     if(!isset($_SESSION["cache-review-id"]) || $_SESSION["cache-review-id"] == "" || $_SESSION["cache-review-id"] == "-1")
     {
         if(isset($user))
-            $vidInfo = chooseID(strtolower($_POST['vid-lang-name']), hash('sha256', $user), array(
+            $vidInfo = chooseID(strtolower($_POST['vid-lang-name']), $user, array(
                 "nsfw" => isset($_POST["nsfw"]) ? $_POST["nsfw"] : "false"
             ));
         if(isset($_POST["vid-lang-name"]))
-            $vidInfo = chooseID(strtolower($_POST['vid-lang-name']), hash('sha256', $_POST["user"]), array(
+            $vidInfo = chooseID(strtolower($_POST['vid-lang-name']), $_POST["user"], array(
                 "nsfw" => isset($_POST["nsfw"]) ? $_POST["nsfw"] : "false"
             ));
         else
-            $vidInfo = chooseID(strtolower($_GET['vid-lang-name']), hash('sha256', $_GET["user"]), array(
+            $vidInfo = chooseID(strtolower($_GET['vid-lang-name']), $_GET["user"], array(
                 "nsfw" => isset($_GET["nsfw"]) ? $_GET["nsfw"] : "false"
             ));
                         

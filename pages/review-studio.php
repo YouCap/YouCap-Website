@@ -116,7 +116,7 @@
                     <input type="hidden" name="CSRFToken" value="<?php echo generate_csrf("subtitle-review-form-" . $vidID . "-" . strtolower($_POST["vid-lang-name"])); ?>">
                     <input type="hidden" name="vidID" value="<?php echo $vidID; ?>">
                     <input type="hidden" name="user">
-                    <input type="hidden" name="email">
+                    <input type="hidden" name="id">
                     <input type="hidden" name="language" value="<?php echo $_POST["vid-lang-name"]; ?>">
                     <input type="hidden" name="rating">
                 </form>

@@ -100,7 +100,7 @@
     <script>
         onSignedIn = function() {
             $(".popup.google-signin, #overlay").removeClass("show");
-            $("input[name=user]").val(profile.getEmail());
+            $("input[name=user]").val(profile.getId());
         };
         
         onNotSignedIn = function() {

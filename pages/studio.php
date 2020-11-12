@@ -162,7 +162,7 @@
                     <input type="hidden" name="fileName">
                     <input type="hidden" name="content">
                     <input type="hidden" name="user">
-                    <input type="hidden" name="email">
+                    <input type="hidden" name="id">
                     <input type="hidden" name="vid-lang-name" value="<?php echo strtolower($_GET["vid-lang-name"]) ?>">
                     <input type="hidden" name="nsfw">
                 </form>
@@ -211,7 +211,7 @@
             if($("#overlay .popup.show").length <= 0)
                 $("#overlay").removeClass("show");
             
-            $(".popup.submission input[name=user]").val(profile.getEmail());
+            $(".popup.submission input[name=user]").val(profile.getId());
         };
         
         onNotSignedIn = function() {

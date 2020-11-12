@@ -35,10 +35,7 @@
         $infoFile = file_get_contents("https://raw.githubusercontent.com/YouCap/$repo/master/review/$vidID", false, $context);
         $json = json_decode($infoFile, true);
                                 
-        $content = $json["contents"];
-        $captions = base64_decode($content);
-        
-        return $captions;
+        return filter_var($json["contents"], FILTER_SANITIZE_STRING);        
     }
 
 
@@ -49,8 +46,21 @@
     $language = strtolower($_POST["language"]);
     $vidID = $_POST["vidID"];
     $user = $_POST["user"];
-    $email = hash('sha256', $_POST["email"]);
+    $id = $_POST["id"];
     $rating = $_POST["rating"];
+
+    # Validate Google User ID
+    $payload = validateGoogleIDToken($id);
+    if(!$payload)
+    {
+        http_response_code(403);
+        echo "403";
+        return;
+    }
+    else
+    {
+        $id = $payload['sub'];
+    }
 
     if(!is_numeric($rating) || (intval($rating) !== 1 && intval($rating) !== -1))
     {
@@ -61,10 +71,10 @@
 
     $language = mysqli_real_escape_string($conn, $language);
     $vidID = mysqli_real_escape_string($conn, $vidID);
-    $email = mysqli_real_escape_string($conn, $email);
+    $id = mysqli_real_escape_string($conn, $id);
 
 
-    $sql = "SELECT `vidID` FROM `$language` WHERE `vidID`=\"$vidID\" AND `users` LIKE \"%$email%\"";
+    $sql = "SELECT `vidID` FROM `$language` WHERE `vidID`=\"$vidID\" AND `users` LIKE \"%$id%\"";
     $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
     if(sizeof(mysqli_fetch_array($result)) > 0)
     {
@@ -75,7 +85,7 @@
 
 
 
-    $sql = "UPDATE `$language` SET `rating`=`rating` + $rating,`users`=CONCAT(`users`, \",$email\") WHERE `vidID`=\"$vidID\"";
+    $sql = "UPDATE `$language` SET `rating`=`rating` + $rating,`users`=CONCAT(`users`, \",$id\") WHERE `vidID`=\"$vidID\"";
     mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
     $sql = "SELECT `repoID`, `rating`, `sha` FROM `$language` WHERE `vidID`=\"$vidID\"";

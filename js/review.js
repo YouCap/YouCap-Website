@@ -41,8 +41,8 @@ function loadReviewCaptions() {
         return;
     
     $.ajax({
-        url: "/backend/get-review-caption.php?print&vid-lang-name=" + langName.toLocaleLowerCase() + "&CSRFToken=" + CapCSRF + "&formName=captions,
-        success: function(data) {
+        url: "/backend/get-review-caption.php?print&vid-lang-name=" + langName.toLocaleLowerCase() + "&CSRFToken=" + CapCSRF + "&formName=captions",
+        success: function(data) {            
             player = new YT.Player('player', {
                 height: '390',
                 width: '640',
@@ -82,9 +82,9 @@ function submitReview(rating) {
     
     var form = $("#overlay .popup.submission > form");
     form.find("input[name=user]").val(profile.getName());
-    form.find("input[name=email]").val(profile.getEmail());
+    form.find("input[name=id]").val(token);
     form.find("input[name=rating]").val(rating);
-    
+        
     submitted = true;
     $.ajax({
         url: "/backend/set-review-caption.php",

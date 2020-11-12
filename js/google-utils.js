@@ -1,4 +1,5 @@
 var authInstance;
+var token;
 
 var onSignedIn;
 var onNotSignedIn;
@@ -29,19 +30,14 @@ loadAuthInstance();
 
 function onSignIn(googleUser) {
     profile = googleUser.getBasicProfile();
-    
-    var userInfo = {};
-    userInfo.Name = profile.getName();
-    userInfo.Email = profile.getEmail()
+    token = googleUser.getAuthResponse().id_token;
         
     if(onSignedIn)
         onSignedIn();
 }
 
 function isLoggedIn() {
-    console.log(authInstance);
-
-    return authInstance.isSignedIn().get();
+    return authInstance.isSignedIn.get();
 }
 
 function logout() {

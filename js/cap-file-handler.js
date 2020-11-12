@@ -58,7 +58,7 @@ function autoGen() {
     $("#options").addClass("generating");
     
     $.ajax({
-        url: "http://localhost/backend/auto-generate.php?vid-id=" + vidID,
+        url: "/backend/auto-generate.php?vid-id=" + vidID,
         success: function(data) {
             var captions = PARSER_YOUCAP(data);
                         
@@ -284,7 +284,7 @@ $("#overlay .popup.submission .buttons button.submit").click(function() {
         form.find("input[name=fileName]").val(vidID);
         form.find("input[name=content]").val(generateSBVContents());
         form.find("input[name=user]").val(profile.getName());
-        form.find("input[name=email]").val(profile.getEmail());
+        form.find("input[name=id]").val(token);
         
         form.find("input[name=nsfw]").val($(".checkbox[name=nsfw-check] > input[type=checkbox]").prop("checked"));
         

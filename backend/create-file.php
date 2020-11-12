@@ -18,16 +18,45 @@
     require(__DIR__ . '/creds.php');
     $client = githubClient();
 
+    # Get all of the POST variables.
     $vidID = $_POST["fileName"];
     $path = "review/" . $vidID;
-    $captionContent = base64_encode($_POST["content"]);
-    $user = $_POST["user"];
-    $email = hash('sha256', $_POST["email"]);
-    $language = strtolower($_POST["vid-lang-name"]);
-    $nsfw = $_POST["nsfw"];
 
+    # Filters HTML tags to prevent XSS
+    $captionContent = filter_var($_POST["content"], FILTER_SANITIZE_STRING);
+    $user = filter_var($_POST["user"], FILTER_SANITIZE_STRING);
+
+    # Get the username and ID
+    $id = $_POST["id"];
+
+    $language = strtolower($_POST["vid-lang-name"]);
+    $nsfw = strtolower($_POST["nsfw"]);
+
+    # Validate filter input
+    if($nsfw != "true" && $nsfw != "false")
+    {
+        http_response_code(400);
+        echo "400";
+        return;
+    }
+
+    # Get info on languages and repositories.
     $settings = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/backend/youcap-info.json"), true);
+
+    # Validate Google User ID
+    $payload = validateGoogleIDToken($id);
+    if(!$payload)
+    {
+        http_response_code(403);
+        echo "403";
+        return;
+    }
+    else
+    {
+        $id = $payload['sub'];
+    }
         
+    # Find the language and get the highest repository number. This is used to deal with repo size limits.
     $repoNum = 0;
     foreach($settings["languages"] as $languageOBJ)
     {
@@ -37,30 +66,33 @@
         }
     }
 
+    # Create the submission object to upload to Github (after JSON encoding).
+    $submit = array(
+        "author" => $user,
+        "language" => $language,
+        "contents" => $captionContent,
+        "nsfw" => $nsfw
+    );
 
-
-    $content = "{
-        \"author\": \"$user\",
-        \"language\": \"$language\",
-        \"contents\": \"$captionContent\",
-        \"nsfw\": $nsfw
-    }";
-
-
+    # Committed by the YouCap website.
     $committer = array('name' => 'YouCap Website', 'email' => 'youcapservice@gmail.com');
-    $fileInfo = $client->api('repo')->contents()->create('YouCap', "captions-$language-$repoNum", $path, $content, "Committed by YouCap website", "master", $committer);
+
+    # Uploads the JSON encoded content to the review repository.
+    $fileInfo = $client->api('repo')->contents()->create('YouCap', "captions-$language-$repoNum", $path, json_encode($submit), "Committed by YouCap website", "master", $committer);
     
 
-    //From creds.php
+    # Get the SQL connection from creds.php
     $conn = mysqliConnection();
-
+    
+    # Save the important info.
     $language = mysqli_real_escape_string($conn, $language);
     $vidID = mysqli_real_escape_string($conn, $vidID);
-    $email = mysqli_real_escape_string($conn, $email);
+    $id = mysqli_real_escape_string($conn, $id);
     $nsfw = mysqli_real_escape_string($conn, $nsfw);
     $sha = $fileInfo["content"]["sha"];
 
-    $sql = "INSERT INTO `$language`(`vidID`, `repoID`, `rating`, `users`, `sha`, `filters`) VALUES ('$vidID', $repoNum, 0, '$email', '$sha', 'nsfw=$nsfw')";
+    # Construct the SQL and submit.
+    $sql = "INSERT INTO `$language`(`vidID`, `repoID`, `rating`, `users`, `sha`, `filters`) VALUES ('$vidID', $repoNum, 0, '$id', '$sha', 'nsfw=$nsfw')";
     mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
 ?>

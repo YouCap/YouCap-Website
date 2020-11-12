@@ -9,15 +9,13 @@ $("#options button[type=submit]").click(function(event) {
         return;
     }
     
-    var googleUser = JSON.parse(sessionStorage.getItem("googleUser"));
-    
-    $("#main-content > form input[name=user]").val(googleUser.Email);
+    $("#main-content > form input[name=user]").val(token);
     
     $("#main-content > form").submit();
     
 //    $.ajax({
 //        url: "/pages/review-studio.php?vid-lang=" + $("input[name=vid-lang]").val() + "&vid-lang-name=" + $("input[name=vid-lang-name]").val(),
-//        data: "user=" + googleUser.Email,
+//        data: "user=" + googleUser.Id,
 //    })
 });
     
@@ -29,9 +27,7 @@ $("#overlay .popup.nsfw .buttons button.submit").click(function() {
         return;
     }
     
-    var googleUser = JSON.parse(sessionStorage.getItem("googleUser"));
-    
-    $("#main-content > form input[name=user]").val(googleUser.Email);
+    $("#main-content > form input[name=user]").val(token);
     
     $("#main-content > form").submit();
 });

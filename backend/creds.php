@@ -47,4 +47,12 @@
         
         return $conn;
     }
+
+    function validateGoogleIDToken($id_token) {
+        $credJSON = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/secrets/secrets.json"), true)["google"];
+        
+        $client = new Google_Client(['client_id' => $credJSON["clientID"]]);
+        
+        return $client->verifyIdToken($id_token);
+    }
 ?>
