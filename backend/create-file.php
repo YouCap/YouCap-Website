@@ -24,7 +24,7 @@
 
     # Filters HTML tags to prevent XSS
     $captionContent = filter_var($_POST["content"], FILTER_SANITIZE_STRING);
-    $user = filter_var($_POST["user"], FILTER_SANITIZE_STRING);
+    $user = filter_var(/*$_POST["user"]*/"Anonymous", FILTER_SANITIZE_STRING);
 
     # Get the username and ID
     $id = $_POST["id"];
