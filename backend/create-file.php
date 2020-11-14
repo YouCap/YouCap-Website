@@ -23,8 +23,8 @@
     $path = "review/" . $vidID;
 
     # Filters HTML tags to prevent XSS
-    $captionContent = filter_var($_POST["content"], FILTER_SANITIZE_STRING);
-    $user = filter_var(/*$_POST["user"]*/"Anonymous", FILTER_SANITIZE_STRING);
+    $captionContent = htmlspecialchars($_POST["content"], ENT_QUOTES);
+    $user = htmlspecialchars(/*$_POST["user"]*/"Anonymous", ENT_QUOTES);
 
     # Get the username and ID
     $id = $_POST["id"];

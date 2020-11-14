@@ -103,7 +103,7 @@
         {
             if($row["rating"] >= RATING_THRESHOLD)
             {
-                $content = getCaptions($repo, $vidID);
+                $content = htmlspecialchars(getCaptions($repo, $vidID), ENT_QUOTES);
                 $fileInfo = $client->api('repo')->contents()->create('YouCap', $repo, "published/$vidID", $content, "Committed by YouCap website", "master", $committer);
             }
             

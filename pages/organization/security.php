@@ -79,6 +79,32 @@ G7f+fGujAgQ=
             
             <h2>Researcher Hall of Fame</h2>
             <p>Below is a list of security researchers who reported verifiable vulnerabilities to YouCap.</p>
+            <ul style="list-style-type: disc;">
+                <?php
+
+                    $researchers = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/backend/security-researchers.json"), true);
+                    foreach($researchers["researchers"] as $researcher)
+                    {
+                        echo "<li>";
+                        
+                        if($researcher["name"] != "")
+                            echo "<p><b>" . htmlspecialchars($researcher["name"], ENT_QUOTES) . "</b>";
+                        
+                        if($researcher["email"] != "")
+                            echo " (" . htmlspecialchars($researcher["email"], ENT_QUOTES) . ")</p>";
+                        else
+                            echo "</p>";
+                        
+                        if($researcher["company"] != "")
+                            echo "<p><i>" . htmlspecialchars($researcher["company"], ENT_QUOTES) . "</i></p>";
+                        if($researcher["site"] != "")
+                            echo "<p><a href=" . htmlspecialchars($researcher["site"], ENT_QUOTES) . " target='_blank'>" . htmlspecialchars($researcher["site"], ENT_QUOTES) . "</a></p>";
+                        
+                        echo "</li>";
+                    }
+
+                ?>
+            </ul>
         </div>
         
         <?php include($_SERVER["DOCUMENT_ROOT"] . "/php/footer.php"); ?>
