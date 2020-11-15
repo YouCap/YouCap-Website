@@ -1,6 +1,6 @@
 # YouCap Website
 
-This repository houses the source code for the YouCap website.
+This repository houses the source code for the YouCap website. (Hosted at https://youcap.video)
 
 ## Missing Files
 
