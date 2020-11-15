@@ -7,7 +7,7 @@ This repository houses the source code for the YouCap website.
 Due to certain security and storage concerns, there are a number of folders that were excluded from the uploaded content. The following files exist in the live site, but are not displayed here in the source code:
 
 1. secrets.json - A file containing API keys and SQL database credentials. A template is included in the repository, but the values must be replaced.
-2. vendor/ - A folder containing the necessary PHP libraries.
+2. vendor/ - A folder containing the necessary PHP libraries. These can be installed using composer.
 
 ## Security Vulnerabilites
 
