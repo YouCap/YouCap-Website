@@ -32,7 +32,7 @@
 
         $context = stream_context_create($opts);
         
-        $infoFile = file_get_contents("https://raw.githubusercontent.com/YouCap/$repo/master/review/$vidID", false, $context);
+        $infoFile = file_get_contents("https://raw.githubusercontent.com/YouCap/$repo/main/review/$vidID", false, $context);
         $json = json_decode($infoFile, true);
                                 
         return filter_var($json["contents"], FILTER_SANITIZE_STRING);        
@@ -104,10 +104,10 @@
             if($row["rating"] >= RATING_THRESHOLD)
             {
                 $content = htmlspecialchars(getCaptions($repo, $vidID), ENT_QUOTES);
-                $fileInfo = $client->api('repo')->contents()->create('YouCap', $repo, "published/$vidID", $content, "Committed by YouCap website", "master", $committer);
+                $fileInfo = $client->api('repo')->contents()->create('YouCap', $repo, "published/$vidID", $content, "Committed by YouCap website", "main", $committer);
             }
             
-            $fileInfo = $client->api('repo')->contents()->rm('YouCap', $repo, "review/$vidID", "Rating reached negative threshold. File removed by YouCap Website.", $row['sha'], "master", $committer);
+            $fileInfo = $client->api('repo')->contents()->rm('YouCap', $repo, "review/$vidID", "Rating reached negative threshold. File removed by YouCap Website.", $row['sha'], "main", $committer);
 
             $sql = "DELETE FROM `$language` WHERE `vidID`=\"$vidID\"";
             mysqli_query($conn, $sql) or die(mysqli_error($conn));

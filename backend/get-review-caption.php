@@ -64,7 +64,7 @@
 
         $context = stream_context_create($opts);
         
-        $infoFile = file_get_contents("https://raw.githubusercontent.com/YouCap/$repo/master/review/$vidID", false, $context);
+        $infoFile = file_get_contents("https://raw.githubusercontent.com/YouCap/$repo/main/review/$vidID", false, $context);
         $json = json_decode($infoFile, true);
                                         
         return $json["contents"];

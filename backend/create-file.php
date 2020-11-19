@@ -78,7 +78,7 @@
     $committer = array('name' => 'YouCap Website', 'email' => 'youcapservice@gmail.com');
 
     # Uploads the JSON encoded content to the review repository.
-    $fileInfo = $client->api('repo')->contents()->create('YouCap', "captions-$language-$repoNum", $path, json_encode($submit), "Committed by YouCap website", "master", $committer);
+    $fileInfo = $client->api('repo')->contents()->create('YouCap', "captions-$language-$repoNum", $path, json_encode($submit), "Committed by YouCap website", "main", $committer);
     
 
     # Get the SQL connection from creds.php

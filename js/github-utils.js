@@ -1,7 +1,7 @@
 //Returns a string of 'none', 'review', or 'published', representing that no file exists, one is in review, or one has been pubished respectively.
 function fileExists(vidID, language, onResult) {    
     $.ajax({
-        url: "https://raw.githubusercontent.com/YouCap/captions-" + language.toLocaleLowerCase() + "-0/master/" + vidID,
+        url: "https://raw.githubusercontent.com/YouCap/captions-" + language.toLocaleLowerCase() + "-0/main/" + vidID,
         success: function(data, textStatus, xhr) {
             if(xhr.status == 200)
                 onResult('published');
@@ -19,7 +19,7 @@ function fileInReview(vidID, language) {
            return true;
     };
         
-    xhttp.open("GET", "https://raw.githubusercontent.com/YouCap/captions-" + language.toLocaleLowerCase() + "-review-0/master/" + vidID, false);
+    xhttp.open("GET", "https://raw.githubusercontent.com/YouCap/captions-" + language.toLocaleLowerCase() + "-review-0/main/" + vidID, false);
     xhttp.send();
     
     return false;
