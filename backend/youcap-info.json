@@ -17,6 +17,78 @@
             "code": "fr",
             "max-review-repo-number": "0",
             "max-repo-number": "0"
+        },
+        {
+            "name": "Mandarin Chinese",
+            "code": "cmn",
+            "max-review-repo-number": "0",
+            "max-repo-number": "0"
+        },
+        {
+            "name": "Hindi",
+            "code": "hi",
+            "max-review-repo-number": "0",
+            "max-repo-number": "0"
+        },
+        {
+            "name": "Russian",
+            "code": "ru",
+            "max-review-repo-number": "0",
+            "max-repo-number": "0"
+        },
+        {
+            "name": "Japanese",
+            "code": "ja",
+            "max-review-repo-number": "0",
+            "max-repo-number": "0"
+        },
+        {
+            "name": "Bengali",
+            "code": "bn",
+            "max-review-repo-number": "0",
+            "max-repo-number": "0"
+        },
+        {
+            "name": "Portuguese",
+            "code": "pt",
+            "max-review-repo-number": "0",
+            "max-repo-number": "0"
+        },
+        {
+            "name": "Telugu",
+            "code": "te",
+            "max-review-repo-number": "0",
+            "max-repo-number": "0"
+        },
+        {
+            "name": "Wu Chinese",
+            "code": "wuu",
+            "max-review-repo-number": "0",
+            "max-repo-number": "0"
+        },
+        {
+            "name": "Turkish",
+            "code": "tr",
+            "max-review-repo-number": "0",
+            "max-repo-number": "0"
+        },
+        {
+            "name": "Korean",
+            "code": "ko",
+            "max-review-repo-number": "0",
+            "max-repo-number": "0"
+        },
+        {
+            "name": "German",
+            "code": "de",
+            "max-review-repo-number": "0",
+            "max-repo-number": "0"
+        },
+        {
+            "name": "Italian",
+            "code": "it",
+            "max-review-repo-number": "0",
+            "max-repo-number": "0"
         }
     ]
 }
