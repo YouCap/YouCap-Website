@@ -14,6 +14,9 @@
 
     function chooseID($language, $user, $filters)
     {        
+        //Get the global review database name variable
+        global $sqlReviewDatabase;
+        
         $payload = validateGoogleIDToken($user);
         if(!$payload)
         {
@@ -27,11 +30,11 @@
         // Create connection (From creds.php)
         $conn = mysqliConnection();
         
-        $language = mysqli_real_escape_string($conn, $language);
+        $language = preg_replace('/\s+/', '_', strtolower(mysqli_real_escape_string($conn, $language)));
         $user = mysqli_real_escape_string($conn, $user);
         
         $sql = 
-        "SELECT * FROM `$language` WHERE `users` NOT LIKE '%$user%'";
+        "SELECT * FROM `$sqlReviewDatabase` WHERE `language`=\"$language\" AND `users` NOT LIKE '%$user%'";
         
         if($filters["nsfw"] == "false")
             $sql = $sql . " AND `filters` LIKE '%nsfw=false%'";

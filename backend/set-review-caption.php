@@ -43,7 +43,7 @@
     require(__DIR__ . '/creds.php');
     $conn = mysqliConnection();
 
-    $language = strtolower($_POST["language"]);
+    $language = preg_replace('/\s+/', '_', strtolower($_POST["language"]));
     $vidID = $_POST["vidID"];
     $user = $_POST["user"];
     $id = $_POST["id"];
@@ -74,7 +74,7 @@
     $id = mysqli_real_escape_string($conn, $id);
 
 
-    $sql = "SELECT `vidID` FROM `$language` WHERE `vidID`=\"$vidID\" AND `users` LIKE \"%$id%\"";
+    $sql = "SELECT `vidID` FROM `$sqlReviewDatabase` WHERE `vidID`=\"$vidID\" AND `language`=\"$language\" AND `users` LIKE \"%$id%\"";
     $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
     if(sizeof(mysqli_fetch_array($result)) > 0)
     {
@@ -85,10 +85,10 @@
 
 
 
-    $sql = "UPDATE `$language` SET `rating`=`rating` + $rating,`users`=CONCAT(`users`, \",$id\") WHERE `vidID`=\"$vidID\"";
+    $sql = "UPDATE `$sqlReviewDatabase` SET `rating`=`rating` + $rating,`users`=CONCAT(`users`, \",$id\") WHERE `vidID`=\"$vidID\" AND `language`=\"$language\"";
     mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
-    $sql = "SELECT `repoID`, `rating`, `sha` FROM `$language` WHERE `vidID`=\"$vidID\"";
+    $sql = "SELECT `repoID`, `rating`, `sha` FROM `$sqlReviewDatabase` WHERE `vidID`=\"$vidID\" AND `language`=\"$language\"";
     $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
     $row = mysqli_fetch_array($result);

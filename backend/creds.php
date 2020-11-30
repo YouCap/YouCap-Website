@@ -31,12 +31,17 @@
         return $github;
     }
 
+    $sqlReviewDatabase = "";
+
     function mysqliConnection() {
         $credJSON = json_decode(file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/secrets/secrets.json"), true)["mysql"];
 
         $sqlServer = $credJSON["servername"];
         $sqlUsername = $credJSON["username"];
         $sqlPassword = $credJSON["password"];
+        
+        global $sqlReviewDatabase;
+        $sqlReviewDatabase = $credJSON["review_db"];
         
         $conn = new mysqli($sqlServer, $sqlUsername, $sqlPassword, "review_users");
         

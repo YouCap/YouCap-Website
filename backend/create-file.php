@@ -29,7 +29,7 @@
     # Get the username and ID
     $id = $_POST["id"];
 
-    $language = strtolower($_POST["vid-lang-name"]);
+    $language = preg_replace('/\s+/', '_', strtolower($_POST["vid-lang-name"]));
     $nsfw = strtolower($_POST["nsfw"]);
 
     # Validate filter input
@@ -92,7 +92,7 @@
     $sha = $fileInfo["content"]["sha"];
 
     # Construct the SQL and submit.
-    $sql = "INSERT INTO `$language`(`vidID`, `repoID`, `rating`, `users`, `sha`, `filters`) VALUES ('$vidID', $repoNum, 0, '$id', '$sha', 'nsfw=$nsfw')";
+    $sql = "INSERT INTO `$sqlReviewDatabase`(`vidID`, `repoID`, `language`, `rating`, `users`, `sha`, `filters`) VALUES ('$vidID', $repoNum, '$language', 0, '$id', '$sha', 'nsfw=$nsfw')";
     mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
 ?>
