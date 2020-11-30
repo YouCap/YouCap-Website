@@ -1,7 +1,7 @@
 <html>
     <head>        
         <!-- Meta -->
-        <title>Create Caption - YouCap</title>
+        <title>Review Caption - YouCap</title>
         <?php include($_SERVER["DOCUMENT_ROOT"] . '/php/meta.php'); ?>
         
         <!-- Imports -->

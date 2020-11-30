@@ -108,6 +108,6 @@
         $print = isset($_GET["print"]);
 
     if(isset($print) && $print && $vidID != "-1")
-        echo htmlspecialchars(getCaptions("captions-" . $_GET["vid-lang-name"] . "-$repoID", $vidID));
+        echo getCaptions("captions-" . $_GET["vid-lang-name"] . "-$repoID", $vidID);
 
 ?>

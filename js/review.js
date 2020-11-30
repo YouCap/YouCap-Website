@@ -57,8 +57,6 @@ function loadReviewCaptions() {
             });
                             
             var captions = PARSER_YOUCAP_SBV(data);
-            
-            console.log(captions);
                                     
             for(var i = 0; i < captions.length; i++) {
                 $("<div class='review-caption' data-caption-id='" + i + "' data-seconds=" + captions[i][0] + "><p class='start-time inline'>" + secondsToTime(captions[i][0]) + "</p><p class='caption-text inline'>" + captions[i][2] + "</p></div>").appendTo($(".caption-list"));
