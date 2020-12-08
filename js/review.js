@@ -28,7 +28,7 @@ function onPlayerStateChanged() {
     } else if(currState == YT.PlayerState.PAUSED || currState == YT.PlayerState.ENDED) {
         clearInterval(capInterval);
         
-        if(submitted || !timesWatched.every(function(caption) {
+        if(submitted || timesWatched.every(function(caption) {
             return caption == 1;
         })) {
             $("#submit-button").click();
