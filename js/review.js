@@ -123,7 +123,6 @@ function changeReviewCaption() {
             
         if(oldValue != currReviewCaption.attr("data-caption-id")) {
             $(".caption-list").scrollTop(currReviewCaption.position().top - $(".review-caption:first-of-type").position().top - $(".caption-list").height()/2 + currReviewCaption.height());
-            console.log("HELLO");
         }
         
         oldValue = currReviewCaption.attr("data-caption-id");
