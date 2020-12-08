@@ -11,6 +11,7 @@ window.onYouTubeIframeAPIReady = function() {
     player = new YT.Player('player', {
         height: '390',
         width: '640',
+        host: 'https://www.youtube-nocookie.com',
         videoId: vidID,
         events: {
             'onReady': onPlayerReady,
