@@ -100,14 +100,49 @@ button.add-caption:not(.error):hover {
 }
 
 .caption .times {
+    position: relative;
     display: inline-block;
-    width: calc(20% - 10px);
+    width: calc(20% - 10px - 5px);
     height: calc(100% - 10px);
     margin-right: 10px;
     
-    padding: 3px 0;
+    padding: 3px 0 3px 5px;
     
     vertical-align: top;
+}
+
+.caption .times .snap-buttons {
+    position: absolute;
+    height: calc(100% - 4px);
+    top: 4px;
+    right: calc(100% - 2px);
+}
+
+.caption .times .snap-buttons .snap-button {
+    width: auto;
+    height: auto;
+    padding: 0;
+    
+    background-color: #D9A740;
+    border: solid 1px #D9A740;
+}
+
+.caption .times .snap-buttons .snap-button:not(:first-of-type) {
+    margin-top: 2px;
+}
+
+.caption .times .snap-buttons .snap-button:hover, .caption .times .snap-buttons .snap-button:focus {
+    background-color: #AA7F29;
+    border-color: #AA7F29;
+}
+
+.caption .times .snap-buttons .snap-button:active {
+    background-color: #86682C;
+    border-color: #86682C;
+}
+
+.caption .times .snap-buttons .snap-button img {
+    margin: 1px;
 }
 
 .caption .times input {
@@ -420,6 +455,66 @@ button.add-caption:not(.error):hover {
 .waveform .playhead:hover {
     cursor: pointer;
 }
+
+
+.waveform #current-time-label {
+    position: absolute;
+    display: flex;
+        
+    left: 0px;
+    bottom: 2px;
+    width: 125px;
+    height: 14px;
+    
+    justify-content: center;
+    align-items: center;
+    
+    background-color: gray;
+    opacity: 0;
+    border-radius: 10px;
+    
+    transition: opacity ease 0.2s;
+    
+    pointer-events: none;
+    z-index: 3;
+}
+
+.waveform #current-time-label.show {
+    opacity: 1;
+}
+
+.waveform #current-time-label p {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 11px;
+    color: white;
+    text-align: center;
+}
+
+.waveform #current-time-label:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 0;
+	height: 0;
+	border: 10px solid transparent;
+	border-bottom-color: gray;
+	border-top: 0;
+	margin-left: -10px;
+	margin-top: -10px;
+}
+
+.waveform #current-time-label.left:after {
+    margin-left: -57px;
+}
+
+.waveform #current-time-label.right:after {
+    margin-left: 38px;
+}
+
+
+
+
 
 .waveform .scroll {
     width: 100%;

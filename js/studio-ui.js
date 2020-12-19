@@ -22,7 +22,7 @@ $("button.select > div div").click(function(event) {
 });
 
 //For creating new caption and caption box items
-const CAPTION_ITEM = '<div class="caption"><div class="times"><input type="text" class="start-time" placeholder="00:00.0"><input type="text" class="end-time" placeholder="00:00.5"></div><textarea placeholder="Enter subtitle" class="caption-text"></textarea><div class="buttons"> <button class="delete" type="button"><img src="/images/page-icons/close.png" width=20></button> <button class="insert" type="button"><img src="/images/page-icons/add.png" width=11></button></div><div class="buttons arrow"><button type="button" class="arrow up"><img src="/images/page-icons/arrow.png" width=16></button><button type="button" class="arrow down"><img src="/images/page-icons/arrow.png" width=16></button></div></div>';
+const CAPTION_ITEM = '<div class="caption"><div class="times"><div class="snap-buttons"><button data-time-index="1" class="snap-button" type="button"><img src="/images/page-icons/snap.png" height="12"></button><button data-time-index="2" class="snap-button" type="button"><img src="/images/page-icons/snap.png" height="12"></button></div><input type="text" class="start-time" placeholder="00:00.0"><input type="text" class="end-time" placeholder="00:00.5"></div><textarea placeholder="Enter subtitle" class="caption-text"></textarea><div class="buttons"> <button class="delete" type="button"><img src="/images/page-icons/close.png" width=20></button> <button class="insert" type="button"><img src="/images/page-icons/add.png" width=11></button></div><div class="buttons arrow"><button type="button" class="arrow up"><img src="/images/page-icons/arrow.png" width=16></button><button type="button" class="arrow down"><img src="/images/page-icons/arrow.png" width=16></button></div></div>';
 const CAPTION_BOX_ITEM = '<div class="caption-box" data-caption-id="0"><span class="left-handle"></span><p class="caption-text"></p><span class="blocker"></span><span class="right-handle"></span></div>';
 
 $(document).on({
@@ -32,8 +32,11 @@ $(document).on({
         $(this).addClass("selected");
         
         var time = timeToSeconds($(this).find(".times input.start-time").val());
+        
+        var captionBox = $(".caption-box[data-caption-id='" + $(this).attr("data-caption-id") + "']");
+        
         player.seekTo(time, true);
-        updatePlayhead(time);
+        updatePlayhead(time, $(this));
     }
 }, ".caption")
 .on({
@@ -172,6 +175,40 @@ $(document).on({
             player.pauseVideo();
     }
 }, ".caption .times input")
+.on({
+    mouseup: function() {
+        //The new time to set the boundary to
+        var newTime = timeFormat(secondsToTime(player.getCurrentTime()));
+        
+        //Get the nearest caption box in the proper direction.
+        var restrictingCaptionBox = $(".caption-boxes .caption-box[data-caption-id='" + 
+          $(this).parentsUntil(".caption").parent().attr($(this).attr("data-time-index") == "1" ? "data-caption-id-prev" : "data-caption-id-next") + 
+        "']");
+        
+        console.log(restrictingCaptionBox);
+        
+        //If there is a restricting caption box, use it to limit the time.
+        if(restrictingCaptionBox.length > 0) {
+            var restrictingCaption = $(".caption[data-caption-id='" + restrictingCaptionBox.attr("data-caption-id") + "']");
+            console.log(restrictingCaption);
+            console.log(newTime);
+            
+            //Set the new time to be limited by a restricting box.
+            if($(this).attr("data-time-index") == "1")
+                newTime = restrictingCaption.find("input.end-time").val();
+            else
+                newTime = restrictingCaption.find("input.start-time").val();
+            
+            console.log(newTime);
+        }
+        
+        var timeInput = $(this).parent(".snap-buttons").find("~ input:nth-of-type(" + $(this).attr("data-time-index") + ")");
+        timeInput.val(newTime);
+        timeInput.trigger("keyup");
+        
+        drawTicks($("canvas")[0], currZoom);
+    }
+}, ".caption .times .snap-button")
 .on({
     click: function() {
         var currID = $(this).closest(".caption").attr("data-caption-id");
