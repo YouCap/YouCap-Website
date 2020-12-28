@@ -61,11 +61,7 @@ function onPlayerReady() {
             
             //Adjust the scrollbar position
             
-            //Get the ratio between the timeline and its container & the scrollbar and its container.
-            var ratio = -ui.position.left/($(".waveform .caption-boxes").width() - $(".waveform").width());
-            
-            //Set the scrollnar's left position based on that ratio
-            $(".waveform .scroll .scrollbar").css("left", ratio * ($(".waveform .scroll").width() - SCROLL_BAR_WIDTH))
+            updateScrollbar(ui.position.left);
             
             //Set the current time
             currTime = Math.ceil(-ui.position.left/tickSep);
@@ -121,11 +117,14 @@ var mouseDown = false;
 $(document).on({
     mousedown: function(event) {
         oldMousePosX = event.pageX;
+        oldLeft = $(this).parent().position().left;
         oldWidth = $(this).parent().width();
         maxRight = getMaxRight($(this).closest(".caption-box"));
-        //maxRight = captionBoxToRight($(this).closest(".caption-box"));
+        
         mouseDown = true;
         $(this).addClass("dragging");
+        
+        $("#current-time-label").removeClass("left").addClass("right");
 
         event.stopPropagation();
     }
@@ -136,9 +135,11 @@ $(document).on({
         oldLeft = $(this).parent().position().left;
         oldWidth = $(this).parent().width();
         minLeft = getMinLeft($(this).closest(".caption-box"));
-        //minLeft = captionBoxToLeft($(this).closest(".caption-box"));
+        
         mouseDown = true;
         $(this).addClass("dragging");
+        
+        $("#current-time-label").removeClass("right").addClass("left");
 
         event.stopPropagation();
     }
@@ -147,12 +148,14 @@ $(document).on({
     mousedown: function(event) {
         oldMousePosX = event.pageX;
         oldLeft = $(this).position().left;
+        oldWidth = $(this).width();
         minLeft = getMinLeft($(this));
         maxRight = getMaxRight($(this));
-        //minLeft = captionBoxToLeft($(this));
-        //maxRight = captionBoxToRight($(this));
+        
         mouseDown = true;
         $(this).addClass("dragging");
+        
+        $("#current-time-label").removeClass("right").removeClass("left");
 
         
         $(".caption-list .caption.selected").removeClass("selected");
@@ -179,38 +182,82 @@ $("body").mousemove(function(event) {
     if(mouseDown) {
         $("#video iframe").css("pointer-events", "none");       
         
+        //Get the x-position change
         var diff = event.pageX - oldMousePosX;
         
+        //Find what handles are being dragged
         var right = $(".caption-box .right-handle.dragging").length > 0;
         var left = $(".caption-box .left-handle.dragging").length > 0;
+        
+        //Tracks the left position of the current time popup label
+        var popupLeft = 0;
+        var popupMargin = -10;
+        var popupTime = "";
+        
         if(right) {
             var el = $(".caption-box .right-handle.dragging");
-            
+                        
+            //Clamp the end time for a caption between half a second from start and the start time of the next caption.
             var newWidth = clamp(oldWidth + diff, timeToPosition(0.5), maxRight - el.closest(".caption-box").position().left);
+            
+            //125 pixels from the right border of the caption (lining it up with said border)
+            var newPopupLeft = oldLeft + $(".caption-boxes").position().left + (newWidth - 125);
+            var clampedPopupLeft = clamp(newPopupLeft, 0, $(".waveform").width());
+            popupLeft = clampedPopupLeft;
+            popupMargin = newPopupLeft - clampedPopupLeft - 10;
+            popupTime = timeFormat(secondsToTime(positionToTime(oldLeft + newWidth)));
+            
             el.parent().width(newWidth);
         } else if(left) {
             var el = $(".caption-box .left-handle.dragging");
             
+            //Clamp the start time between the end of the previous caption and half a second from the end of the video.
             var newLeft = clamp(oldLeft + diff, minLeft, oldLeft + oldWidth - timeToPosition(0.5));
+            
+            //Clamp the end time between half a second from the start of the video and the start time of the next video.
             var newWidth = clamp(oldWidth - diff, timeToPosition(0.5), oldLeft + oldWidth - minLeft);
+            
+            //Lines up at the left border of the caption.
+            var newPopupLeft = newLeft + $(".caption-boxes").position().left;
+            var clampedPopupLeft = clamp(newPopupLeft, 0, $(".waveform").width() - 125);
+            popupLeft = clampedPopupLeft;
+            popupMargin = clampedPopupLeft - newPopupLeft - 10;
+            popupTime = timeFormat(secondsToTime(positionToTime(newLeft)));
             
             el.parent().css("left", newLeft);
             el.parent().width(newWidth);
         } else {
             var el = $(".caption-box.dragging");
 
+            //Clamp the start time between the end of the video 
             var maxLeft = maxRight - el.width();
-            
             var newLeft = clamp(oldLeft + diff, minLeft, maxLeft);
+            
+            //Directly in the center of the caption.
+            var newPopupLeft = newLeft + $(".caption-boxes").position().left + (oldWidth/2) - (125/2);
+            var clampedPopupLeft = clamp(newPopupLeft, 0, $(".waveform").width() - 125);
+            popupLeft = clampedPopupLeft;
+            popupMargin = newPopupLeft - clampedPopupLeft - 10;
+            popupTime = timeFormat(secondsToTime(positionToTime(newLeft)));
             
             el.css("left", newLeft);
         }
+        
+        //Move the current time popup and update its time
+        $("#current-time-label").css("left", popupLeft);
+        $("#current-time-label:after").css("margin-left", popupLeft);
+        $("#current-time-label > p").text(popupTime);
+        
+        //Delays adding the show class until the position has been adjusted.
+        if(!$("#current-time-label").hasClass("show"))
+            $("#current-time-label").addClass("show");
         
         updateCaption();
     }
 }).mouseup(function(event) {
     if($(".caption-box.dragging, .caption-box .right-handle.dragging, .caption-box .left-handle.dragging").length > 0) {
         $("#video iframe").css("pointer-events", "");
+        $("#current-time-label").removeClass("show");
         
         var right = $(".caption-box .right-handle.dragging").length > 0;
         var left = $(".caption-box .left-handle.dragging").length > 0;
@@ -353,10 +400,12 @@ function playheadUpdated(finishedSeeking) {
     updateCaption();
 }
 
-function updatePlayhead(time) {     
+function updatePlayhead(time, caption = undefined) {     
     //If the time left is less than the amount of time shown in a single timeline section, the playhead's position needs to be updated.
     var tmpLeft = $(".waveform .caption-boxes").position().left;
     
+    //If the current time is within one width of the waveform, use the code below.
+    //(For instance, if a video is 10 seconds long and the waveform shows 4 seconds at any one time, this code will be used anywhere between times 6 seconds exclusive and 10 seconds inclusive)
     if((player.getDuration() - time)/zooms[currZoom] < ticks[currZoom]) {
         //Set the timeline as far over as possible.
         $(".waveform .caption-boxes").css("left", -$(".waveform .caption-boxes").width() + $(".waveform").width());
@@ -380,20 +429,40 @@ function updatePlayhead(time) {
         
         //Set the playhead to the correct position.
         $(".waveform .playhead").css("left", ticksPassed * tickSep);
-    } else {        
-        $(".waveform .caption-boxes").css("left", ((time/zooms[currZoom]) * -tickSep) + $(".waveform .playhead").position().left);
-        currTime = Math.round((time/zooms[currZoom]) -($(".waveform .playhead").position().left/tickSep));
-    }
+    } else {
+        //This equates to: (playhead position) - ((number of ticks) * (separation per tick)).
+        //It represents the left position of the playhead relative to the waveform view.
+        //This is the distance between the playhead and the time
+        var leftTime = ((time/zooms[currZoom]) * -tickSep) + $(".waveform .playhead").position().left;
+        var tempCurrTime = (time/zooms[currZoom]) - ($(".waveform .playhead").position().left/tickSep);
+                
+        if(caption !== undefined) {
+            leftTime = -timeToPosition(timeToSeconds(caption.find("input.start-time").val()));
+            tempCurrTime = timeToSeconds(caption.find("input.start-time").val());
             
-//    var leftDiff = $(".waveform canvas").position().left - tmpLeft;
-//    $(".waveform .caption-box").each(function() {
-//        $(this).css("left", $(this).position().left + leftDiff);
-//    });
+            $(".waveform .playhead").css("left", "0px");
+        }
+        
+        leftTime = leftTime > 0 ? 0 : leftTime;
+        tempCurrTime = leftTime == 0 ? 0 : tempCurrTime;
+        
+        $(".waveform .caption-boxes").css("left", leftTime);
+        currTime = Math.round(tempCurrTime);
+    }
     
     drawTicks($(".waveform canvas")[0], currZoom);
     
     updateVisibleBoxes();
     updateCaption();
+    updateScrollbar($(".caption-boxes").position().left);
+}
+
+function updateScrollbar(position) {
+    //Get the ratio between the timeline and its container & the scrollbar and its container.
+    var ratio = -position/($(".waveform .caption-boxes").width() - $(".waveform").width());
+
+    //Set the scrollnar's left position based on that ratio
+    $(".waveform .scroll .scrollbar").css("left", ratio * ($(".waveform .scroll").width() - SCROLL_BAR_WIDTH))
 }
 
 function updateCaption() {
@@ -578,7 +647,7 @@ $(".waveform .caption-boxes, .waveform").mousedown(function(event) {
     }
 });
 
-$(".waveform .caption-boxes, .waveform .playhead, .waveform .scroll .scrollbar").mouseup(function() {
+$(document).mouseup(function() {
     playheadUpdated(true);
 });
 

@@ -62,6 +62,10 @@
                         <div class="editor-captions"></div>
                     </div>
                     <div class="waveform">
+                        <div id="current-time-label" class="floating-label">
+                            <p>00:00:00.0</p>
+                        </div>
+                        
                         <canvas width=1700 height=100></canvas>
                         <div class="caption-boxes"></div>
                         <div class="playhead"></div>

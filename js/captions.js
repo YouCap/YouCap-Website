@@ -27,8 +27,10 @@ function setCaption(caption, temporary) {
 
 //Utils
 //Formats an entered value into a string in the format of MM:SS.MS
-function timeFormat(value) { 
-    if(value.match("^([0-9]*:)?[0-9]{2}:[0-9]{2}\\.[0-9]+$"))
+function timeFormat(value) {
+    //Check if the current value is a valid time, including with only one digit in the decimal place.
+    var decimalIndex = value.indexOf('.');
+    if(value.match("^([0-9]*:)?[0-9]{2}:[0-9]{2}\\.[0-9]+$") && (decimalIndex == -1 || decimalIndex >= value.length - 2))
         return value;
     
     var steps = ["[0-9]", "[0-9]", ":", "[0-9]", "[0-9]", ":", "[0-9]", "[0-9]", "\\.", "[0-9]+", ""];
@@ -37,12 +39,21 @@ function timeFormat(value) {
     var match = "";
     for(var i = steps.length - 1; i >= 0; i--) {
         match = steps[i] + match;
-        if(value.match("^" + match + "$"))
-            return placeholders.substring(0, i) + value.substring(0, steps.length - 1 - i);
+        if(value.match("^" + match + "$")) {
+            //Get the result
+            var result = value.substring(0, steps.length - 1 - i);
+            
+            //Get the index of the decimal point. If it exists, make sure that there's only one digit in the decimal place.
+            decimalIndex = result.indexOf('.');
+            if(decimalIndex != -1 && decimalIndex < result.length - 2)
+                result = result.substring(0, decimalIndex + 2);
+            
+            return result;
+        }
     }
     
     return "";
-    console.log("REGEX ERROR");
+    console.error("REGEX ERROR");
 }
 
 //Properly sets the start and end times when first adding a caption object.
