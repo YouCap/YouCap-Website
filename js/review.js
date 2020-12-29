@@ -90,7 +90,10 @@ function submitReview(rating) {
         type: "post",
         data: form.serialize(),
         success: function(data) {
-            window.location = "/pages/thanks?review";
+            window.location = "/pages/thanks?review" +
+                "&vid-lang=" + vidLang + 
+                "&vid-lang-name=" + vidLangName + 
+                (nsfw == "true" ? "&nsfw" : "");
         },
         error: function(xhr, status, error) {
             $("<p class='warning'>The server returned a " + xhr.status + " error. Please contact support for more information.</p>").insertAfter($("#overlay .popup.submission > p"));
