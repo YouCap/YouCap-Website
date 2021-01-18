@@ -63,17 +63,17 @@
 
     # Ensure the row was found
     if(sizeof($row) > 0)
-    {
-        # Get the repository name
-        $repo = "captions-$language-" . $row["repoID"];
-        
-        # Create the client and committer
-        $client = githubClient();
-        $committer = array('name' => 'YouCap Website', 'email' => 'youcapservice@gmail.com');
-        
+    {        
         # If the rating is outside the rating threshold, it's either published or destroyed
         if(abs($row["rating"]) >= RATING_THRESHOLD)
         {
+            # Get the repository name
+            $repo = "captions-$language-" . $row["repoID"];
+            
+            # Create the client and committer
+            $client = githubClient();
+            $committer = array('name' => 'YouCap Website', 'email' => 'youcapservice@gmail.com');
+            
             # If it's positive, then add the file to published captions
             if($row["rating"] >= RATING_THRESHOLD)
             {
@@ -90,7 +90,7 @@
         }
         
         # Clear the saved session info, to allow for getting a new caption to review
-        session_destroy();
+        $_SESSION["cache-review-id"] = "-1";
     }
 
 ?>
