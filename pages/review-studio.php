@@ -178,9 +178,4 @@
         if(vidID == "-1")
             $("#overlay, #overlay .popup.not-available").addClass("show");
     </script>
-    <script>
-        var vidLang = $_POST["vid-lang"];
-        var vidLangName = $_POST["vid-lang-name"];
-        var nsfw = $_POST["nsfw"];
-    </script>
 </html>
