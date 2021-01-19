@@ -1,5 +1,12 @@
 <?php
+
+    require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/autoload.php';
+
+    # creds.php included in sql.php
+    require(__DIR__ . '/sql.php');
     require(__DIR__ . '/csrf-handler.php');
+
+    # CSRF and bad request handling
     if(!isset($_POST))
     {
         http_response_code(400);
@@ -13,9 +20,7 @@
         return;
     }
 
-    require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/autoload.php';
-
-    require(__DIR__ . '/creds.php');
+    # Create a Github client for handling uploads
     $client = githubClient();
 
     # Get all of the POST variables.
@@ -26,9 +31,8 @@
     $captionContent = htmlspecialchars($_POST["content"], ENT_QUOTES);
     $user = htmlspecialchars(/*$_POST["user"]*/"Anonymous", ENT_QUOTES);
 
-    # Get the username and ID
+    # Get and format the parameters
     $id = $_POST["id"];
-
     $language = preg_replace('/\s+/', '_', strtolower($_POST["vid-lang-name"]));
     $nsfw = strtolower($_POST["nsfw"]);
 
@@ -80,19 +84,7 @@
     # Uploads the JSON encoded content to the review repository.
     $fileInfo = $client->api('repo')->contents()->create('YouCap', "captions-$language-$repoNum", $path, json_encode($submit), "Committed by YouCap website", "main", $committer);
     
-
-    # Get the SQL connection from creds.php
-    $conn = mysqliConnection();
-    
-    # Save the important info.
-    $language = mysqli_real_escape_string($conn, $language);
-    $vidID = mysqli_real_escape_string($conn, $vidID);
-    $id = mysqli_real_escape_string($conn, $id);
-    $nsfw = mysqli_real_escape_string($conn, $nsfw);
-    $sha = $fileInfo["content"]["sha"];
-
-    # Construct the SQL and submit.
-    $sql = "INSERT INTO `$sqlReviewDatabase`(`vidID`, `repoID`, `language`, `rating`, `users`, `sha`, `filters`) VALUES ('$vidID', $repoNum, '$language', 0, '$id', '$sha', 'nsfw=$nsfw')";
-    mysqli_query($conn, $sql) or die(mysqli_error($conn));
+    # Inserts the review entry using the function from sql.php.
+    insertReviewEntry($vidID, $repoNum, $language, $id, $fileInfo["content"]["sha"], $nsfw);
 
 ?>

@@ -2,7 +2,10 @@
 
     define("RATING_THRESHOLD", 3);
 
+    # sql.php includes creds.php
+    require(__DIR__ . '/sql.php');
     require(__DIR__ . '/csrf-handler.php');
+    require(__DIR__ . '/utils.php');
     if(!isset($_POST))
     {
         http_response_code(400);
@@ -16,33 +19,7 @@
         return;
     }
 
-
-
-    function getCaptions($repo, $vidID)
-    {        
-        // Create a stream
-        $opts = [
-            "http" => [
-                "method" => "GET",
-                "header" => "Accept-language: en\r\n" .
-                    "Cookie: foo=bar\r\n" .
-                    "User-Agent: YouCap"
-            ]
-        ];
-
-        $context = stream_context_create($opts);
-        
-        $infoFile = file_get_contents("https://raw.githubusercontent.com/YouCap/$repo/main/review/$vidID", false, $context);
-        $json = json_decode($infoFile, true);
-                                
-        return filter_var($json["contents"], FILTER_SANITIZE_STRING);        
-    }
-
-
-
-    require(__DIR__ . '/creds.php');
-    $conn = mysqliConnection();
-
+    # Get the parameters
     $language = preg_replace('/\s+/', '_', strtolower($_POST["language"]));
     $vidID = $_POST["vidID"];
     $user = $_POST["user"];
@@ -69,51 +46,51 @@
         return;
     }
 
-    $language = mysqli_real_escape_string($conn, $language);
-    $vidID = mysqli_real_escape_string($conn, $vidID);
-    $id = mysqli_real_escape_string($conn, $id);
-
-
-    $sql = "SELECT `vidID` FROM `$sqlReviewDatabase` WHERE `vidID`=\"$vidID\" AND `language`=\"$language\" AND `users` LIKE \"%$id%\"";
-    $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
+    # Ensure this caption hasn't been reviewed by the user before.
+    $result = getReviewCaptionByID($vidID, $language, $user);
     if(sizeof(mysqli_fetch_array($result)) > 0)
     {
         http_response_code(403);
         return;
     }
 
-
-
-
-    $sql = "UPDATE `$sqlReviewDatabase` SET `rating`=`rating` + $rating,`users`=CONCAT(`users`, \",$id\") WHERE `vidID`=\"$vidID\" AND `language`=\"$language\"";
-    mysqli_query($conn, $sql) or die(mysqli_error($conn));
-
-    $sql = "SELECT `repoID`, `rating`, `sha` FROM `$sqlReviewDatabase` WHERE `vidID`=\"$vidID\" AND `language`=\"$language\"";
-    $result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
-
+    # Update the rating
+    updateReviewRating($vidID, $language, $id, $rating);
+    
+    # Get the row of information
+    $result = getCaptionByID($vidID, $language, $id);
     $row = mysqli_fetch_array($result);
-    $repo = "captions-$language-" . $row["repoID"];
 
+    # Ensure the row was found
     if(sizeof($row) > 0)
-    {
-        $client = githubClient();
-        $committer = array('name' => 'YouCap Website', 'email' => 'youcapservice@gmail.com');
-        
-        if($row["rating"] >= abs(RATING_THRESHOLD))
+    {        
+        # If the rating is outside the rating threshold, it's either published or destroyed
+        if(abs($row["rating"]) >= RATING_THRESHOLD)
         {
+            # Get the repository name
+            $repo = "captions-$language-" . $row["repoID"];
+            
+            # Create the client and committer
+            $client = githubClient();
+            $committer = array('name' => 'YouCap Website', 'email' => 'youcapservice@gmail.com');
+            
+            # If it's positive, then add the file to published captions
             if($row["rating"] >= RATING_THRESHOLD)
             {
-                $content = htmlspecialchars(getCaptions($repo, $vidID), ENT_QUOTES);
+                # Commit the caption file.
+                $content = getCaptionsFiltered($repo, $vidID);
                 $fileInfo = $client->api('repo')->contents()->create('YouCap', $repo, "published/$vidID", $content, "Committed by YouCap website", "main", $committer);
             }
             
+            # No matter what, the file needs to be deleted
             $fileInfo = $client->api('repo')->contents()->rm('YouCap', $repo, "review/$vidID", "Rating reached negative threshold. File removed by YouCap Website.", $row['sha'], "main", $committer);
 
-            $sql = "DELETE FROM `$language` WHERE `vidID`=\"$vidID\"";
-            mysqli_query($conn, $sql) or die(mysqli_error($conn));
+            # Remove the DB entry
+            deleteCaption($vidID, $language);
         }
         
-        session_destroy();
+        # Clear the saved session info, to allow for getting a new caption to review
+        $_SESSION["cache-review-id"] = "-1";
     }
 
 ?>

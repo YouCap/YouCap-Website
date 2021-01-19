@@ -143,7 +143,10 @@
     </body>
     
     <script>
-        var langName = "<?php echo $_POST['vid-lang-name']; ?>";
+        var langName, vidLangName;
+        langName = vidLangName = "<?php echo $_POST['vid-lang-name']; ?>";
+        var vidLang = "<?php echo $_POST["vid-lang"]; ?>";
+        var nsfw = "<?php echo isset($_POST["nsfw"]) ? "true" : "false"; ?>";
     </script>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -174,10 +177,5 @@
         
         if(vidID == "-1")
             $("#overlay, #overlay .popup.not-available").addClass("show");
-    </script>
-    <script>
-        var vidLang = $_POST["vid-lang"];
-        var vidLangName = $_POST["vid-lang-name"];
-        var nsfw = $_POST["nsfw"];
     </script>
 </html>

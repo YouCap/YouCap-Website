@@ -124,7 +124,7 @@ var PARSER_SRT = function(contents) {
 
 var PARSER_SBV = function(contents) {
     //Regex for matching SBV entries
-    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n([\\s\\S]*?)(?=$|\\n{2}(?:\\d{1,2}:)+)", "gm");
+    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n((?:[\\S ]\\n?)*?)(?=$|\\n{2}(?:\\d{1,2}:)+)", "gm");
     
     //The resulting matches
     var result = [];
@@ -219,7 +219,7 @@ var PARSER_VTT = function(contents) {
     return result;
 }; //https://github.com/mozilla/vtt.js?files=1
 var PARSER_YOUCAP = function(contents) {
-    var REGEX = new RegExp("(\\d+\\.\\d+),(\\d+\\.\\d+)\\n([\\s\\S]*?)(?=$|\\n{2}(?:(?:\\d+\\.\\d+)))", "gm");
+    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n((?:[\\S ]\\n?)*?)(?=$|\\n{2}(?:\\d{1,2}:)+)", "gm");
     
     var result = [];
     
