@@ -42,11 +42,12 @@
         $sqlServer = $credJSON["servername"];
         $sqlUsername = $credJSON["username"];
         $sqlPassword = $credJSON["password"];
+        $sqlReviewDB = $credJSON["review_db"];
         
         global $sqlReviewDatabase;
-        $sqlReviewDatabase = $credJSON["review_db"];
+        $sqlReviewDatabase = $credJSON["review_table"];
         
-        $conn = new mysqli($sqlServer, $sqlUsername, $sqlPassword, "review_users");
+        $conn = new mysqli($sqlServer, $sqlUsername, $sqlPassword, $sqlReviewDB);
         
         // Check connection
         if ($conn->connect_error) {
