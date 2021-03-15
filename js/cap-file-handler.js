@@ -82,30 +82,12 @@ function parseCaptionFileContents(contents, extension) {
     //CRLF -> LF
     contents = contents.replace(/\r\n/g, "\n");
     
-    switch(extension) {
-        case "srt":
-            return PARSER_SRT(contents);
-            break;
-        case "sbv":
-            return PARSER_SBV(contents);
-            break;
-        case "mpsub":
-            return PARSER_MPSUB(contents);
-            break;
-        case "lrc":
-            return PARSER_LRC(contents);
-            break;
-        case "vtt":
-            return PARSER_VTT(contents);
-            break;
-    }
-    
-    return [];
+    return EXTENSION_PARSERS[extension](contents);
 }
 
 var PARSER_SRT = function(contents) {
     //Regex for matching SRT entries
-    var REGEX = new RegExp("(\\d+)\\n([\\d:,]+)\\s+-{2}\\>\\s+([\\d:,]+)\\n([\\s\\S]*?)(?=$|\\n{2}\\d+)", "gm");
+    var REGEX = new RegExp("([\\d:,]+)(?:\\s*-{2}\\>\\s*)([\\d:,]+)\\n((?:[\\S\\s])*?)(?=\\Z|(?:\\n{2}[\\d:,]+))", "gm");
     
     //The resulting matches
     var result = [];
@@ -123,13 +105,16 @@ var PARSER_SRT = function(contents) {
 }; //https://stackoverflow.com/questions/33145762/parse-a-srt-file-with-jquery-javascript
 
 var PARSER_SBV = function(contents) {
+    console.log(contents);
+    
     //Regex for matching SBV entries
-    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n((?:[\\S ]\\n?)*?)(?=$|\\n{2}(?:\\d{1,2}:)+)", "gm");
+    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n((?:[\\S\\s])*?)(?=\\Z|(?:\\n{2}(?:\\d{1,2}:)+))", "gm");
     
     //The resulting matches
     var result = [];
         
-    while((match = REGEX.exec(contents)) !== null) {  
+    while((match = REGEX.exec(contents)) !== null) { 
+        console.log(match);
         var append = [];
         append.push(timeFormat(match[1].replace(",", ".")));
         append.push(timeFormat(match[2].replace(",", ".")));
@@ -169,7 +154,7 @@ var PARSER_MPSUB = function(contents) {
     return result;
 }; //http://www.mplayerhq.hu/DOCS/tech/mpsub.sub
 var PARSER_LRC = function(contents) {
-    var REGEX = new RegExp("\\[([\\d.:]+)\\](.*)", "gm");
+    var REGEX = new RegExp("\\[([\\d.:]+)\\]([\\s\\S]*?)(?=\\Z|(?:\\[([\\d.:]+)\\]))", "gm");
     
     //The resulting matches
     var result = [];
@@ -219,7 +204,7 @@ var PARSER_VTT = function(contents) {
     return result;
 }; //https://github.com/mozilla/vtt.js?files=1
 var PARSER_YOUCAP = function(contents) {
-    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n((?:[\\S ]\\n?)*?)(?=$|\\n{2}(?:\\d{1,2}:)+)", "gm");
+    var REGEX = new RegExp("([\\d:.]+),([\\d:.]+)\\n((?:[\\S ]\\n?)*?)(?=\\Z|(?:\\n{2}(?:\\d{1,2}:)+))", "gm");
     
     var result = [];
     
@@ -251,6 +236,17 @@ var PARSER_YOUCAP = function(contents) {
     
     return result;
 }; //Created to parse contents sent from server (which in turn was obtained from YouTube)
+
+
+
+//A dictionary mapping extensions to their parser objects.
+const EXTENSION_PARSERS = {
+    "srt": PARSER_SRT,
+    "sbv": PARSER_SBV,
+    "mpsub": PARSER_MPSUB,
+    "lrc": PARSER_LRC,
+    "vtt": PARSER_VTT
+};
 
 
 //jQuery bindings
